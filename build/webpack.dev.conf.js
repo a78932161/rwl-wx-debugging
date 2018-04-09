@@ -9,6 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const OpenBrowserWebpackPlugin=require('open-browser-webpack-plugin')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -45,6 +46,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     }
   },
   plugins: [
+    new OpenBrowserWebpackPlugin({
+      url: `http://localhost:${PORT || config.dev.port}`
+    }),
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env')
     }),
