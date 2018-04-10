@@ -6,8 +6,8 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-
-const _import = require('./_import_' + process.env.NODE_ENV);
+const _import = require('./_import_' + 'production');
+// const _import = require('./_import_' + process.env.NODE_ENV);
 let constantRouterMap=[
   {path:'/',redirect:'/home'},
   {path:'/home',component:_import('home/index/index')},
