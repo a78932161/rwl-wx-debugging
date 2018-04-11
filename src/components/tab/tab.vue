@@ -32,7 +32,7 @@
     position: fixed;
     bottom: 0;
     width: 10rem;
-    @include px2rem(height,105);
+    @include px2rem(height,$tab-height);
     background:$color-background-d;
     border-top:1px solid #c0c0c0;
     display: flex;

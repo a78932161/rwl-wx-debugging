@@ -1,14 +1,21 @@
 <template>
-  <scroll>
+
   <div class="home">
+    <scroll>
+      <div class="scroll-container">
     <m-header></m-header>
     <slider class="slider-container">
       <img v-for="item in images" :src="item"/>
     </slider>
     <m-menu></m-menu>
-    <div class="problem"></div>
+    <div class="problem" @click="selectProblem"></div>
+      </div>
+    </scroll>
+    <router-view></router-view>
+   <shop-bar></shop-bar>
   </div>
-  </scroll>
+
+
 </template>
 
 
@@ -17,6 +24,7 @@
   import MMenu from 'components/home/m-menu/m-menu';
   import Slider from 'base/slider/slider';
   import Scroll from 'base/scroll/scroll';
+  import ShopBar from 'base/shop-bar/shop-bar';
   export default {
     data(){
       return {
@@ -27,9 +35,14 @@
       MHeader,
       MMenu,
       Slider,
-      Scroll
+      Scroll,
+      ShopBar
     },
-    methods: {}
+    methods: {
+      selectProblem(){
+          this.$router.push('/home/problem');
+      }
+    }
   }
 </script>
 
@@ -38,14 +51,17 @@
   @import "~common/css/variable";
 
   .home {
-    position: fixed;
+    position:absolute;
     top:0;
-    bottom: 0;
+    @include px2rem(bottom,$tab-height);
     left: 0;
     right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    .scroll-container{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height:105%;
+    }
     .slider-container {
       img {
         @include px2rem(height, 281);

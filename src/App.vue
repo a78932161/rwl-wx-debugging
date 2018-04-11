@@ -19,11 +19,13 @@
 
 <style lang="scss" rel="stylesheet/scss">
   @import "~common/css/base";
+  @import "~common/css/mixin";
+  @import "~common/css/variable";
   #app{
     height: 100%;
     .router-view{
       overflow-x:hidden;
-      height:calc(100% - 1.4rem);
+      height:calc(100% - #{px2rem($tab-height)});
     }
   }
 </style>

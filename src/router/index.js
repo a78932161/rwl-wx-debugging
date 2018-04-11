@@ -10,7 +10,10 @@ const _import = require('./_import_' + 'production');
 // const _import = require('./_import_' + process.env.NODE_ENV);
 let constantRouterMap=[
   {path:'/',redirect:'/home'},
-  {path:'/home',component:_import('home/index/index')},
+  {path:'/home',component:_import('home/index/index'),children:[
+    {path:'problem',component:_import('home/problem/problem')},
+    {path:'laundry',component:_import('home/laundry/laundry')}
+  ]},
   {path:'/recharge',component:_import('recharge/recharge')},
   {path:'/orders',component:_import('orders/orders')},
   {path:'/my',component:_import('my/my')},

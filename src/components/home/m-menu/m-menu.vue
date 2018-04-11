@@ -1,6 +1,6 @@
 <template>
   <div class="m-menu" @click.stop>
-    <div class="menu-item">
+    <router-link tag="div" to="/home/laundry" class="menu-item">
       <div class="icon-box bg-xy">
         <i class="iconfont icon-yifu"></i>
       </div>
@@ -8,7 +8,7 @@
         <span class="name">洗衣</span>
         <span class="introduce">8元/件起</span>
       </div>
-    </div>
+    </router-link>
 
     <div class="menu-item">
       <div class="icon-box bg-jj">
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="menu-item">
+    <router-link tag="div" to="/home/laundry" class="menu-item">
       <div class="icon-box bg-xh">
         <i class="iconfont icon-baobao"></i>
       </div>
@@ -28,7 +28,7 @@
         <span class="name ">高端洗护</span>
         <span class="introduce">箱包/皮具/皮革</span>
       </div>
-    </div>
+    </router-link>
 
     <div class="menu-item">
       <div class="icon-box bg-sc">
