@@ -10,7 +10,7 @@
       </div>
     </router-link>
 
-    <div class="menu-item">
+    <router-link tag="div" to="/home/furnishing" class="menu-item">
       <div class="icon-box bg-jj">
         <i class="iconfont icon-shafa"></i>
       </div>
@@ -18,7 +18,7 @@
         <span class="name">小让家居</span>
         <span class="introduce">沙发/床垫/地毯</span>
       </div>
-    </div>
+    </router-link>
 
     <router-link tag="div" to="/home/laundry" class="menu-item">
       <div class="icon-box bg-xh">
@@ -30,7 +30,7 @@
       </div>
     </router-link>
 
-    <div class="menu-item">
+    <router-link tag="div" to="/home/mall" class="menu-item">
       <div class="icon-box bg-sc">
         <i class="iconfont icon-shangdian"></i>
       </div>
@@ -38,7 +38,7 @@
         <span class="name">小让商城</span>
         <span class="introduce">箱包/皮具/皮革</span>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 

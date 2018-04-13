@@ -2,34 +2,41 @@
   <div class="laundry" @touchmove.prevent>
 
     <switches :list="switchList" @switchItem="switchItem"></switches>
+    <no-result class="zh-center"
+               v-show="!list.length>0"
+               title="商品正在赶来的路上..."
+    ></no-result>
     <div ref="scrollContainer" class="scroll-container">
-    <scroll ref="scroll">
-      <div class="shop-container">
-        <ul class="shop-list">
-          <li class="shop-item" v-for="item in list">
-            <img  v-lazy="item.imgUrl" class="clothes-img" />
-            <span class="text" v-text="item.name"></span>
-            <span class="price" v-text="price(item.price)"></span>
-            <div class="add-shop" @click="addShop(item)">
-              <i class="iconfont icon-icon-test"></i>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </scroll>
+      <scroll ref="scroll" :data="list">
+        <div class="shop-container">
+          <ul class="shop-list">
+            <li class="shop-item" v-for="item in list">
+              <img v-lazy="item.imgUrl" class="clothes-img"/>
+              <span class="text" v-text="item.name"></span>
+              <span class="price" v-text="price(item.price)"></span>
+              <div class="add-shop" @click="addShop(item)">
+                <i class="iconfont icon-icon-test"></i>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </scroll>
     </div>
   </div>
 </template>
 
 <script>
-  import {mapGetters,mapMutations} from 'vuex';
+  import {mapGetters, mapMutations} from 'vuex';
+  import NoResult from 'base/no-result/no-result';
   import Switches from 'base/switches/switches';
   import Scroll from 'base/scroll/scroll';
   import {shopBarMixin} from 'common/js/mixin'
-  import {propEq,copyObj} from 'common/js/array';
+  import {propEq, copyObj} from 'common/js/array';
+  import list from 'mock/shop'; //数据模拟
   export default {
     data(){
       return {
+        switchVal:-1,
         switchList: [
           {name: '上衣类', className: 'clothes'},
           {name: '裤裙类', className: 'culottes'},
@@ -42,76 +49,71 @@
     },
     components: {
       Switches,
-      Scroll
+      Scroll,
+      NoResult
     },
-    mixins:[shopBarMixin],
+    mixins: [shopBarMixin],
     created(){
-      let item1 = {
-          id:'1',
-        name: '单衬衫',
-        price: '29.0',
-        imgUrl: "https://img.alicdn.com/imgextra/i1/912266212/TB2svPoav5TBuNjSspmXXaDRVXa_!!912266212.jpg_430x430q90.jpg"
-      };
-
-      let item2 = {
-          id:'2',
-        name: '衬衫',
-        price: '39.0',
-        imgUrl: "https://img.alicdn.com/bao/uploaded/i1/912266212/TB2NAv9hnJYBeNjy1zeXXahzVXa_!!912266212-0-item_pic.jpg_430x430q90.jpg"
-      };
-      for (let i = 0; i < 30; i++) {
-        if(i%2===0){
-            this.list.push(item1);
-            continue;
-        }
-        this.list.push(item2);
-      }
+      this.list = list;
     },
-    computed:{
+    computed: {
       ...mapGetters([
-          'shopList'
+        'shopList',
+        'shopBarHeight'
       ])
     },
     methods: {
       handleShopBar(shopList){
-          this.$nextTick(()=>{
-            let bottom=shopList.length>0?'105px':'';
-            this.$refs.scrollContainer.style.bottom=bottom;
-            this.$refs.scroll.refresh();
-          });
+        this.$nextTick(() => {
+          let bottom = shopList.length > 0 ? `${this.shopBarHeight}px` : '';
+          this.$refs.scrollContainer.style.bottom = bottom;
+          this.$refs.scroll.refresh();
+        });
       },
       addShop(obj){   //后续可能还要保存ID，或者用id查询信息
-        let shopList=copyObj(this.shopList);  //复制一份进行改动，否则vuex警告
-       let index=shopList.findIndex(propEq(obj.id,'id'));
-       if(index!==-1){ //商品是否存在，存在数量+1
-           shopList[index].number++;
-       }
-       else{
-         let item={
-           id:obj.id,
-           name:obj.name,
-           price:obj.price,
-           number:1
-         };
-         shopList.unshift(item);
-       }
+        let shopList = copyObj(this.shopList);  //复制一份进行改动，否则vuex警告
+        let index = shopList.findIndex(propEq(obj.id, 'id'));
+        if (index !== -1) { //商品是否存在，存在数量+1
+          shopList[index].number++;
+        }
+        else {
+          let item = {
+            id: obj.id,
+            name: obj.name,
+            price: obj.price,
+            number: 1
+          };
+          shopList.unshift(item);
+        }
         this.setShopList(shopList);
-       console.log('addShop')
+        console.log('addShop')
         console.log(this.shopList)
 
       },
       switchItem(index){
+          this.switchVal=index;
         console.log('switch:' + index)
       },
       price(price){
-        return  `¥ ${price}`
+        return `¥ ${price}`
       },
       bgImg(url){
         return `background-image:url(${url})`
       },
       ...mapMutations({
-          setShopList:'SET_SHOP_LIST'
+        setShopList: 'SET_SHOP_LIST'
       })
+    },
+    watch:{
+      switchVal(newVal){
+        this.$refs.scroll.scrollTo(0, 0);  //switch变化时，滚动条到顶部
+        if(newVal===1||newVal===2||newVal===3){  //TODO  测试 no-result后续删除
+          this.list=[];
+        }
+        else{
+          this.list=list;
+        }
+      }
     }
   }
 </script>
@@ -122,16 +124,16 @@
   @import "~common/css/variable";
 
   .laundry {
+    z-index: 10;
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 10;
     background: #fff;
-    .scroll-container{
+    .scroll-container {
       position: fixed;
-      @include px2rem(top,$switches-height);
+      @include px2rem(top, $switches-height);
       bottom: 0;
       .shop-container {
         width: 10rem;

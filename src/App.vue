@@ -13,7 +13,7 @@
     name: 'App',
     components:{
       Tab
-    },
+    }
   }
 </script>
 

@@ -12,7 +12,7 @@
       </div>
     </scroll>
     <router-view></router-view>
-    <shop-bar :list="shopList" v-show="shopBarState&&shopList.length>0"></shop-bar>
+    <shop-bar :list="shopList" v-if="shopBarState&&shopList.length>0"></shop-bar>
   </div>
 
 
@@ -56,7 +56,6 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "~common/css/mixin";
   @import "~common/css/variable";
-
   .home {
     position: absolute;
     top: 0;

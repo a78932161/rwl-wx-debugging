@@ -12,6 +12,10 @@
       }, 20)
     },
     props: {
+        pullUp:{
+          type:Boolean,
+          default:false
+        },
       probeType: {
         type: Number,
         default: 3
@@ -44,8 +48,15 @@
         });
         if (this.listenScroll) {   //派发滚动事件
           this.scroll.on('scroll', (pos) => {
-            this.$emit('scroll', pos.y)
+            this.$emit('scroll', pos)
           })
+        }
+        if (this.pullUp) {
+          this.scroll.on('scrollEnd', () => {
+            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+            this.$emit('scrollToEnd')
+          }
+        })
         }
         if(this.pullUpLoad){
             this.scroll.on('pullingUp',()=>{
@@ -61,7 +72,7 @@
         }
       },
       scrollTo(){
-        this.scroll&&this.scroll.scrollTo()
+        this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
       },
       finishPullUp(){
         this.scroll&&this.scroll.finishPullUp()

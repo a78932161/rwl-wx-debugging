@@ -12,7 +12,9 @@ let constantRouterMap=[
   {path:'/',redirect:'/home'},
   {path:'/home',component:_import('home/index/index'),children:[
     {path:'problem',component:_import('home/problem/problem')},
-    {path:'laundry',component:_import('home/laundry/laundry')}
+    {path:'laundry',component:_import('home/laundry/laundry')},
+    {path:'furnishing',component:_import('home/furnishing/furnishing')},
+    {path:'mall',component:_import('home/mall/mall')},
   ]},
   {path:'/recharge',component:_import('recharge/recharge')},
   {path:'/orders',component:_import('orders/orders')},

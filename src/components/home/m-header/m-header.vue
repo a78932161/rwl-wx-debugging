@@ -1,7 +1,7 @@
 <template>
   <div class="m-header">
     <div class="header-container">
-      <div class="logo"></div>
+      <div :class="[move,'logo']" @click="moveClick"></div>
       <div class="right-box">
         <div class="position item">
           <i class="icon iconfont icon-dingwei"></i>
@@ -16,6 +16,25 @@
   </div>
 </template>
 
+<script>
+  export default {
+      data(){
+        return {
+          animation:true
+        }
+      },
+    computed:{
+          move(){
+            return this.animation?'move':'';
+          }
+    },
+      methods:{
+        moveClick(){
+           this.animation=!this.animation;
+        }
+      }
+  }
+</script>
 
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "~common/css/mixin";
@@ -35,8 +54,41 @@
         @include px2rem(width,130);
         @include px2rem(height,27);
         background-size:px2rem(130) px2rem(27);
-        @include bg-image('./name')
+        @include bg-image('./name');
+        &.move{
+          animation:mymove 2s;
+        }
       }
+      @keyframes mymove{
+        10%{
+          transform: translate(0,20%);
+        }
+        20%{
+          transform: translate(0,-20%);
+        }
+        30%{
+          transform: translate(0,20%);
+        }
+        40%{
+          transform: translate(0,-20%);
+        }
+        50%{
+          transform: translate(0,20%);
+        }
+        60%{
+          transform: translate(0,-20%);
+        }
+        70%{
+          transform: translate(0,20%);
+        }
+        80%{
+          transform: translate(0,-20%);
+        }
+        90%{
+          transform: translate(0,20%);
+        }
+      }
+
       .right-box{
         display: flex;
           .item{

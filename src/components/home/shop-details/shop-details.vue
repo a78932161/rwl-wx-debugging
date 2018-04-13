@@ -1,6 +1,6 @@
 <template>
   <transition name="shop-details">
-    <div class="shop-details" v-if="showFlag" @click="coverHide">
+    <div class="shop-details" v-if="showFlag" @touchmove.prevent @click="coverHide">
       <div class="details-container" @click.stop>
         <div class="details-header">
           <div class="logo">
@@ -108,6 +108,11 @@
   @import "~common/css/variable";
 
   .shop-details {
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition-duration: 0ms;
+    transform: translate(0px, 0px) translateZ(0px);
+
     position: fixed;
     top: 0;
     @include px2rem(bottom, $tab-height);

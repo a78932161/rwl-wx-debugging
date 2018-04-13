@@ -38,3 +38,24 @@ export const shopBarMixin={
     }
   }
 };
+
+let perpage=12;
+export const searchMoreMixin={
+  data(){
+    return {
+      result:[],
+      hasMore: true,
+      page: 0
+    }
+  },
+  methods:{
+    searchMore(){
+      if(!this.hasMore){
+        return ;
+      }
+      this.page++;
+      this.result = this.result.concat(this.list.slice((this.page - 1) * perpage, this.page * perpage));
+      this.hasMore=(this.result.length>=this.list.length)?false:true;
+    }
+  }
+};

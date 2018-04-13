@@ -1,28 +1,28 @@
 <template>
   <transition name="shop-bar">
-  <div class="shop-bar">
-    <div class="left-box" @click="detailsToggle">
-      <div v-show="detailsShow" class="logo">
-        <span class="badge" v-text="list.length"></span>
+    <div class="shop-bar" ref="shopBar">
+      <div class="left-box" @click="detailsToggle">
+        <div v-show="detailsShow" class="logo">
+          <span class="badge" v-text="list.length"></span>
+        </div>
+        <span class="price" v-text="totalPrice"></span>
       </div>
-      <span class="price" v-text="totalPrice"></span>
+      <span class="right-button">去结算</span>
+      <shop-details ref="shopDetails" @coverHide="detailsToggle" :list="list"></shop-details>
     </div>
-    <span class="right-button">去结算</span>
-    <shop-details ref="shopDetails" @coverHide="detailsToggle" :list="list"></shop-details>
-  </div>
   </transition>
 </template>
 
 
 <script>
-  import {mapGetters} from 'vuex';
+  import {mapGetters,mapMutations} from 'vuex';
   import ShopDetails from 'components/home/shop-details/shop-details';
   export default {
-      data(){
-        return {
-          detailsShow:true
-        }
-      },
+    data(){
+      return {
+        detailsShow: true
+      }
+    },
     components: {
       ShopDetails
     },
@@ -40,31 +40,39 @@
         });
         return `¥ ${totalPrice}`;
       },
-        ...mapGetters([
-          'shopList'
-        ])
+      ...mapGetters([
+        'shopList'
+      ])
     },
-    methods:{
+    mounted(){
+      this.setHeight();
+    },
+    methods: {
+      setHeight(){
+          this.setBarHeight(this.$refs.shopBar.clientHeight);
+      },
       detailsToggle(){
-          let shopDetails=this.$refs.shopDetails;
-          if(shopDetails.showFlag){
-            shopDetails.hide();
-            this.detailsShow=true;
-          }
-          else {
-            shopDetails.show();
-            this.detailsShow=false;
-          }
-      }
+        let shopDetails = this.$refs.shopDetails;
+        if (shopDetails.showFlag) {
+          shopDetails.hide();
+          this.detailsShow = true;
+        }
+        else {
+          shopDetails.show();
+          this.detailsShow = false;
+        }
+      },
+      ...mapMutations({
+          setBarHeight:'SET_BAR_HEIGHT'
+      })
     },
-    watch:{
-          shopList(newList){
-              if(newList.length===0){
-                this.$refs.shopDetails.hide();
-                this.detailsShow=true;
-              }
-
-          }
+    watch: {
+      shopList(newList){
+        if (newList.length === 0) {
+          this.$refs.shopDetails.hide();
+          this.detailsShow = true;
+        }
+      }
     }
   }
 </script>
@@ -72,6 +80,7 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "~common/css/mixin";
   @import "~common/css/variable";
+
   .shop-bar {
     z-index: 100;
     display: flex;
@@ -81,12 +90,12 @@
     position: fixed;
     bottom: 0;
     background: #313236;
-    &.shop-bar-enter-active,&.shop-bar-leave-active{
+    &.shop-bar-enter-active, &.shop-bar-leave-active {
       transition: all .3s;
     }
-    &.shop-bar-enter,&.shop-bar-leave-to{
+    &.shop-bar-enter, &.shop-bar-leave-to {
       opacity: 0;
-      transform: translate3d(0, 100%,0)
+      transform: translate3d(0, 100%, 0)
     }
 
     .E-logo {
@@ -98,7 +107,7 @@
       @include bg-image('~common/images/logo');
       .badge {
         position: absolute;
-        top:0;
+        top: 0;
         right: 0;
         display: flex;
         justify-content: center;

@@ -51,6 +51,7 @@
   .switches {
     width: 10rem;
     @include px2rem(height,$switches-height);
+    background: $color-background-d;
     .switches-list {
       width: 100%;
       height: 100%;
