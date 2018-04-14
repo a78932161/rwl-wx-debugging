@@ -1,5 +1,6 @@
 <template>
   <div class="mall" ref="mall">
+    <div class="bg-image"></div>
     <switches :list="switchList" @switchItem="switchItem"></switches>
     <no-result class="zh-center" v-show="!result.length>0"></no-result>
     <scroll ref="scroll"
@@ -7,7 +8,7 @@
             :pullUp="pullUp"
             @scrollToEnd="searchMore">
       <ul class="mall-list">
-        <li class="mall-item" v-for="item in result">
+        <li class="mall-item" v-for="item in result" @click="selectItem(item)">
           <div class="img-box">
             <img :src="item.imgUrl">
           </div>
@@ -20,6 +21,7 @@
         <loading title="" v-show="hasMore"></loading>
       </ul>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -38,9 +40,9 @@
         pullUp: true,
         list: [],
         switchList: [
-          {name: '家电类', className: 'clothes'},
-          {name: '生活用品类', className: 'culottes'},
-          {name: '服务类', className: 'decorate'},
+          {name: '家电类', className: 'jd'},
+          {name: '生活用品类', className: 'life'},
+          {name: '服务类', className: 'service'},
           {name: '鞋服类', className: 'shoes'}
         ]
       }
@@ -62,6 +64,9 @@
       ])
     },
     methods: {
+      selectItem(item){
+        this.$router.push('/home/mall/commodity');
+      },
       handleShopBar(shopList){
         this.$nextTick(() => {
           let bottom = shopList.length > 0 ? `${this.shopBarHeight}px` : '';
@@ -102,6 +107,8 @@
   @import "~common/css/mixin";
   @import "~common/css/variable";
 
+  $bg-height:170;
+
   .mall {
     z-index: 10;
     position: fixed;
@@ -110,13 +117,20 @@
     left: 0;
     right: 0;
     background: #EFF0F5;
+    .bg-image{
+      width: 10rem;
+      @include px2rem(height,$bg-height);
+      @include bg-image('./bg');
+      background-size:10rem px2rem($bg-height);
+      background-color:$color-background-d;
+    }
     .mall-list {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       width: 10rem;
-      @include px2rem(padding-bottom, $switches-height+20);
+      @include px2rem(padding-bottom, $switches-height+$bg-height+20);
       .mall-item {
         display: flex;
         flex-direction: column;

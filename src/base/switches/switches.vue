@@ -103,6 +103,18 @@
               @include icon(49, 49);
               @include bg-image('./shoes');
             }
+            &.jd{
+              @include icon(29, 44);
+              @include bg-image('./jd');
+            }
+            &.life{
+              @include icon(18, 44);
+              @include bg-image('./life');
+            }
+            &.service{
+              @include icon(39, 44);
+              @include bg-image('./service');
+            }
           }
         }
         .text {

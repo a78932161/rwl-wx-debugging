@@ -69,6 +69,8 @@
       height: 105%;
     }
     .slider-container {
+      width: 10rem;
+      @include px2rem(height, 281);
       img {
         @include px2rem(height, 281);
       }

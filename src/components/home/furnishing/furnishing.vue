@@ -11,7 +11,7 @@
             @scrollToEnd="searchMore"
     >
       <ul class="list">
-        <li class="item" v-for="item in result">
+        <li class="item" v-for="item in result" @click="selectItem(item)">
           <img class="img" v-lazy="item.imgUrl">
           <span class="name" v-text="item.name"></span>
           <span class="price" v-text="price(item.price)"></span>
@@ -19,6 +19,7 @@
         <loading v-show="hasMore" title=""></loading>
       </ul>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -52,6 +53,9 @@
       ])
     },
     methods: {
+      selectItem(item){
+          this.$router.push('/home/furnishing/commodity');
+      },
       price(price){
         return `¥ ${price}`
       },

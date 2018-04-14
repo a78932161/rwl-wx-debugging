@@ -27,6 +27,7 @@
     .no-result-icon{
       @include px2rem(width,86);
       @include px2rem(height,90);
+      background-size:px2rem(86) px2rem(90);
       @include bg-image('~common/images/default');
     }
     .no-result-text{

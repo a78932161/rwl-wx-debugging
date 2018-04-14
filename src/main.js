@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VConsole from 'vconsole'
 import VueLazyLoad from 'vue-lazyload';
 import fastclick from 'fastclick'
 import App from './App'
@@ -15,6 +16,8 @@ Vue.use(VueLazyLoad,{
   error:defaultImg,
   loading:defaultImg,
 });
+
+// let vConsole=new VConsole({maxLogNumber: 5000});  //console.log调试工具，发布时需注释
 
 
 new Vue({
