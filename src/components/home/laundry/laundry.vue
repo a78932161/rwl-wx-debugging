@@ -31,7 +31,7 @@
   import Switches from 'base/switches/switches';
   import Scroll from 'base/scroll/scroll';
   import {shopBarMixin} from 'common/js/mixin'
-  import {propEq, copyObj} from 'common/js/array';
+  import {isShopAdd} from 'common/js/util';
   import list from 'mock/shop'; //数据模拟
   export default {
     data(){
@@ -54,12 +54,20 @@
     },
     mixins: [shopBarMixin],
     created(){
+        if(this.$route.query.top){   //top值存在，则为高端洗护
+           this.setShopList(this.topLaundryList)
+        }
+        else{
+          this.setShopList(this.laundryList)
+        }
       this.list = list;
     },
     computed: {
       ...mapGetters([
         'shopList',
-        'shopBarHeight'
+        'shopBarHeight',
+        'laundryList',
+        'topLaundryList'
       ])
     },
     methods: {
@@ -71,23 +79,16 @@
         });
       },
       addShop(obj){   //后续可能还要保存ID，或者用id查询信息
-        let shopList = copyObj(this.shopList);  //复制一份进行改动，否则vuex警告
-        let index = shopList.findIndex(propEq(obj.id, 'id'));
-        if (index !== -1) { //商品是否存在，存在数量+1
-          shopList[index].number++;
-        }
-        else {
-          let item = {
-            id: obj.id,
-            name: obj.name,
-            price: obj.price,
-            number: 1
-          };
-          shopList.unshift(item);
-        }
+        let shopList=isShopAdd(this.shopList,obj);
+
         this.setShopList(shopList);
-        console.log('addShop')
-        console.log(this.shopList)
+        if(this.$route.query.top){//top值存在，则为高端洗护
+            this.setTopLaundryList(shopList);
+            return ;
+        }
+        this.setLaundryList(shopList);
+
+
 
       },
       switchItem(index){
@@ -101,7 +102,9 @@
         return `background-image:url(${url})`
       },
       ...mapMutations({
-        setShopList: 'SET_SHOP_LIST'
+        setShopList: 'SET_SHOP_LIST',
+        setLaundryList:'SET_LAUNDRY_LIST',
+        setTopLaundryList:'SET_TOP_LAUNDRY_LIST'
       })
     },
     watch:{

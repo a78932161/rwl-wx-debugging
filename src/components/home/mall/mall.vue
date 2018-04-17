@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
+  import {mapGetters, mapMutations} from 'vuex';
   import {shopBarMixin, searchMoreMixin} from 'common/js/mixin'
   import NoResult from 'base/no-result/no-result'
   import Loading from 'base/loading/loading'
@@ -55,16 +55,19 @@
     },
     mixins: [shopBarMixin, searchMoreMixin],
     created(){
+      this.setShopList(this.mallList);
       this.list = list;
       this.searchMore();
     },
     computed: {
       ...mapGetters([
+        'mallList',
         'shopBarHeight'
       ])
     },
     methods: {
       selectItem(item){
+        this.setCurrentShop(item);
         this.$router.push('/home/mall/commodity');
       },
       handleShopBar(shopList){
@@ -83,17 +86,21 @@
       switchItem(index){
         this.switchVal = index;
         console.log("index:" + this.switchVal);
-      }
+      },
+      ...mapMutations({
+        setShopList: 'SET_SHOP_LIST',
+        setCurrentShop: 'SET_CURRENT_SHOP'
+      })
     },
     watch: {
       switchVal(newVal){
         this.$refs.scroll.scrollTo(0, 0); //switch变化时，滚动条到顶部
-          if(newVal===1||newVal===2){  //TODO  测试 no-result后续删除
-              this.list=[];
-          }
-          else{
-              this.list=list;
-          }
+        if (newVal === 1 || newVal === 2) {  //TODO  测试 no-result后续删除
+          this.list = [];
+        }
+        else {
+          this.list = list;
+        }
         this.hasMore = true;
         this.page = 0;
         this.result = [];
@@ -107,7 +114,7 @@
   @import "~common/css/mixin";
   @import "~common/css/variable";
 
-  $bg-height:170;
+  $bg-height: 170;
 
   .mall {
     z-index: 10;
@@ -117,12 +124,12 @@
     left: 0;
     right: 0;
     background: #EFF0F5;
-    .bg-image{
+    .bg-image {
       width: 10rem;
-      @include px2rem(height,$bg-height);
+      @include px2rem(height, $bg-height);
       @include bg-image('./bg');
-      background-size:10rem px2rem($bg-height);
-      background-color:$color-background-d;
+      background-size: 10rem px2rem($bg-height);
+      background-color: $color-background-d;
     }
     .mall-list {
       display: flex;

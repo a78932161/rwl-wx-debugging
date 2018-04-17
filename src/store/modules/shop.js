@@ -3,11 +3,32 @@
  */
 const shop={
  state:{
+   currentShop:{},
    barState:false,
    barHeight:0,
-   list:[]
+   list:[],
+   laundryList:[],
+   topLaundryList:[],
+   furnishList:[],
+   mallList:[]
+
  },
   mutations:{
+    SET_LAUNDRY_LIST(state,flag){
+      state.laundryList=flag;
+    },
+    SET_TOP_LAUNDRY_LIST(state,flag){
+      state.topLaundryList=flag;
+    },
+    SET_FURNISH_LIST(state,flag){
+      state.furnishList=flag;
+    },
+    SET_MALL_LIST(state,flag){
+      state.mallList=flag;
+    },
+    SET_CURRENT_SHOP(state,flag){
+      state.currentShop=flag;
+    },
    SET_BAR_HEIGHT(state,flag){
      state.barHeight=flag;
    },

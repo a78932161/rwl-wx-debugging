@@ -26,10 +26,10 @@
         </transition-group>
       </div>
       <alert
-             ref="alert"
-             :content="content"
-             :cancelBtnText="cancelBtnText"
-             @confirm="confirm"></alert>
+        ref="alert"
+        :content="content"
+        :cancelBtnText="cancelBtnText"
+        @confirm="confirm"></alert>
     </div>
   </transition>
 </template>
@@ -62,9 +62,31 @@
         default: []
       }
     },
+    created(){
+
+    },
     methods: {
+      setList(list){
+        let route = this.$route;
+        switch (route.name) {
+          case 'laundry':
+            if (route.query.top) {
+              this.setTopLaundryList(list);
+              return;
+            }
+            this.setLaundryList(list);
+            break;
+          case 'furnishing':
+            this.setFurnishList(list);
+            break;
+          case 'mall':
+            this.setMallList(list);
+            break;
+        }
+      },
       confirm(){
-           this.setShopList([]);
+        this.setShopList([]);
+        this.setList([]);
       },
       clearShop(){
         this.$refs.alert.show();
@@ -86,11 +108,16 @@
           shopList.splice(index, 1);
         }
         this.setShopList(shopList);
+        this.setList(shopList);
       },
       price(price){
         return `¥ ${price}`
       },
       ...mapMutations({
+        setLaundryList: 'SET_LAUNDRY_LIST',
+        setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
+        setFurnishList: 'SET_FURNISH_LIST',
+        setMallList: 'SET_MALL_LIST',
         setShopList: 'SET_SHOP_LIST'
       })
     },

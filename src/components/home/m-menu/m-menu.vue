@@ -20,7 +20,7 @@
       </div>
     </router-link>
 
-    <router-link tag="div" to="/home/laundry" class="menu-item">
+    <router-link tag="div" :to="{path:'/home/laundry',query:{top:true}}" class="menu-item">
       <div class="icon-box bg-xh">
         <i class="iconfont icon-baobao"></i>
       </div>

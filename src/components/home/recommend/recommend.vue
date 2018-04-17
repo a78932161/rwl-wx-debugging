@@ -7,7 +7,7 @@
       <span class="line"></span>
     </p>
     <ul class="recommend-list">
-      <li class="recommend-item" v-for="item in list">
+      <li class="recommend-item" @click="selectItem(item)" v-for="item in list">
         <div class="img-box">
         <img v-lazy="item.imgUrl"/>
         </div>
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+  import {mapMutations} from 'vuex';
   export default {
 
     props: {
@@ -32,12 +33,20 @@
       }
     },
     methods: {
+        selectItem(item){
+          this.setCurrentShop(item);
+          this.$router.push('/home/furnishing/commodity');
+          this.$emit('selectItem');
+        },
       price(price){
         return `¥ ${price}`;
       },
       stock(stock){
         return `库存：${stock}件`
-      }
+      },
+      ...mapMutations({
+        setCurrentShop:'SET_CURRENT_SHOP'
+      })
     }
   }
 </script>

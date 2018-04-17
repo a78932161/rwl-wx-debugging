@@ -56,8 +56,6 @@ export const searchMoreMixin={
       this.page++;
       this.result = this.result.concat(this.list.slice((this.page - 1) * perpage, this.page * perpage));
       this.hasMore=(this.result.length>=this.list.length)?false:true;
-      console.log(this.result)
-
     }
   }
 };

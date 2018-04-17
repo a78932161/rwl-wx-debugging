@@ -24,11 +24,11 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
+  import {mapGetters, mapMutations} from 'vuex';
   import NoResult from 'base/no-result/no-result'
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
-  import {shopBarMixin,searchMoreMixin} from 'common/js/mixin'
+  import {shopBarMixin, searchMoreMixin} from 'common/js/mixin'
   import list from 'mock/shop';  //数据模拟
   export default {
     data(){
@@ -44,17 +44,20 @@
     },
     mixins: [shopBarMixin, searchMoreMixin],
     created(){
+      this.setShopList(this.furnishList);
       this.list = list;
       this.searchMore();
     },
     computed: {
       ...mapGetters([
+        'furnishList',
         'shopBarHeight'
       ])
     },
     methods: {
       selectItem(item){
-          this.$router.push('/home/furnishing/commodity');
+        this.setCurrentShop(item);
+        this.$router.push('/home/furnishing/commodity');
       },
       price(price){
         return `¥ ${price}`
@@ -65,7 +68,11 @@
           this.$refs.furnishing.style.bottom = bottom;
           this.$refs.scroll.refresh();
         });
-      }
+      },
+      ...mapMutations({
+        setShopList: 'SET_SHOP_LIST',
+        setCurrentShop: 'SET_CURRENT_SHOP'
+      })
     }
   }
 </script>

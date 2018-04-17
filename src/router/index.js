@@ -13,12 +13,15 @@ let constantRouterMap = [
   {
     path: '/home', component: _import('home/index/index'), children: [
     {path: 'problem', component: _import('home/problem/problem')},
-    {path: 'laundry', component: _import('home/laundry/laundry')},
-    {path: 'furnishing', component: _import('home/furnishing/furnishing'), children: [
-      {path: 'commodity', component: _import('home/commodity-details/commodity-details')}
+    {name:'laundry',path: 'laundry', component: _import('home/laundry/laundry')},
+    {name:'furnishing',path: 'furnishing', component: _import('home/furnishing/furnishing'), children: [
+      {name:'furnishing-commodity',path: 'commodity', component: _import('home/commodity-details/commodity-details'),children:[
+        {path:'storeinfo',component:_import('home/store-info/store-info')}
+      ]},
     ]},
-    {path: 'mall', component: _import('home/mall/mall'), children: [
-      {path: 'commodity', component: _import('home/commodity-details/commodity-details')}
+    {name:'mall',path: 'mall', component: _import('home/mall/mall'), children: [
+      {name:'mall-commodity',path: 'commodity', component: _import('home/commodity-details/commodity-details')},
+      {path:'storeinfo',component:_import('home/store-info/store-info')}
     ]},
   ]
   },

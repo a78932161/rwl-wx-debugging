@@ -7,10 +7,10 @@
           <i class="icon iconfont icon-dingwei"></i>
           <span class="text" v-text="positionText"></span>
         </div>
-        <div class="service item">
+        <a class="service item" :href="phone" >
           <i class="icon iconfont icon-dianhua"></i>
           <span class="text">联系客服</span>
-        </div>
+        </a>
       </div>
     </div>
     <Loading v-show="load.showFlag"
@@ -43,6 +43,9 @@
       Alert
     },
     computed: {
+       phone(){
+        return `tel:${120}`;
+       },
       positionText(){
         return this.position ? this.position : '手动定位';
       },
@@ -55,7 +58,6 @@
     },
     methods: {
       onComplete(data){
-          console.log(data);
         let location = data.addressComponent;
         this.position = `${location.province}${location.city}`;
         this.load.showFlag = false;
