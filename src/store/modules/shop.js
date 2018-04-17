@@ -7,6 +7,7 @@ const shop={
    barState:false,
    barHeight:0,
    list:[],
+   singleList:[],
    laundryList:[],
    topLaundryList:[],
    furnishList:[],
@@ -14,6 +15,9 @@ const shop={
 
  },
   mutations:{
+    SET_SINGLE_LIST(state,flag){
+      state.singleList=flag;
+    },
     SET_LAUNDRY_LIST(state,flag){
       state.laundryList=flag;
     },

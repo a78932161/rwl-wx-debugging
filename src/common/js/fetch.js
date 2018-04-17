@@ -6,7 +6,7 @@ import {getLimited,setLimited,getLimitedUrl,setLimitedUrl,setToken,getToken} fro
 
 
 
-let baseURL='';
+let baseURL='http://rtest.rwlai.cn/rwlmall';
 let config={
   loginUrl:'',  //登陆地址
   loginApi:`${baseURL}/wechatmini/login`,    //登陆API
@@ -17,7 +17,7 @@ let config={
 };
 const service = axios.create({
   baseURL,
-  //timeout: 15000,               // 请求超时时间
+  timeout: 15000,               //请求超时时间
   withCredentials: true
 });
 

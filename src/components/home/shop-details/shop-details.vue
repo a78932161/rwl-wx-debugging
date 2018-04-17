@@ -38,7 +38,8 @@
   import {mapGetters, mapMutations} from 'vuex';
   import Number  from 'base/number/number';
   import Alert from 'base/alert/alert';
-  import {copyObj, propEq} from 'common/js/array';
+  import {setListMixin} from 'common/js/mixin';
+  import {changeShopNumber} from 'common/js/util';
   export default {
     data(){
       return {
@@ -56,34 +57,14 @@
       Number,
       Alert
     },
+    mixins:[setListMixin],
     props: {
       list: {
         type: Array,
         default: []
       }
     },
-    created(){
-
-    },
     methods: {
-      setList(list){
-        let route = this.$route;
-        switch (route.name) {
-          case 'laundry':
-            if (route.query.top) {
-              this.setTopLaundryList(list);
-              return;
-            }
-            this.setLaundryList(list);
-            break;
-          case 'furnishing':
-            this.setFurnishList(list);
-            break;
-          case 'mall':
-            this.setMallList(list);
-            break;
-        }
-      },
       confirm(){
         this.setShopList([]);
         this.setList([]);
@@ -101,23 +82,14 @@
         this.showFlag = false;
       },
       numChange(number, id){
-        let shopList = copyObj(this.shopList);
-        let index = shopList.findIndex(propEq(id, 'id'));  //index一定存在，因为此时只展示已存在的list
-        shopList[index].number = number;
-        if (number === 0) {
-          shopList.splice(index, 1);
-        }
+        let shopList=changeShopNumber(this.shopList,number,id);
         this.setShopList(shopList);
-        this.setList(shopList);
+        this.setList(shopList,this.$route.name);
       },
       price(price){
         return `¥ ${price}`
       },
       ...mapMutations({
-        setLaundryList: 'SET_LAUNDRY_LIST',
-        setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
-        setFurnishList: 'SET_FURNISH_LIST',
-        setMallList: 'SET_MALL_LIST',
         setShopList: 'SET_SHOP_LIST'
       })
     },
@@ -125,8 +97,7 @@
       ...mapGetters([
         'shopList'
       ])
-    },
-
+    }
   }
 </script>
 

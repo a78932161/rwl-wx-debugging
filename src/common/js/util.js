@@ -21,6 +21,17 @@ export function isShopAdd(list,obj){
   return shopList;
 }
 
+export function changeShopNumber(list,number,id){
+  let shopList = copyObj(list);
+  let index = shopList.findIndex(propEq(id, 'id'));  //index一定存在，因为此时只展示已存在的list
+  shopList[index].number = number;
+  if (number === 0) {
+    shopList.splice(index, 1);
+  }
+  return shopList;
+}
+
+
 export function debounce(func,delay){
   let timer;
   return ()=>{

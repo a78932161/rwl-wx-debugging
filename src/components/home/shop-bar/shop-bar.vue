@@ -7,7 +7,7 @@
         </div>
         <span class="price" v-text="totalPrice"></span>
       </div>
-      <span class="right-button">去结算</span>
+      <span class="right-button" @click="onPayClick">去结算</span>
       <shop-details ref="shopDetails" @coverHide="detailsToggle" :list="list"></shop-details>
     </div>
   </transition>
@@ -48,6 +48,15 @@
       this.setHeight();
     },
     methods: {
+      onPayClick(){
+          let route=this.$route;
+          if(route.query.top){  //当top为true时则为高端洗护
+            this.$router.push({path:`/home/pay/${this.$route.name}`,query:{top:true}});
+            return ;
+          }
+        this.$router.push(`/home/pay/${this.$route.name}`);
+
+      },
       setHeight(){
           this.setBarHeight(this.$refs.shopBar.clientHeight);
       },

@@ -2,6 +2,7 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
+  singleList: state => state.shop.singleList,
   laundryList: state => state.shop.laundryList,
   topLaundryList: state => state.shop.topLaundryList,
   furnishList: state => state.shop.furnishList,

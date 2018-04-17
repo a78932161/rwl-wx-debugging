@@ -35,6 +35,7 @@
 </template>
 
 <script>
+  import {mapMutations} from 'vuex';
   import Alert from 'base/alert/alert';
   import Number from 'base/number/number';
   import BButton from 'base/b-button/b-button';
@@ -68,6 +69,11 @@
           return ;
         }
         this.showFlag = false;
+        this.shop.number=this.number;
+        console.log(this.shop)
+        console.log([this.shop]);
+        this.setShopList([this.shop]);
+        this.$router.push('/home/pay/single');
       },
       numberChange(number){
         this.number = number || 1;  //当number数量为0时，重置为1
@@ -86,7 +92,10 @@
       },
       stock(stock){
         return `剩余${stock}件`
-      }
+      },
+      ...mapMutations({
+        setShopList: 'SET_SHOP_LIST'
+      })
     }
   }
 

@@ -6,8 +6,8 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-
- const _import = require('./_import_' + process.env.NODE_ENV);
+const _import = require('./_import_'+'production');
+ // const _import = require('./_import_' + process.env.NODE_ENV);
 let constantRouterMap = [
   {path: '/', redirect: '/home'},
   {
@@ -23,11 +23,16 @@ let constantRouterMap = [
       {name:'mall-commodity',path: 'commodity', component: _import('home/commodity-details/commodity-details')},
       {path:'storeinfo',component:_import('home/store-info/store-info')}
     ]},
+    {path:'pay/:name',component: _import('home/pay/pay')}
   ]
   },
-  {path: '/recharge', component: _import('recharge/recharge')},
-  {path: '/orders', component: _import('orders/orders')},
-  {path: '/my', component: _import('my/my')},
+  {path: '/recharge', component: _import('recharge/index/index')},
+  {path: '/orders', component: _import('orders/index/index')},
+  {path: '/my', component: _import('my/index/index'),children:[
+    {path:'address',component:_import('my/address/address'),children:[
+      {path:'add',component:_import('my/add-address/add-address')}
+    ]}
+  ]},
 ];
 
 export default new Router({

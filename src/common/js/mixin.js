@@ -59,3 +59,32 @@ export const searchMoreMixin={
     }
   }
 };
+
+export const setListMixin={
+  methods:{
+    setList(list,flag){
+      let route = this.$route;
+      switch (flag) {
+        case 'laundry':
+          if (route.query.top) {
+            this.setTopLaundryList(list);
+            return;
+          }
+          this.setLaundryList(list);
+          break;
+        case 'furnishing':
+          this.setFurnishList(list);
+          break;
+        case 'mall':
+          this.setMallList(list);
+          break;
+      }
+    },
+    ...mapMutations({
+    setLaundryList: 'SET_LAUNDRY_LIST',
+    setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
+    setFurnishList: 'SET_FURNISH_LIST',
+    setMallList: 'SET_MALL_LIST'
+    })
+  }
+};
