@@ -1,6 +1,7 @@
 <template>
-  <div @click.stop class="alert" v-show="showFlag">
-    <scroll>
+  <div @click.stop @touchmove.prevent
+       class="alert"
+       v-show="showFlag" >
       <div class="alert-container zh-center">
         <span class="content" v-text="content"></span>
         <div class="button-box">
@@ -8,20 +9,16 @@
           <span v-show="cancelBtnText!==''" class="button" @click="cancel" v-text="cancelBtnText"></span>
         </div>
       </div>
-    </scroll>
   </div>
 </template>
 
 <script>
-  import Scroll from 'base/scroll/scroll';
+
   export default {
     data(){
       return {
         showFlag: false
       }
-    },
-    components: {
-      Scroll
     },
     props: {
       content: {

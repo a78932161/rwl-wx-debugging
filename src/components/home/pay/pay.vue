@@ -1,7 +1,7 @@
 <template>
   <div class="pay">
-    <scroll>
-    <div>
+
+
     <div class="user-info">
       <p class="user">
         <i class="img"></i>
@@ -49,8 +49,8 @@
       <span class="text">备注:</span>
       <span class="content">衣服有些多，劳烦多费心</span>
     </div>
-    </div>
-    </scroll>
+
+
     <div class="bottom-button">
       <div class="price-sum">
         <span class="price" v-text="totalPrice"></span>
@@ -63,7 +63,6 @@
 <script>
   import {mapGetters, mapMutations} from 'vuex';
   import {PopupPicker} from 'vux';
-  import Scroll from 'base/scroll/scroll'
   import Number from 'base/number/number';
   import {setListMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
@@ -98,8 +97,7 @@
     },
     components: {
       PopupPicker,
-      Number,
-      Scroll
+      Number
     },
     computed: {
       totalPrice(){
@@ -143,6 +141,7 @@
 
   .pay {
     z-index: 10;
+    overflow-y: auto;
     position: fixed;
     top: 0;
     bottom: 0;

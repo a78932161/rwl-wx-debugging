@@ -24,7 +24,6 @@ const service = axios.create({
 
 
 service.interceptors.request.use(config => {  // request拦截器
-
    if (config.headers['Content-Type'] === "multipart/form-data") {
      config.data = qs.stringify(config.data);
    }

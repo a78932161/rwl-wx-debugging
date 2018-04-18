@@ -2,6 +2,7 @@
   <div class="my">
     <scroll>
       <div class="scroll-wrapper">
+        <div class="img"></div>
         <tab></tab>
         <span class="phone">联系客服 400-0878-315</span>
       </div>
@@ -38,6 +39,14 @@
     background: $color-background-d;
     .scroll-wrapper{
       height: 105%;
+      .img{
+        width:10rem;
+        height:px2rem(423);
+        background-size:px2rem(200) px2rem(200);
+        background-repeat:no-repeat;
+        background-position:50% 50%;
+        @include bg-image('./logo');
+      }
       .phone {
         display: flex;
         justify-content: center;

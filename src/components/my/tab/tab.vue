@@ -51,6 +51,9 @@
       justify-content: space-between;
       align-items: center;
       margin-top: px2rem(63);
+      &:nth-child(1){
+        margin-top: 0;
+      }
       &:nth-child(3) {
         .left-box i, span, .right-box i, span {
           color: $color-theme !important;

@@ -9,7 +9,7 @@
   export default {
     data(){
       return {
-        showFlag: false,
+        showFlag:false,
         timer: null
       }
     },
@@ -46,6 +46,7 @@
   @import "~common/css/variable";
 
   .msg {
+    z-index:9999;
     position: fixed;
     display: flex;
     justify-content: center;
