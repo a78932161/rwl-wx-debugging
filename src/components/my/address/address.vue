@@ -1,5 +1,6 @@
 <template>
-  <div class="address" v-show="fetchLoad">
+  <div class="address">
+    <div  v-if="fetchLoad">
     <span class="no-result" v-show="!addressList.length>0">没有可用地址，点击下方按钮添加</span>
     <div class="scroll-container">
       <scroll>
@@ -36,6 +37,8 @@
     <b-button content="＋新增地址" @buttonClick="addAddress"></b-button>
     <alert ref="alert" content="确认要删除收货地址吗？"></alert>
     <router-view></router-view>
+    </div>
+    <loading v-else></loading>
   </div>
 </template>
 
@@ -58,6 +61,7 @@
       Alert
     },
     created(){
+        console.log(1)
       this._findAddress();
     },
     methods: {

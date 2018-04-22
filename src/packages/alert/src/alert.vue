@@ -1,7 +1,7 @@
 <template>
   <div @click.stop @touchmove.prevent
        class="alert"
-       v-show="showFlag">
+       v-if="showFlag">
     <div class="alert-container zh-center">
       <span class="content" v-text="content"></span>
       <div class="button-box">

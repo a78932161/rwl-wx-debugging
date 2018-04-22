@@ -2,10 +2,20 @@ import Vue from 'vue'
 import VConsole from 'vconsole'
 import VueLazyLoad from 'vue-lazyload';
 import fastclick from 'fastclick'
+import Loading from './packages/loading';
+import Alert from './packages/alert';
+import Msg from './packages/msg';
 import App from './App'
 import router from './router'
 import store from './store'
 import 'common/js/flexible';
+
+Vue.use(Loading);
+Vue.prototype.$loading=Loading.service;
+Vue.prototype.$alert=Alert;
+Vue.prototype.$msg=Msg;
+
+
 
 Vue.config.productionTip = false;
 fastclick.attach(document.body);
@@ -17,7 +27,7 @@ Vue.use(VueLazyLoad,{
   loading:defaultImg,
 });
 
- let vConsole=new VConsole({maxLogNumber: 5000});  //console.log调试工具，发布时需注释
+// let vConsole=new VConsole({maxLogNumber: 5000});  //console.log调试工具，发布时需注释
 
 
 new Vue({
