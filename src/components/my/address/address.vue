@@ -7,19 +7,21 @@
         <ul class="result">
           <li class="result-item" v-for="item in addressList" :key="item.id">
             <div class="wrapper">
-              <span class="default">默认</span>
+              <span class="default" v-show="item.status===0">默认</span>
               <div class="info-box">
                 <span class="name" v-text="item.consignee"></span>
-                <span class="phone" v-text="item.phone">13750000000</span>
+                <span class="phone" v-text="item.phone"></span>
               </div>
               <span class="address-text" v-text="item.address"></span>
               <div class="set-container">
-                <div class="left-box">
-                  <i class="icon iconfont icon-selected"></i>
+                <div class="left-box"
+                     :style="defaultStyle(item.status)"
+                     @click="defaultAddress(item.id)">
+                  <i :class="['icon','iconfont',defaultIcon(item.status)]"></i>
                   <span class="text">设为默认地址</span>
                 </div>
                 <div class="right-box">
-                  <div class="edit-box">
+                  <div class="edit-box" @click="selectEdit(item.id)">
                     <i class="icon-edit iconfont icon-bianji1"></i>
                     <span class="edit-text">编辑</span>
                   </div>
@@ -35,7 +37,6 @@
       </scroll>
     </div>
     <b-button content="＋新增地址" @buttonClick="addAddress"></b-button>
-    <alert ref="alert" content="确认要删除收货地址吗？"></alert>
     <router-view></router-view>
     </div>
     <loading v-else></loading>
@@ -46,8 +47,8 @@
   import Alert from 'base/alert/alert';
   import Scroll from 'base/scroll/scroll';
   import BButton from 'base/b-button/b-button';
-  import {findAddress, removeAddress} from 'api/address';
-  import {ERR_OK} from 'api/config';
+  import {findAddress, removeAddress,defaultAddress} from 'api/address';
+  import {ERR_OK,ADDRESS_DEFAULT} from 'api/config';
   export default {
     data(){
       return {
@@ -61,15 +62,29 @@
       Alert
     },
     created(){
-        console.log(1)
       this._findAddress();
     },
     methods: {
+      selectEdit(id){
+          this.$router.push({path:'/my/address/add',query:{id}})
+      },
+     defaultAddress(id){
+        this.$loading.show('正在设置');
+        defaultAddress(id).then(()=>{
+          this._findAddress();
+          this.$loading.hide();
+        })
+      },
+      defaultIcon(status){
+        return `${ADDRESS_DEFAULT!==status?'icon-unselected':'icon-xuanzhong'}`;
+      },
+      defaultStyle(status){
+          return `color:${ADDRESS_DEFAULT!==status?'#C7C7C7':''}`;
+      },
       _findAddress(){
         findAddress().then((ops) => {
           if (ops.code === ERR_OK) {
             this.addressList = ops.data;
-            console.log(ops.data)
           }
           this.fetchLoad = true;
         }).catch(() => {
@@ -77,16 +92,27 @@
         })
       },
       removeAddress(id){
-          this.$refs.alert.show();
-      /*  removeAddress(id).then((ops) => {
-          if (ops.code === ERR_OK) {
-            this._findAddress();
-          }
-        })*/
+         this.$alert('您确定删除此条地址信息吗？',['确定','取消']).then(()=>{
+           this.$loading.show();
+           removeAddress(id).then((ops) => {
+             if (ops.code === ERR_OK) {
+               this._findAddress();
+               this.$loading.hide();
+               this.$msg.setShow('删除成功');
+             }
+           });
+         });
       },
       addAddress(){
         this.$router.push('/my/address/add');
       }
+    },
+    watch:{
+        '$route'(to,from){
+            if(from.path==='/my/address/add'){  //当从地址添加页回来时，刷新页面
+              this._findAddress();
+            }
+        }
     }
   }
 </script>

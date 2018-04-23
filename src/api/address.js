@@ -14,6 +14,32 @@ export function findAddress(){
   })
 }
 
+
+export function findOneAddress(addressid){
+  return fetch({
+    url:'/rwlmall/address/findone',
+    params:{
+      addressid,
+      userid
+    }
+  })
+}
+
+
+export function updateAddress(addressid,data){
+  return fetch({
+    url:'/rwlmall/address/update',
+    method:'post',
+    params:{
+      addressid,
+      userid
+    },
+    data
+  })
+}
+
+
+
 export function removeAddress(addressid){
   return fetch({
     url:'/rwlmall/address/delete',
@@ -35,6 +61,17 @@ export function saveAddress(data){
      data
 
    })
+}
+
+export function defaultAddress(addressid){
+  return fetch({
+    url:'/rwlmall/address/changestatus',
+    method:'post',
+    params:{
+      userid,
+      addressid
+    }
+  })
 }
 
 

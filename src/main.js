@@ -27,7 +27,7 @@ Vue.use(VueLazyLoad,{
   loading:defaultImg,
 });
 
-// let vConsole=new VConsole({maxLogNumber: 5000});  //console.log调试工具，发布时需注释
+let vConsole=new VConsole({maxLogNumber: 5000});  //console.log调试工具，发布时需注释
 
 
 new Vue({

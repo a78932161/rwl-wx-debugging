@@ -31,7 +31,6 @@ msg.hide=function(){
 msg.setShow=function(content,time){
   instance.content=content||'';
   instance.setShow(time);
-  console.log(instance)
 };
 
 export default msg;

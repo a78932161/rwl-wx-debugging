@@ -1,42 +1,42 @@
 <template>
-  <div class="add-address">
+  <div class="add-address" v-show="isUserInfo">
     <scroll>
-    <div class="scroll-wrapper">
-    <span class="title">联系人信息</span>
-    <div class="info-container">
-      <div class="box">
-        <div class="box-item line">
-          <span class="text">姓名：</span>
-          <input type="text" placeholder="请填写联系人姓名" v-model="user.consignee"/>
+      <div class="scroll-wrapper">
+        <span class="title">联系人信息</span>
+        <div class="info-container">
+          <div class="box">
+            <div class="box-item line">
+              <span class="text">姓名：</span>
+              <input type="text" placeholder="请填写联系人姓名" v-model="user.consignee"/>
+            </div>
+            <div class="box-item">
+              <span class="text">电话：</span>
+              <input type="text" placeholder="请填写手机号码" v-model="user.phone"/>
+            </div>
+          </div>
         </div>
-        <div class="box-item">
-          <span class="text">电话：</span>
-          <input type="text" placeholder="请填写手机号码" v-model="user.phone"/>
+        <span class="title">联系人地址</span>
+        <div class="info-container">
+          <div class="box">
+            <div class="picker-container">
+              <popup-picker @on-change="cityChange"
+                            class="picker line"
+                            confirm-text="确定"
+                            :title="city.title"
+                            v-model="city.value"
+                            :columns="3"
+                            :data='city.list'></popup-picker>
+              <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
+            </div>
+            <div class="box-item">
+              <span class="text">详细地址：</span>
+              <input type="text" placeholder="例：浙江农林大学A4楼512号" v-model="user.address"/>
+            </div>
+          </div>
         </div>
+        <span class="tip">各高校下单：请注明学校生活区号楼栋号和寝室号</span>
+        <div :class="['button',saveClass]" @click="saveAddress">保存地址</div>
       </div>
-    </div>
-    <span class="title">联系人地址</span>
-    <div class="info-container">
-      <div class="box">
-        <div class="picker-container">
-          <popup-picker @on-change="cityChange"
-                        class="picker line"
-                        confirm-text="确定"
-                        :title="city.title"
-                        v-model="city.value"
-                        :columns="3"
-                        :data='city.list'></popup-picker>
-          <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
-        </div>
-        <div class="box-item">
-          <span class="text">详细地址：</span>
-          <input type="text" placeholder="例：浙江农林大学A4楼512号" v-model="user.address"/>
-        </div>
-      </div>
-    </div>
-    <span class="tip">各高校下单：请注明学校生活区号楼栋号和寝室号</span>
-    <div :class="['button',saveClass]" @click="saveAddress">保存地址</div>
-    </div>
     </scroll>
     <loading v-show="load.showFlag"
              :screen="load.screen"
@@ -45,25 +45,25 @@
 </template>
 
 <script>
-  import {mapMutations} from 'vuex';
   import cityData from 'components/my/address/citydata' //城市数据
   import {PopupPicker} from 'vux';
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
-  import {saveAddress} from 'api/address';
+  import {saveAddress, findOneAddress,updateAddress} from 'api/address';
   import {ERR_OK} from 'api/config';
   export default {
     data(){
       return {
+        isUserInfo: false,
         load: {
           showFlag: false,
           screen: true,
           title: '保存中'
         },
         user: {
-          consignee: '1',
-          phone: '1',
-          address: '1',
+          consignee: '',
+          phone: '',
+          address: '',
           province: '',//省级
           city: '',//市级
           area: ''//县级
@@ -81,6 +81,8 @@
       Scroll
     },
     created(){
+      this.$loading.show();
+      this._findOneAddress();
       this._initCity();
     },
     computed: {
@@ -90,6 +92,24 @@
       }
     },
     methods: {
+      _findOneAddress(){
+        let id = this.$route.query.id;
+        if (id) {
+          findOneAddress(id).then((ops) => {
+            let data = ops.data;
+            this.city.value = [data.province, data.city, data.area];
+            for (let key in this.user) {
+              this.user[key] = data[key];
+            }
+            this.isUserInfo = true;
+            this.$loading.hide();
+          })
+        }
+        else {
+          this.isUserInfo = true;
+          this.$loading.hide();
+        }
+      },
       _initCity(){
         let arr = [];
         this._each(cityData, (item) => {   //循环省级数据
@@ -130,9 +150,19 @@
         arr.push({
           name: item.name,
           value: item.name,
-          parent,
+          parent
         });
         return arr;
+      },
+      _apiMsg(code,msg){
+        if (code === ERR_OK) {
+          this.$router.back();
+          this.$msg.setShow(`地址${msg}成功`);
+        }
+        else {
+          this.$msg.setShow(`${msg}失败`);
+        }
+        this.load.showFlag = false;
       },
       cityChange(){
         let city = this.city.value;
@@ -144,24 +174,20 @@
         let user = this.user;
         if (user.phone && user.consignee && user.address && this.city.value.length > 0) {
           this.load.showFlag = true;
-          saveAddress(this.user).then((ops) => {
-            if (ops.code === ERR_OK) {
-              this.$router.back();
-              this.setMsgContent('地址添加成功');
-              this.setMsgEvent('setShow');
-            }
-            else {
-              tthis.setMsgContent('添加失败');
-              this.setMsgEvent('setShow');
-            }
-            this.load.showFlag = false;
-          });
+          let id = this.$route.query.id;
+          if(id){   //地址id存在时，为修改地址，不存在为添加地址
+            updateAddress(id,this.user).then((ops)=>{
+              this._apiMsg(ops.code,'修改');
+            })
+          }
+          else{
+            saveAddress(this.user).then((ops) => {
+             this._apiMsg(ops.code,'添加');
+            });
+          }
+
         }
-      },
-      ...mapMutations({
-        setMsgContent:'SET_MSG_CONTENT',
-        setMsgEvent:'SET_MSG_EVENT'
-      })
+      }
     }
   }
 
@@ -179,7 +205,7 @@
     left: 0;
     right: 0;
     background: $color-background;
-    .scroll-wrapper{
+    .scroll-wrapper {
       height: 105%;
       .title {
         display: inline-block;

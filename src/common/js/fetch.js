@@ -6,7 +6,7 @@ import {getLimited,setLimited,getLimitedUrl,setLimitedUrl,setToken,getToken} fro
 
 
 
-let baseURL='http://rtest.rwlai.cn/rwlmall';
+let baseURL='https://rtest.rwlai.cn/rwlmall';
 let config={
   loginUrl:'',  //登陆地址
   loginApi:`${baseURL}/wechatmini/login`,    //登陆API
@@ -20,6 +20,11 @@ const service = axios.create({
   timeout: 15000,               //请求超时时间
   withCredentials: true
 });
+
+
+let search=location.search.substring(1);
+let searchArr=search.split('=');
+setToken(searchArr[1]);
 
 
 
@@ -43,7 +48,7 @@ service.interceptors.response.use(  // respone拦截器
 
     if (request.responseURL === config.loginApi && request.status === 200 ) {  //登陆成功
 
-      setToken(response.headers['x-auth-token']);
+      // setToken(response.headers['x-auth-token']);
 
      /* if(getLimited()==='true'){
         setLimited('false');
@@ -60,9 +65,9 @@ service.interceptors.response.use(  // respone拦截器
   },
   error => {
 
-    let errCode = error.response.status;
 
-    switch (errCode){
+
+    switch (error.response.status){
       case 401:
       /* if (location.href === config.loginUrl) {    //登陆页面401错误，提示用户名或者密码错误
        }

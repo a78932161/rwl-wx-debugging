@@ -1,18 +1,18 @@
 <template>
   <div class="tab">
-    <router-link class="tab-item" to="/home">
+    <router-link class="tab-item" to="/home" replace>
       <i class="icon iconfont icon-xiyiji-f"></i>
       <span class="text">首页</span>
     </router-link>
-    <router-link class="tab-item" to="/recharge">
+    <router-link class="tab-item" to="/recharge" replace>
       <i class="icon iconfont icon-qianbao"></i>
       <span class="text">充值</span>
     </router-link>
-    <router-link class="tab-item" to="/orders">
+    <router-link class="tab-item" to="/orders" replace>
       <i class="icon iconfont icon-icondd2"></i>
       <span class="text">订单</span>
     </router-link>
-    <router-link class="tab-item" to="my">
+    <router-link class="tab-item" to="my" replace>
       <i class="icon iconfont icon-wode"></i>
       <span class="text">我的</span>
     </router-link>

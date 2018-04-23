@@ -2,8 +2,6 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
-  msgContent:state=>state.msg.content,
-  msgEvent:state=>state.msg.event,
   singleList: state => state.shop.singleList,
   laundryList: state => state.shop.laundryList,
   topLaundryList: state => state.shop.topLaundryList,

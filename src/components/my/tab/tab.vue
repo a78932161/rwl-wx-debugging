@@ -26,11 +26,12 @@
         <span class="text">余额</span>
       </div>
       <div class="right-box">
+        <span class="button">充余额</span>
         <i class="icon iconfont  icon-iconfonticonfonti2copycopy"></i>
       </div>
     </div>
 
-    <div class="item">
+    <router-link tag="div" to="/my/more" class="item">
       <div class="left-box">
         <i class="icon iconfont icon-gengduo2"></i>
         <span class="text">更多</span>
@@ -38,7 +39,7 @@
       <div class="right-box">
         <i class="icon iconfont  icon-iconfonticonfonti2copycopy"></i>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -75,7 +76,19 @@
         }
       }
       .right-box {
+        display: flex;
+        align-items: center;
         margin-right: px2rem(35);
+        .button{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: px2rem(134);
+          height: px2rem(53);
+          border:px2rem(2) solid $color-theme;
+          border-radius: px2rem(25);
+          margin-right:px2rem(20);
+        }
         .icon {
           @include font(3);
           color: $color-text-l;

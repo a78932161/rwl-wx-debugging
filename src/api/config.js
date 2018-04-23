@@ -7,3 +7,4 @@ export const userid='123456';
 
 
 export const ERR_OK=0;
+export const ADDRESS_DEFAULT=0;
