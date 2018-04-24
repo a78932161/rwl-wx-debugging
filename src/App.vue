@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive>
+    <keep-alive exclude="orders">
       <router-view class="router-view"></router-view>
     </keep-alive>
     <tab></tab>

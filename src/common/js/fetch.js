@@ -6,7 +6,7 @@ import {getLimited,setLimited,getLimitedUrl,setLimitedUrl,setToken,getToken} fro
 
 
 
-let baseURL='https://rtest.rwlai.cn/rwlmall';
+let baseURL='http://rtest.rwlai.cn/rwlmall';
 let config={
   loginUrl:'',  //登陆地址
   loginApi:`${baseURL}/wechatmini/login`,    //登陆API

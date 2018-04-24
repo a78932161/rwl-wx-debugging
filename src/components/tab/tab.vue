@@ -8,7 +8,7 @@
       <i class="icon iconfont icon-qianbao"></i>
       <span class="text">充值</span>
     </router-link>
-    <router-link class="tab-item" to="/orders" replace>
+    <router-link class="tab-item" to="/orders">
       <i class="icon iconfont icon-icondd2"></i>
       <span class="text">订单</span>
     </router-link>

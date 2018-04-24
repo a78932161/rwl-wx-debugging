@@ -49,7 +49,7 @@
   import {PopupPicker} from 'vux';
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
-  import {saveAddress, findOneAddress,updateAddress} from 'api/address';
+  import {saveAddress, findOneAddress, updateAddress} from 'api/address';
   import {ERR_OK} from 'api/config';
   export default {
     data(){
@@ -81,6 +81,7 @@
       Scroll
     },
     created(){
+
       this.$loading.show();
       this._findOneAddress();
       this._initCity();
@@ -92,23 +93,32 @@
       }
     },
     methods: {
-      _findOneAddress(){
+      _curreyId(sfn, efn){
         let id = this.$route.query.id;
         if (id) {
-          findOneAddress(id).then((ops) => {
-            let data = ops.data;
-            this.city.value = [data.province, data.city, data.area];
-            for (let key in this.user) {
-              this.user[key] = data[key];
-            }
-            this.isUserInfo = true;
-            this.$loading.hide();
-          })
+          return sfn.call(this, id)
         }
         else {
+          return efn.call(this)
+        }
+      },
+      _findOneAddress(){
+        this._curreyId((id) => {   //地址栏存在id时,查找用户地址记录
+          findOneAddress(id).then((ops) => {
+           if(ops.code===ERR_OK){
+             let data = ops.data;
+             this.city.value = [data.province, data.city, data.area];
+             for (let key in this.user) {
+               this.user[key] = data[key];
+             }
+             this.isUserInfo = true;
+             this.$loading.hide();
+           }
+          })
+        }, () => {
           this.isUserInfo = true;
           this.$loading.hide();
-        }
+        });
       },
       _initCity(){
         let arr = [];
@@ -154,7 +164,7 @@
         });
         return arr;
       },
-      _apiMsg(code,msg){
+      _apiMsg(code, msg){
         if (code === ERR_OK) {
           this.$router.back();
           this.$msg.setShow(`地址${msg}成功`);
@@ -174,17 +184,16 @@
         let user = this.user;
         if (user.phone && user.consignee && user.address && this.city.value.length > 0) {
           this.load.showFlag = true;
-          let id = this.$route.query.id;
-          if(id){   //地址id存在时，为修改地址，不存在为添加地址
-            updateAddress(id,this.user).then((ops)=>{
-              this._apiMsg(ops.code,'修改');
+          this._curreyId((id) => {
+            updateAddress(id, this.user).then((ops) => {  //修改地址
+              this._apiMsg(ops.code, '修改');
             })
-          }
-          else{
-            saveAddress(this.user).then((ops) => {
-             this._apiMsg(ops.code,'添加');
+          }, () => {
+            saveAddress(this.user).then((ops) => {    //添加地址
+              this._apiMsg(ops.code, '添加');
             });
-          }
+          });
+
 
         }
       }
