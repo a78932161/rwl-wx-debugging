@@ -2,15 +2,15 @@
   <div class="pay">
 
 
-    <div class="user-info">
+    <div class="user-info" @click="toAddress">
       <p class="user">
         <i class="img"></i>
-        <span class="name">林百万</span>
-        <span class="phone">13750000000</span>
+        <span class="name" v-text="address.consignee"></span>
+        <span class="phone" v-text="address.phone"></span>
       </p>
       <p class="address">
         <i class="img"></i>
-        <span class="text">文三西路111号沁雅花园22幢703</span>
+        <span class="text" v-text="address.address"></span>
       </p>
       <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
     </div>
@@ -26,7 +26,7 @@
     </div>
     <div class="shop-list">
       <div class="shop-container">
-        <span class="title">洗护</span>
+        <span class="title" v-text="category"></span>
         <transition-group name="list" tag="ul" class="details-list">
           <li class="shop-item" v-for="item in shopList" :key="item.id">
             <span class="name" v-text="item.name"></span>
@@ -47,10 +47,8 @@
     </div>
     <div class="remarks">
       <span class="text">备注:</span>
-      <span class="content">衣服有些多，劳烦多费心</span>
+      <input type="text" class="content" placeholder="洗衣等要求(请勿填写手机)" />
     </div>
-
-
     <div class="bottom-button">
       <div class="price-sum">
         <span class="price" v-text="totalPrice"></span>
@@ -107,12 +105,20 @@
         });
         return `¥ ${totalPrice}`;
       },
+      address(){
+          return this.currentAddress||{consignee:'',phone:'',address:''}
+      },
       ...mapGetters([
-        'shopList'
+        'shopList',
+        'currentAddress'
       ])
     },
     mixins: [setListMixin],
     methods: {
+      toAddress(){
+        this.$router.push({path:'/my/address',query:{pay:true}});
+
+      },
       numChange(number, id){
         let shopList = changeShopNumber(this.shopList, number, id);
         this.setShopList(shopList);
@@ -308,7 +314,10 @@
         margin: 0 px2rem(25);
       }
       .content{
+        flex-grow: 1;
+        @include font(2);
         color: $color-text-l;
+        margin-bottom: px2rem(7);
       }
     }
 

@@ -48,7 +48,7 @@
           state: true,
           text: '您确定取消购买该商品？',
           cancelBtnText: '取消'
-        },
+        }
       }
     },
     components: {
@@ -62,6 +62,9 @@
         default: {}
       }
     },
+    created(){
+      console.log(this.$route.name)
+    },
     methods: {
       onPayClick(){
         if (this.number > this.shop.stock) {  //TODO 此时stock去拉服务器的检验，如果不符合刷新stock
@@ -70,10 +73,9 @@
         }
         this.showFlag = false;
         this.shop.number=this.number;
-        console.log(this.shop)
-        console.log([this.shop]);
         this.setShopList([this.shop]);
-        this.$router.push('/home/pay/single');
+        let category=(this.$route.name==='furnishing-commodity')?'furnishing':'mall';
+        this.$router.push({path:'/home/pay/single',query:{category}});
       },
       numberChange(number){
         this.number = number || 1;  //当number数量为0时，重置为1

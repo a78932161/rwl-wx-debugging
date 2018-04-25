@@ -20,12 +20,14 @@
 
 
 <script>
-  import {mapGetters} from 'vuex';
+  import {mapGetters, mapMutations} from 'vuex';
   import MHeader from 'components/home/m-header/m-header';
   import MMenu from 'components/home/m-menu/m-menu';
   import ShopBar from 'components/home/shop-bar/shop-bar';
   import Slider from 'base/slider/slider';
   import Scroll from 'base/scroll/scroll';
+  import {getDefaultAddress} from 'api/address';
+  import {ERR_OK} from 'api/config';
   export default {
     data(){
       return {
@@ -45,10 +47,24 @@
         'shopList'
       ])
     },
+    created(){
+      this._getDefaultAddress();
+    },
     methods: {
+      _getDefaultAddress(){
+        getDefaultAddress().then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.setCurrentAddress(ops.data);
+          }
+        })
+      },
       selectProblem(){
         this.$router.push('/home/problem');
-      }
+      },
+      ...mapMutations({
+        setCurrentAddress:'SET_CURRENT_ADDRESS'
+      })
+
     }
   }
 </script>
@@ -56,6 +72,7 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "~common/css/mixin";
   @import "~common/css/variable";
+
   .home {
     position: absolute;
     top: 0;

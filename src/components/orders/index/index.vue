@@ -1,13 +1,14 @@
 <template>
   <div class="orders">
-    orders
 
+    <orders-list></orders-list>
     <o-switch @switchItem="switchItem"></o-switch>
   </div>
 </template>
 
 
 <script>
+  import OrdersList from 'components/orders/orders-list/orders-list'
   import OSwitch from 'components/orders/switch/switch'
   export default {
      name:'orders',
@@ -17,6 +18,7 @@
       }
     },
     components:{
+      OrdersList,
       OSwitch
     },
     methods:{

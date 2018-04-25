@@ -2,6 +2,7 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
+  currentAddress:state=>state.shop.currentAddress,
   singleList: state => state.shop.singleList,
   laundryList: state => state.shop.laundryList,
   topLaundryList: state => state.shop.topLaundryList,

@@ -63,7 +63,7 @@ export function saveAddress(data){
    })
 }
 
-export function defaultAddress(addressid){
+export function setDefaultAddress(addressid){
   return fetch({
     url:'/rwlmall/address/changestatus',
     method:'post',
@@ -75,3 +75,11 @@ export function defaultAddress(addressid){
 }
 
 
+export function getDefaultAddress(){
+  return fetch({
+    url:'/rwlmall/address/getdefaultaddress',
+    params:{
+      userid
+    }
+  })
+}

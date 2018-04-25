@@ -1,12 +1,10 @@
 import axios from 'axios'
 import qs from 'qs';
+import {baseURL} from 'api/config';
 import {getLimited,setLimited,getLimitedUrl,setLimitedUrl,setToken,getToken} from 'common/js/auth';
 
 
 
-
-
-let baseURL='http://rtest.rwlai.cn/rwlmall';
 let config={
   loginUrl:'',  //登陆地址
   loginApi:`${baseURL}/wechatmini/login`,    //登陆API

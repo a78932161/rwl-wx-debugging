@@ -8,3 +8,4 @@ export const userid='t9OTKRSsGKylVHZcevJtx1A02';
 
 export const ERR_OK=0;
 export const ADDRESS_DEFAULT=0;
+export const baseURL='http://rtest.rwlai.cn/rwlmall';

@@ -9,6 +9,9 @@ export function getUserInfo(){
   return fetch({
     url:'/rwlmall/user/findone',
     method:'post',
+    params:{
+      userid
+    }
   })
 }
 
@@ -16,6 +19,9 @@ export function getUserInfo(){
 export function getUserConsumeList(){
   return fetch({
     url:'/rwlmall/user/obtainuserrecord',
-    method:'post'
+    method:'post',
+    params:{
+      userid
+    }
   })
 }

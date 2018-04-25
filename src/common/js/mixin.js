@@ -1,9 +1,9 @@
 /**
  * Created by Administrator on 2018/4/12.
  */
-import {mapMutations,mapGetters} from 'vuex';
+import {mapMutations, mapGetters} from 'vuex';
 
-export const shopBarMixin={
+export const shopBarMixin = {
   created(){
     this.setBarState(true);  //设置下方购物车为显示（当shopList长度大于0时显示购物车）
     this.handleShopBar(this.shopList); //每次进入页面，当有shopList时，scroll需要加bottom适应滚动
@@ -19,72 +19,89 @@ export const shopBarMixin={
     this.setBarState(false);
 
   },
-  computed:{
+  computed: {
     ...mapGetters([
       'shopList'
     ])
   },
-  methods:{
+  methods: {
     handleShopBar(){
       throw new Error('component must implement handlePlaylist method')
     },
     ...mapMutations({
-      setBarState:'SET_BAR_STATE'
+      setBarState: 'SET_BAR_STATE'
     })
   },
-  watch:{
+  watch: {
     shopList(newVal){
       this.handleShopBar(newVal);
     }
   }
 };
 
-let perpage=12;
-export const searchMoreMixin={
+let perpage = 12;
+export const searchMoreMixin = {
   data(){
     return {
-      result:[],
+      result: [],
       hasMore: true,
       page: 0
     }
   },
-  methods:{
+  methods: {
     searchMore(){
-      if(!this.hasMore){
-        return ;
+      if (!this.hasMore) {
+        return;
       }
       this.page++;
       this.result = this.result.concat(this.list.slice((this.page - 1) * perpage, this.page * perpage));
-      this.hasMore=(this.result.length>=this.list.length)?false:true;
+      this.hasMore = (this.result.length >= this.list.length) ? false : true;
     }
   }
 };
 
-export const setListMixin={
-  methods:{
-    setList(list,flag){
+export const setListMixin = {
+  data(){
+    return {
+      category:''
+    }
+  },
+  methods: {
+    setList(list, flag){
       let route = this.$route;
       switch (flag) {
         case 'laundry':
           if (route.query.top) {
+            this.category = '洗护';
             this.setTopLaundryList(list);
             return;
           }
+          this.category = '高端洗护';
           this.setLaundryList(list);
           break;
         case 'furnishing':
+          this.category = '小让家居';
           this.setFurnishList(list);
           break;
         case 'mall':
+          this.category = '小让商城';
           this.setMallList(list);
           break;
+        case 'single':
+          if(route.query.category==='furnishing'){
+            this.category = '小让家居';
+            return;
+          }
+          this.category = '小让商城';
+          break;
+
       }
     },
     ...mapMutations({
-    setLaundryList: 'SET_LAUNDRY_LIST',
-    setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
-    setFurnishList: 'SET_FURNISH_LIST',
-    setMallList: 'SET_MALL_LIST'
+      setLaundryList: 'SET_LAUNDRY_LIST',
+      setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
+      setFurnishList: 'SET_FURNISH_LIST',
+      setMallList: 'SET_MALL_LIST'
     })
   }
 };

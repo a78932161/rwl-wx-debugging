@@ -10,7 +10,7 @@
       </div>
       <span class="title">交易记录</span>
       <div class="scroll-container">
-        <scroll v-if="consumeList.length>0">
+        <scroll v-if="consumeList.length>0" :data="consumeList">
           <ul class="consume-list">
             <li class="consume-item" v-for="item in consumeList">
               <div class="info-box">
@@ -23,8 +23,9 @@
         </scroll>
         <no-result v-else title="暂无交易记录"></no-result>
       </div>
-      <router-view></router-view>
     </div>
+
+    <router-view></router-view>
   </div>
 </template>
 

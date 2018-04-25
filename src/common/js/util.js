@@ -13,7 +13,7 @@ export function isShopAdd(list,obj){
     let item = {
       id: obj.id,
       name: obj.name,
-      price: obj.price,
+      price: obj.price/100,
       number: 1
     };
     shopList.unshift(item);

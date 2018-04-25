@@ -2,8 +2,12 @@
   <div class="laundry" @touchmove.prevent>
 
     <switches :list="switchList" @switchItem="switchItem"></switches>
+
+    <loading v-show="load"></loading>
+
+
     <no-result class="zh-center"
-               v-show="!list.length>0"
+               v-show="!list.length>0&&!load"
                title="商品正在赶来的路上..."
     ></no-result>
     <div ref="scrollContainer" class="scroll-container">
@@ -11,7 +15,7 @@
         <div class="shop-container">
           <ul class="shop-list">
             <li class="shop-item" v-for="item in list">
-              <img v-lazy="item.imgUrl" class="clothes-img"/>
+              <img v-lazy="imgUrl(item.logo)" class="clothes-img"/>
               <span class="text" v-text="item.name"></span>
               <span class="price" v-text="price(item.price)"></span>
               <div class="add-shop" @click="addShop(item)">
@@ -22,6 +26,7 @@
         </div>
       </scroll>
     </div>
+
   </div>
 </template>
 
@@ -32,16 +37,19 @@
   import Scroll from 'base/scroll/scroll';
   import {shopBarMixin} from 'common/js/mixin'
   import {isShopAdd} from 'common/js/util';
+  import {findLaundryList} from 'api/laundry'
+  import {ERR_OK,baseURL} from 'api/config';
   import list from 'mock/shop'; //数据模拟
   export default {
     data(){
       return {
-        switchVal:-1,
+        load:true,
+        switchVal:0,
         switchList: [
           {name: '上衣类', className: 'clothes'},
           {name: '裤裙类', className: 'culottes'},
-          {name: '装饰类', className: 'decorate'},
           {name: '皮草类', className: 'overcoat'},
+          {name: '装饰类', className: 'decorate'},
           {name: '鞋包类', className: 'shoes'}
         ],
         list: []
@@ -54,13 +62,14 @@
     },
     mixins: [shopBarMixin],
     created(){
+
+      this._findLaundryList(this.switchVal);
         if(this.$route.query.top){   //top值存在，则为高端洗护
            this.setShopList(this.topLaundryList)
         }
         else{
           this.setShopList(this.laundryList)
         }
-      this.list = list;
     },
     computed: {
       ...mapGetters([
@@ -71,6 +80,14 @@
       ])
     },
     methods: {
+      _findLaundryList(category){
+        findLaundryList(category).then((ops)=>{
+          if(ops.code===ERR_OK){
+            this.load=false;
+            this.list = ops.data;
+          }
+        });
+      },
       handleShopBar(shopList){
         this.$nextTick(() => {
           let bottom = shopList.length > 0 ? `${this.shopBarHeight}px` : '';
@@ -87,16 +104,16 @@
             return ;
         }
         this.setLaundryList(shopList);
-
-
-
       },
       switchItem(index){
           this.switchVal=index;
         console.log('switch:' + index)
       },
       price(price){
-        return `¥ ${price}`
+        return `¥ ${price/100}`
+      },
+      imgUrl(url){
+          return url!=null?`${baseURL}/rwlmall/images/${url}`:'';
       },
       bgImg(url){
         return `background-image:url(${url})`
@@ -109,13 +126,8 @@
     },
     watch:{
       switchVal(newVal){
+        this._findLaundryList(newVal);
         this.$refs.scroll.scrollTo(0, 0);  //switch变化时，滚动条到顶部
-        if(newVal===1||newVal===2||newVal===3){  //TODO  测试 no-result后续删除
-          this.list=[];
-        }
-        else{
-          this.list=list;
-        }
       }
     }
   }

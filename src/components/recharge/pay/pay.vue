@@ -1,41 +1,45 @@
 <template>
-  <div class="pay" v-if="rechargeList.length>0">
-    <scroll v-if="isPayShow">
-      <div class="scroll-container">
-        <ul class="recharge-list">
-          <li class="recharge-item"
-              @click="selectRecharge(index)"
-              v-for="(item,index) in rechargeList">
-            <div class="wrapper">
-              <span class="name" v-text="payMoney(item.payMoney)"></span>
-              <span class="give" v-text="rewardMoney(item.rewardMoney)"></span>
+  <div class="pay">
+    <loading :screen="true" v-if="!rechargeList.length>0"></loading>
+    <div v-else>
+      <scroll v-if="isPayShow">
+        <div class="scroll-container">
+          <ul class="recharge-list">
+            <li class="recharge-item"
+                @click="selectRecharge(index)"
+                v-for="(item,index) in rechargeList">
+              <div class="wrapper">
+                <span class="name" v-text="payMoney(item.payMoney)"></span>
+                <span class="give" v-text="rewardMoney(item.rewardMoney)"></span>
+              </div>
+              <i :class="['icon','iconfont',iconClass(index)]"
+                 :style="iconStyle(index)"></i>
+            </li>
+          </ul>
+          <div class="info-container">
+            <div class="chose-pay">
+              <span class="text">当前选择</span>
+              <span class="name" v-text="selectText"></span>
             </div>
-            <i :class="['icon','iconfont',iconClass(index)]"
-               :style="iconStyle(index)"></i>
-          </li>
-        </ul>
-        <div class="info-container">
-          <div class="chose-pay">
-            <span class="text">当前选择</span>
-            <span class="name" v-text="selectText"></span>
+            <span class="line"></span>
+            <div class="balance">
+              <span class="text">充值后余额</span>
+              <p class="name"><span class="num">{{rechargeAfterText | fixed}}</span>元</p>
+            </div>
           </div>
-          <span class="line"></span>
-          <div class="balance">
-            <span class="text">充值后余额</span>
-            <p class="name"><span class="num">{{rechargeAfterText | fixed}}</span>元</p>
-          </div>
+          <span class="button" @click="onPayClick">确定充值</span>
         </div>
-        <span class="button" @click="onPayClick">确定充值</span>
-      </div>
-    </scroll>
-    <pay-success v-else
-                 :text="success.text"
-                 :val="success.val"
-                 :nextButton="success.nextButton"
-                 :backButton="success.backButton"
-                 @afterNext="nextPay"
-                 @afterBack="toHome"
-    ></pay-success>
+      </scroll>
+      <pay-success v-else
+                   :text="success.text"
+                   :val="success.val"
+                   :nextButton="success.nextButton"
+                   :backButton="success.backButton"
+                   @afterNext="nextPay"
+                   @afterBack="toHome"
+      ></pay-success>
+    </div>
+
   </div>
 </template>
 
