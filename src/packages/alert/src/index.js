@@ -15,12 +15,14 @@ AlertConstructor.prototype._callback= function(resolve, reject){
   };
   this.cancel =  ()=> {
     this.hide();
+    this.cancelBtnText='';
     reject();
   };
 };
 
 AlertConstructor.prototype._show=function (content) {
   this.content=content;
+  this.cancelBtnText='';
   this.show();
 };
 

@@ -21,6 +21,7 @@ export function isShopAdd(list,obj){
   return shopList;
 }
 
+
 export function changeShopNumber(list,number,id){
   let shopList = copyObj(list);
   let index = shopList.findIndex(propEq(id, 'id'));  //index一定存在，因为此时只展示已存在的list
@@ -39,8 +40,25 @@ export function debounce(func,delay){
       clearTimeout(timer);
     }
     timer=setTimeout(()=>{
-      console.log(this)
       func.apply(this,args);
     },delay)
   }
+}
+
+export function wxPay(data,callback){  //调用微信付款
+  WeixinJSBridge.invoke(
+    'getBrandWCPayRequest', {
+      "appId": data.appId,
+      "timeStamp": data.timeStamp,
+      "nonceStr": data.nonceStr,
+      "package": data.package,
+      "signType": data.signType,
+      "paySign": data.paySign
+    },
+    function(res){// 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+      if (res.err_msg == "get_brand_wcpay_request:ok") {
+       callback&&callback();
+      }
+    }
+  );
 }

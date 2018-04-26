@@ -34,7 +34,9 @@ let constantRouterMap = [
       {path: 'storeinfo', component: _import('home/store-info/store-info')}
     ]
     },
-    {name:'pay',path: 'pay/:name', component: _import('home/pay/pay')}
+    {name:'pay',path:'pay/:name', component: _import('home/pay/pay'),children:[
+      {name:'payChose',path:'payChose:id',component:_import('home/pay-chose/pay-chose')}
+    ]}
   ]
   },
   {path: '/recharge', component: _import('recharge/index/index'),children:[

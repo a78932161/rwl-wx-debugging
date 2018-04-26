@@ -5,6 +5,13 @@
 import fetch from 'common/js/fetch';
 import {userid} from './config'  //token后删除
 
+
+export function getCurrentTime(){
+  return fetch({
+    url:'/rwlmall/statistical/getcurrenttime'
+  })
+}
+
 export function getUserInfo(){
   return fetch({
     url:'/rwlmall/user/findone',

@@ -2,6 +2,7 @@
  * Created by Administrator on 2018/4/12.
  */
 import {mapMutations, mapGetters} from 'vuex';
+import {payType} from 'api/config';
 
 export const shopBarMixin = {
   created(){
@@ -63,38 +64,60 @@ export const searchMoreMixin = {
 export const setListMixin = {
   data(){
     return {
-      category:''
+      category: ''
     }
   },
+  created(){
+    this.setCategoryText();
+  },
+  activated(){
+    this.setCategoryText();
+  },
   methods: {
-    setList(list, flag){
+    setCategoryText(){
       let route = this.$route;
-      switch (flag) {
+      switch (route.params.name) {
         case 'laundry':
           if (route.query.top) {
-            this.category = '洗护';
-            this.setTopLaundryList(list);
+            this.category = '高端洗护';
+            this.type=payType.topLaundry;
             return;
           }
-          this.category = '高端洗护';
-          this.setLaundryList(list);
+          this.category = '洗护';
+          this.type=payType.laundry;
           break;
         case 'furnishing':
           this.category = '小让家居';
-          this.setFurnishList(list);
           break;
         case 'mall':
           this.category = '小让商城';
-          this.setMallList(list);
           break;
         case 'single':
-          if(route.query.category==='furnishing'){
+          if (route.query.category === 'furnishing') {
             this.category = '小让家居';
             return;
           }
           this.category = '小让商城';
           break;
 
+      }
+    },
+    setList(list, flag){
+      let route = this.$route;
+      switch (flag) {
+        case 'laundry':
+          if (route.query.top) {
+            this.setTopLaundryList(list);
+            return;
+          }
+          this.setLaundryList(list);
+          break;
+        case 'furnishing':
+          this.setFurnishList(list);
+          break;
+        case 'mall':
+          this.setMallList(list);
+          break;
       }
     },
     ...mapMutations({

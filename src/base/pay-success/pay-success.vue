@@ -5,8 +5,8 @@
         <i class="icon iconfont icon-selected"></i>
         <span class="text" v-text="text"></span>
         <span class="val" v-text="val"></span>
-        <span class="button next" @click="onNextClick" v-text="nextButton"></span>
-        <span class="button back" @click="onBackClick" v-text="backButton"></span>
+        <span class="button next" @click="onNextClick" v-text="nextButton" v-show="nextButton"></span>
+        <span class="button back" @click="onBackClick" v-text="backButton" v-show="backButton"></span>
       </div>
     </scroll>
   </div>

@@ -1,26 +1,28 @@
 <template>
   <div class="pay">
 
-
+    <div class="scroll-wrapper">
+    <scroll :data="shopList">
+    <div>
     <div class="user-info" @click="toAddress">
       <p class="user">
         <i class="img"></i>
-        <span class="name" v-text="address.consignee"></span>
-        <span class="phone" v-text="address.phone"></span>
+        <span class="name" v-text="address.consignee||''"></span>
+        <span class="phone" v-text="address.phone||''"></span>
       </p>
       <p class="address">
         <i class="img"></i>
-        <span class="text" v-text="address.address"></span>
+        <span class="text" v-text="address.address||''"></span>
       </p>
       <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
     </div>
     <div class="picker-container">
-      <popup-picker @on-change="onChangeDate" class="picker" confirm-text="确定" :title="date.title"
+      <popup-picker  class="picker" confirm-text="确定" :title="date.title"
                     v-model="date.value" :data='date.list'></popup-picker>
       <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
     </div>
     <div class="picker-container">
-      <popup-picker @on-change="onChangeTime" class="picker line" confirm-text="确定" :title="time.title"
+      <popup-picker class="picker line" confirm-text="确定" :title="time.title"
                     v-model="time.value" :data='time.list'></popup-picker>
       <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
     </div>
@@ -30,7 +32,7 @@
         <transition-group name="list" tag="ul" class="details-list">
           <li class="shop-item" v-for="item in shopList" :key="item.id">
             <span class="name" v-text="item.name"></span>
-            <span class="price" v-text="item.price"></span>
+            <span class="price" v-text="'¥' +item.price"></span>
             <number @numberChange="numChange"
                     :id="item.id"
                     :number="item.number"
@@ -41,32 +43,45 @@
         </transition-group>
       </div>
     </div>
-    <div class="official-info">
-      <span class="text">小让官方物流</span>
-      <i class="icon iconfont icon-selected"></i>
-    </div>
+    <!--    <div class="official-info">
+          <span class="text">小让官方物流</span>
+          <i class="icon iconfont icon-selected"></i>
+        </div>-->
     <div class="remarks">
       <span class="text">备注:</span>
-      <input type="text" class="content" placeholder="洗衣等要求(请勿填写手机)" />
+      <input type="text"
+             v-model="remark"
+             class="content"
+             placeholder="洗衣等要求(请勿填写手机)"/>
+    </div>
+      <div class="space"></div>
+    </div>
+    </scroll>
     </div>
     <div class="bottom-button">
       <div class="price-sum">
-        <span class="price" v-text="totalPrice"></span>
+        <span class="price">¥ {{totalPrice}}</span>
       </div>
-      <span class="text">去支付</span>
+      <span class="text" @click="onCreatePayClick">去支付</span>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
   import {mapGetters, mapMutations} from 'vuex';
   import {PopupPicker} from 'vux';
+  import Scroll from 'base/scroll/scroll';
   import Number from 'base/number/number';
   import {setListMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
+  import {getCurrentTime} from 'api/user';
+  import {laundryOrderCreate} from 'api/pay';
+  import {ERR_OK} from 'api/config';
   export  default {
     data(){
       return {
+        remark: '',
         alert: {
           state: true,
           text: '您确定从购物车中移除该商品吗？',
@@ -74,15 +89,11 @@
         },
         date: {
           title: "选择日期",
-          list: [[
-            {name: '2月24日', value: '2月24日'},
-            {name: '2月25日', value: '2月25日'},
-            {name: '2月26日', value: '2月26日'}
-          ]],
-          value: ['2月25日']
+          list: [],
+          value: []
         },
         time: {
-          title: "选择上门量体时间",
+          title: "选择时间",
           list: [[
             {name: '9:00 至 11:00', value: '9:00 至 11:00'},
             {name: '11:00 至 13:00', value: '11:00 至 13:00'},
@@ -95,7 +106,8 @@
     },
     components: {
       PopupPicker,
-      Number
+      Number,
+      Scroll
     },
     computed: {
       totalPrice(){
@@ -103,10 +115,10 @@
         this.shopList.forEach((item) => {
           totalPrice += item.number * item.price;
         });
-        return `¥ ${totalPrice}`;
+        return totalPrice;
       },
       address(){
-          return this.currentAddress||{consignee:'',phone:'',address:''}
+        return this.currentAddress || {}
       },
       ...mapGetters([
         'shopList',
@@ -114,10 +126,59 @@
       ])
     },
     mixins: [setListMixin],
+    created(){
+      this._getCurrentTime();
+    },
     methods: {
+      onCreatePayClick(){
+        if (this.currentAddress != null) {     //地址是否为空
+          if (this.shopList.length !== 0) {   //购物车是否有商品存在
+            this.$loading.show('正在创建订单');
+             let data=this.submitData();
+            laundryOrderCreate(data).then((ops) => {
+              if (ops.code === ERR_OK) {
+                  this.$loading.hide();
+                 this.$router.push({name:'payChose',
+                   query:{totalPrice:this.totalPrice},
+                   params:{id:ops.data.id}});
+                 return ;
+              }
+              this.$loading.hide();
+              this.$msg.setShow('创建订单失败');
+            }).catch(()=>{
+                this.$msg.setShow('网络异常');
+            })
+          }
+          else {
+            this.$alert('您的购物车目前没有商品')
+          }
+        }
+        else {
+          this.$alert('请选择地址')
+        }
+      },
+      submitData(){
+          let items=[];
+         this.shopList.map((item)=>{
+             items.push({laundryProduct:{id:item.id},count:item.number});
+         });
+        let address = this.currentAddress;
+        let data = {
+          name: address.consignee,
+          phone: address.phone,
+          province: address.province,
+          city: address.city,
+          area: address.area,
+          address: address.address,
+          deliveryDate:this.date.value[0]+this.time.value[0],
+          remark:this.remark,
+          type:this.type,
+          items
+        };
+        return data;
+      },
       toAddress(){
-        this.$router.push({path:'/my/address',query:{pay:true}});
-
+        this.$router.push({path: '/my/address', query: {pay: true}});
       },
       numChange(number, id){
         let shopList = changeShopNumber(this.shopList, number, id);
@@ -127,11 +188,28 @@
           this.$router.back();
         }
       },
-      onChangeDate(){
-
+      _getCurrentTime(){
+        getCurrentTime().then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.timeFormat(ops.data)
+          }
+        })
       },
-      onChangeTime(){
-
+      timeFormat(data){
+        let time = new Date(data);
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        date = date < 10 ? '0' + date : date;
+        let arr = [];
+        let format = `今天${month}月${date}日`;
+        arr.push({name: format, value: format});
+        for (let i = 1; i < 3; i++) {
+          let text = (i === 1) ? '明天' : '后天';
+          let format = `${text + month}月${date + i}日`;
+          arr.push({name: format, value: format});
+        }
+        this.date.value = [arr[0].value];
+        this.date.list = [arr];
       },
       ...mapMutations({
         setShopList: 'SET_SHOP_LIST'
@@ -154,6 +232,14 @@
     left: 0;
     right: 0;
     background: $color-background;
+
+    .scroll-wrapper{
+      position: absolute;
+      top:0;
+      bottom: px2rem($tab-height);
+      left: 0;
+      right: 0;
+    }
     .user-info {
       position: relative;
       display: flex;
@@ -302,46 +388,50 @@
       }
 
     }
-    .remarks{
+    .remarks {
       display: flex;
       align-items: center;
       width: 10rem;
-      height:px2rem(92);
+      height: px2rem(92);
       background: $color-background-d;
       margin-top: px2rem(19);
       @include font(2);
-      .text{
+      .text {
         margin: 0 px2rem(25);
       }
-      .content{
+      .content {
         flex-grow: 1;
         @include font(2);
         color: $color-text-l;
         margin-bottom: px2rem(7);
       }
     }
+    .space{
+      width: 10rem;
+      height: px2rem(80);
+    }
 
-    .bottom-button{
+    .bottom-button {
       position: fixed;
       bottom: 0;
       width: 10rem;
       display: flex;
       height: px2rem($tab-height);
-      .price-sum{
+      .price-sum {
         display: flex;
         align-items: center;
         width: px2rem(425);
-        height:100%;
-        background:#313236;
-        .price{
+        height: 100%;
+        background: #313236;
+        .price {
           @include font(10);
           color: $color-theme;
           margin-left: px2rem(26);
         }
       }
-      .text{
+      .text {
         display: flex;
-        flex-grow:1;
+        flex-grow: 1;
         justify-content: center;
         align-items: center;
         @include font(5);

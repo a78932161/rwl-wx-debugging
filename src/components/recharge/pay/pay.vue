@@ -49,6 +49,7 @@
   import {getUserInfo} from 'api/user';
   import {payCreate,rechargeCreate,findRecharge} from 'api/pay';
   import {ERR_OK} from 'api/config';
+  import {wxPay} from 'common/js/util';
   export default {
     data(){
       return {
@@ -100,7 +101,7 @@
           }
         })
       },
-      wxPay(data){  //调用微信付款
+/*      wxPay(data){  //调用微信付款
         WeixinJSBridge.invoke(
           'getBrandWCPayRequest', {
             "appId": data.appId,
@@ -117,7 +118,7 @@
             }
           }
         );
-      },
+      },*/
       onPayClick(){
         this.$loading.show('正在加载');
         let item = this.rechargeList[this.index];
@@ -125,9 +126,15 @@
           if(ops.code===ERR_OK){
             payCreate(ops.data.id).then((data) => {   //创建支付订单
               this.$loading.hide();
-              this.wxPay(data);
+              wxPay(data,()=>{
+                this.success.val = `￥${this.num(this.rechargeList[this.index].payMoney)}`;
+                this.isPayShow = false;
+              });
             })
           }
+        }).catch(()=>{
+          this.$loading.hide();
+          this.$msg.setShow('支付失败');
         })
       },
       _findRecharge(){
