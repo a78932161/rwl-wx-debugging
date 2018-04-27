@@ -3,10 +3,12 @@
     <i class="reduce-button iconfont icon-jian" @click="reduce"></i>
     <span class="num" v-text="num"></span>
     <i class="add-button iconfont icon-jia" @click="add"></i>
+    <div>
     <alert ref="alert"
            :content="alertText"
            :cancelBtnText="cancelBtnText"
            @confirm="confirm"></alert>
+    </div>
   </div>
 </template>
 <script>

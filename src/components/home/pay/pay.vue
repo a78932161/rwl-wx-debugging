@@ -1,62 +1,60 @@
 <template>
   <div class="pay">
 
-    <div class="scroll-wrapper">
-    <scroll :data="shopList">
-    <div>
-    <div class="user-info" @click="toAddress">
-      <p class="user">
-        <i class="img"></i>
-        <span class="name" v-text="address.consignee||''"></span>
-        <span class="phone" v-text="address.phone||''"></span>
-      </p>
-      <p class="address">
-        <i class="img"></i>
-        <span class="text" v-text="address.address||''"></span>
-      </p>
-      <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
-    </div>
-    <div class="picker-container">
-      <popup-picker  class="picker" confirm-text="确定" :title="date.title"
-                    v-model="date.value" :data='date.list'></popup-picker>
-      <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
-    </div>
-    <div class="picker-container">
-      <popup-picker class="picker line" confirm-text="确定" :title="time.title"
-                    v-model="time.value" :data='time.list'></popup-picker>
-      <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
-    </div>
-    <div class="shop-list">
-      <div class="shop-container">
-        <span class="title" v-text="category"></span>
-        <transition-group name="list" tag="ul" class="details-list">
-          <li class="shop-item" v-for="item in shopList" :key="item.id">
-            <span class="name" v-text="item.name"></span>
-            <span class="price" v-text="'¥' +item.price"></span>
-            <number @numberChange="numChange"
-                    :id="item.id"
-                    :number="item.number"
-                    :alertShow="alert.state"
-                    :alertText="alert.text"
-                    :cancelBtnText="alert.cancelBtnText"></number>
-          </li>
-        </transition-group>
+    <div class="pay-wrapper">
+      <div class="user-info" @click="toAddress">
+        <p class="user">
+          <i class="img"></i>
+          <span class="name" v-text="address.consignee||''"></span>
+          <span class="phone" v-text="address.phone||''"></span>
+        </p>
+        <p class="address">
+          <i class="img"></i>
+          <span class="text" v-text="address.address||''"></span>
+        </p>
+        <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
       </div>
-    </div>
-    <!--    <div class="official-info">
-          <span class="text">小让官方物流</span>
-          <i class="icon iconfont icon-selected"></i>
-        </div>-->
-    <div class="remarks">
-      <span class="text">备注:</span>
-      <input type="text"
-             v-model="remark"
-             class="content"
-             placeholder="洗衣等要求(请勿填写手机)"/>
-    </div>
+      <div class="picker-container">
+        <popup-picker class="picker" confirm-text="确定" :title="date.title"
+                      v-model="date.value" :data='date.list'></popup-picker>
+        <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
+      </div>
+      <div class="picker-container">
+        <popup-picker class="picker line" confirm-text="确定" :title="time.title"
+                      v-model="time.value" :data='time.list'></popup-picker>
+        <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
+      </div>
+      <div class="shop-list">
+        <div class="shop-container">
+          <span class="title" v-text="category"></span>
+          <transition-group name="list" tag="ul" class="details-list">
+            <li class="shop-item" v-for="item in shopList" :key="item.id">
+              <span class="name" v-text="item.name"></span>
+              <span class="price" v-text="'¥' +item.price"></span>
+              <number @numberChange="numChange"
+                      :id="item.id"
+                      :number="item.number"
+                      :alertShow="alert.state"
+                      :alertText="alert.text"
+                      :cancelBtnText="alert.cancelBtnText"></number>
+            </li>
+          </transition-group>
+        </div>
+      </div>
+      <!--    <div class="official-info">
+            <span class="text">小让官方物流</span>
+            <i class="icon iconfont icon-selected"></i>
+          </div>-->
+      <div class="remarks">
+        <span class="text">备注:</span>
+        <input type="text"
+               v-model="remark"
+               class="content"
+               placeholder="洗衣等要求(请勿填写手机)"/>
+      </div>
       <div class="space"></div>
-    </div>
-    </scroll>
+
+
     </div>
     <div class="bottom-button">
       <div class="price-sum">
@@ -71,7 +69,6 @@
 <script>
   import {mapGetters, mapMutations} from 'vuex';
   import {PopupPicker} from 'vux';
-  import Scroll from 'base/scroll/scroll';
   import Number from 'base/number/number';
   import {setListMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
@@ -106,8 +103,7 @@
     },
     components: {
       PopupPicker,
-      Number,
-      Scroll
+      Number
     },
     computed: {
       totalPrice(){
@@ -134,19 +130,22 @@
         if (this.currentAddress != null) {     //地址是否为空
           if (this.shopList.length !== 0) {   //购物车是否有商品存在
             this.$loading.show('正在创建订单');
-             let data=this.submitData();
+            let data = this.submitData();
             laundryOrderCreate(data).then((ops) => {
               if (ops.code === ERR_OK) {
-                  this.$loading.hide();
-                 this.$router.push({name:'payChose',
-                   query:{totalPrice:this.totalPrice},
-                   params:{id:ops.data.id}});
-                 return ;
+                this.$loading.hide();
+                this.$router.push({
+                  name: 'payChose',
+                  query: {totalPrice: this.totalPrice},
+                  params: {id: ops.data.id}
+                });
+                return;
               }
               this.$loading.hide();
-              this.$msg.setShow('创建订单失败');
-            }).catch(()=>{
-                this.$msg.setShow('网络异常');
+              this.$msg.setShow(ops.msg);
+            }).catch(() => {
+              this.$loading.hide();
+              this.$msg.setShow('网络异常');
             })
           }
           else {
@@ -158,10 +157,17 @@
         }
       },
       submitData(){
-          let items=[];
-         this.shopList.map((item)=>{
-             items.push({laundryProduct:{id:item.id},count:item.number});
-         });
+        let items = [];
+        this.shopList.map((item) => {
+          items.push({laundryProduct: {id: item.id}, count: item.number});
+        });
+        let date = this.date.value[0].replace(/(今天|明天|后天)|年|月|日/g, ',');
+        date = date.split(',');
+        date.shift();
+        date.pop();
+        let time = this.time.value[0];
+        time = time.match(/[0-9]+(:|：)[0-9]+/)[0];
+        let deliveryDate = `${date[0]}-${date[1]}-${date[2]} ${time}`;
         let address = this.currentAddress;
         let data = {
           name: address.consignee,
@@ -170,9 +176,9 @@
           city: address.city,
           area: address.area,
           address: address.address,
-          deliveryDate:this.date.value[0]+this.time.value[0],
-          remark:this.remark,
-          type:this.type,
+          deliveryDate,
+          remark: this.remark,
+          type: this.type,
           items
         };
         return data;
@@ -197,15 +203,16 @@
       },
       timeFormat(data){
         let time = new Date(data);
+        let year = time.getFullYear();
         let month = time.getMonth() + 1;
         let date = time.getDate();
         date = date < 10 ? '0' + date : date;
         let arr = [];
-        let format = `今天${month}月${date}日`;
+        let format = `今天${year}年${month}月${date}日`;
         arr.push({name: format, value: format});
         for (let i = 1; i < 3; i++) {
           let text = (i === 1) ? '明天' : '后天';
-          let format = `${text + month}月${date + i}日`;
+          let format = `${text}${year}年${month}月${date + i}日`;
           arr.push({name: format, value: format});
         }
         this.date.value = [arr[0].value];
@@ -233,9 +240,10 @@
     right: 0;
     background: $color-background;
 
-    .scroll-wrapper{
+    .pay-wrapper {
+      overflow-y: auto;
       position: absolute;
-      top:0;
+      top: 0;
       bottom: px2rem($tab-height);
       left: 0;
       right: 0;
@@ -406,7 +414,7 @@
         margin-bottom: px2rem(7);
       }
     }
-    .space{
+    .space {
       width: 10rem;
       height: px2rem(80);
     }

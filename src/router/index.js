@@ -42,7 +42,9 @@ let constantRouterMap = [
   {path: '/recharge', component: _import('recharge/index/index'),children:[
     {name:'rechargePay',path:':balance',component: _import('recharge/pay/pay')}
   ]},
-  {path: '/orders', component: _import('orders/index/index')},
+  {path: '/orders', component: _import('orders/index/index'),children:[
+    {path:'details',component:_import('orders/order-details/order-details')}
+  ]},
   {path: '/my', component: _import('my/index/index'), children: [
     {path: 'address', component: _import('my/address/address'), children: [
       {path: 'add', component: _import('my/add-address/add-address')}
