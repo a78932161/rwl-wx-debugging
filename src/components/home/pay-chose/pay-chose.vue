@@ -39,6 +39,7 @@
 </template>
 
 <script>
+  import {mapMutations} from 'vuex';
   import Scroll from 'base/scroll/scroll'
   import PaySuccess from 'base/pay-success/pay-success'
   import {payMoney} from 'api/pay';
@@ -66,6 +67,7 @@
       }
     },
     created(){
+
       if (!this.$route.params.id) {  //id不存在，退出页面
         this.$router.back();
       }
@@ -74,30 +76,49 @@
       toHome(){
         this.$router.push('/home')
       },
-      _payMoney(mode,id,callback){
+      _payMoney(mode, id, callback){
         this.$loading.show('正在加载');
-        payMoney(mode,id).then((ops) => {
-          ops.code === ERR_OK ? callback&&callback(ops):this.$alert('支付失败');
+        payMoney(mode, id).then((ops) => {
+          ops.code === ERR_OK ? callback && callback(ops) : this.$alert('支付失败');
           this.$loading.hide();
-        }).catch(()=>{
+        }).catch(() => {
+          this.$alert('支付失败');
           this.$loading.hide();
         })
       },
-
-
+      PaySuccess(){
+        this.isPayShow = false;
+        let query = this.$route.query;
+        switch (query.type) {
+          case 'laundry':
+            if (query.top) {
+              this.setTopLaundryList([]);
+              return;
+            }
+            this.setLaundryList([]);
+            break;
+          case 'furnishing':
+            this.setFurnishList([]);
+            break;
+          case 'mall':
+            this.setMallList([]);
+            break;
+        }
+        this.setShopList([]);
+      },
       onPayClick(){
         let mode = (this.mode === 1) ? 'wechatpay' : 'balancepay';
-        if(mode==='balancepay'){
-          this.$alert('您确定使用余额进行支付吗?',['确定','取消']).then(()=>{
-              this._payMoney(mode,this.$route.params.id,()=>{
-                this.isPayShow = false;
-              });
+        if (mode === 'balancepay') {
+          this.$alert('您确定使用余额进行支付吗?', ['确定', '取消']).then(() => {
+            this._payMoney(mode, this.$route.params.id, () => {
+              this.PaySuccess();
+            });
           })
         }
-        else{
-          this._payMoney(mode,this.$route.params.id,(ops)=>{
+        else {
+          this._payMoney(mode, this.$route.params.id, (ops) => {
             wxPay(ops.data, () => {
-              this.isPayShow = false;
+              this.PaySuccess();
             });
           });
         }
@@ -105,14 +126,20 @@
       chosePayMode(el){
         let mode = el.currentTarget.dataset.mode;
         this.mode = Number(mode);
-        console.log(this.mode)
       },
       iconStyle(flag){
         return `color:${this.mode === flag ? '#09BB07' : '#c7c7c7'}`;
       },
       iconClass(flag){
         return this.mode === flag ? 'icon-selected' : 'icon-unselected';
-      }
+      },
+      ...mapMutations({
+        setShopList:'SET_SHOP_LIST',
+        setLaundryList: 'SET_LAUNDRY_LIST',
+        setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
+        setFurnishList: 'SET_FURNISH_LIST',
+        setMallList: 'SET_MALL_LIST'
+      })
     }
 
   }

@@ -2,6 +2,8 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
+  isFinish:state=>state.order.isFinish,
+  orderSelectItem:state=>state.order.selectItem,
   currentAddress:state=>state.shop.currentAddress,
   singleList: state => state.shop.singleList,
   laundryList: state => state.shop.laundryList,

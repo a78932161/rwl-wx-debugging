@@ -23,9 +23,9 @@
           <p class="price-sum"><span class="text">共{{item.items.length}}件商品合计：
         </span><span class="sum" v-text="totalPrice(item)"></span></p>
           <div class="button-container">
-            <span class="cancel">取消订单</span>
-            <span class="check" @click="checkProgress">查看进度</span>
-            <span class="finish">完结订单</span>
+            <span class="cancel" v-if="item.status===0">取消订单</span>
+            <span class="check" @click="checkProgress(item,totalPrice(item))">查看进度</span>
+            <span class="finish" v-if="item.status===4" @click="finishOrderClick(item.id)">完结订单</span>
           </div>
         </li>
         <loading v-show="hasMore"></loading>
@@ -35,8 +35,11 @@
 </template>
 
 <script>
+  import {mapMutations} from 'vuex';
   import {baseURL} from 'api/config';
   import Scroll from 'base/scroll/scroll';
+  import {finishOrderMixin} from 'common/js/mixin';
+  import {idType} from 'api/config';
   export default {
     data(){
       return {
@@ -56,7 +59,15 @@
         default: false
       }
     },
+    mixins:[finishOrderMixin],
     methods: {
+      finishOrderClick(id){
+        this.$alert('您确定完结该订单吗',['确定','取消']).then(()=>{
+          this._finishOrder(this.judgeTypeUrl(id),id).then(()=>{
+            this.$emit('finishReload');
+          });
+        });
+      },
       scrollTop(){
         this.$refs.scroll.scrollTo(0, 0); //switch变化时，滚动条到顶部
       },
@@ -66,14 +77,15 @@
       judgeType(id){
         let type = id.slice(-3);
         switch (type) {
-          case 'A03':
+          case idType.laundry:
             return 'laundryProduct';
             break;
-          case 'A10':
+          case idType.mall:
             return 'mallProduct';
             break;
-          case 'A13':
-            return 'furnitureProduct'
+          case idType.furniture:
+            return 'furnitureProduct';
+            break;
         }
       },
       imgUrl(url){
@@ -95,9 +107,15 @@
       standard(flag){
         return flag ? `净含量：${flag}` : '';
       },
-      checkProgress(){
-        this.$router.push('/orders/details')
-      }
+      checkProgress(item, totalPrice){
+        let type = this.judgeType(item.id);
+        this.$router.push({path: '/orders/details', query: {totalPrice, type}});
+        this.setSelectItem(item);
+      },
+      ...mapMutations({
+        setSelectItem: 'SET_SELECT_ITEM',
+
+      })
     }
   }
 </script>
@@ -180,12 +198,16 @@
         }
       }
       .button-container {
+        position: relative;
         display: flex;
         align-items: center;
         width: 10rem;
         height: px2rem(93);
         border-bottom: px2rem(15) solid #F4F4F4;
         .button {
+          position: absolute;
+          top:50%;
+          transform: translate(0,-50%);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -198,14 +220,15 @@
         }
         .cancel {
           @extend .button;
-          margin-left: px2rem(203);
+          right:px2rem(389);
         }
         .check {
           @extend .button;
-          margin: 0 px2rem(26);
+          right:px2rem(204);
         }
         .finish {
           @extend .button;
+          right:px2rem(23);
           color: $color-theme;
           border: px2rem(2) solid $color-theme;
         }

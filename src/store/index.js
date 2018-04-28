@@ -6,6 +6,7 @@ import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
 import getters from './getters';
 import shop from './modules/shop';
+import order from './modules/order';
 
 
 Vue.use(Vuex);
@@ -13,7 +14,8 @@ Vue.use(Vuex);
 const debug=process.env.NODE_ENV !== 'production';
 export default new Vuex.Store({
   modules:{
-    shop
+    shop,
+    order
   },
   getters,
   strict:debug,

@@ -2,7 +2,7 @@
  * Created by Administrator on 2018/4/12.
  */
 import {mapMutations, mapGetters} from 'vuex';
-import {payType} from 'api/config';
+import {payType,idType,ERR_OK} from 'api/config';
 
 export const shopBarMixin = {
   created(){
@@ -125,6 +125,41 @@ export const setListMixin = {
       setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
       setFurnishList: 'SET_FURNISH_LIST',
       setMallList: 'SET_MALL_LIST'
+    })
+  }
+};
+
+
+import {finishOrder} from 'api/orders';
+export const finishOrderMixin={
+  methods:{
+    _finishOrder(url,id){
+      let promise=new Promise((resolve,reject)=>{
+        finishOrder(url,id).then((ops)=>{
+          if(ops.code===ERR_OK){
+            this.$msg.setShow('操作成功');
+            resolve();
+          }
+        })
+      });
+      return promise;
+    },
+    judgeTypeUrl(id){ //判断当前订单的类型，api加上相应的订单return值
+      let type = id.slice(-3);
+      switch (type) {
+        case idType.laundry:
+          return 'laundryorder';
+          break;
+        case idType.mall:
+          return 'mallorder';
+          break;
+        case idType.furniture:
+          return 'furnitureorder';
+          break;
+      }
+    },
+    ...mapMutations({
+      setIsFinish:'SET_IS_FINISH'
     })
   }
 };

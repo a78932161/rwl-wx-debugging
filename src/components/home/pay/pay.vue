@@ -133,10 +133,12 @@
             let data = this.submitData();
             laundryOrderCreate(data).then((ops) => {
               if (ops.code === ERR_OK) {
+                  let route=this.$route;
+                  let top=route.query.top||'';
                 this.$loading.hide();
                 this.$router.push({
                   name: 'payChose',
-                  query: {totalPrice: this.totalPrice},
+                  query: {totalPrice: this.totalPrice,type:route.params.name,top},
                   params: {id: ops.data.id}
                 });
                 return;

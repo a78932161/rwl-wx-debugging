@@ -23,3 +23,12 @@ export function findConductOrders() {
     }
   })
 }
+
+export function finishOrder(url,orderid) {
+  return fetch({
+    url:`/rwlmall/${url}/finish`,
+    params:{
+      orderid
+    }
+  })
+}
