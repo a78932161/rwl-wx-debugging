@@ -50,13 +50,17 @@ export const searchMoreMixin = {
     }
   },
   methods: {
+    search(){
+      throw new Error('search no Definition')
+    },
     searchMore(){
       if (!this.hasMore) {
         return;
       }
       this.page++;
-      this.result = this.result.concat(this.list.slice((this.page - 1) * perpage, this.page * perpage));
-      this.hasMore = (this.result.length >= this.list.length) ? false : true;
+      this.search();
+      /*this.result = this.result.concat(this.list.slice((this.page - 1) * perpage, this.page * perpage));
+      this.hasMore = (this.result.length >= this.list.length) ? false : true;*/
     }
   }
 };
@@ -130,10 +134,23 @@ export const setListMixin = {
 };
 
 
-import {finishOrder} from 'api/orders';
+import {finishOrder,cancelOrder} from 'api/orders';
 export const finishOrderMixin={
   methods:{
-    _finishOrder(url,id){
+
+    _cancelOrder(url,id){   //取消订单
+      let promise=new Promise((resolve,reject)=>{
+        cancelOrder(url,id).then((ops)=>{
+          if(ops.code===ERR_OK){
+            this.$msg.setShow('订单已取消');
+            resolve();
+          }
+        })
+      });
+      return promise;
+
+    },
+    _finishOrder(url,id){  //完结订单
       let promise=new Promise((resolve,reject)=>{
         finishOrder(url,id).then((ops)=>{
           if(ops.code===ERR_OK){

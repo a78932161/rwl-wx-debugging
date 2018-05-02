@@ -12,7 +12,7 @@
     >
       <ul class="list">
         <li class="item" v-for="item in result" @click="selectItem(item)">
-          <img class="img" v-lazy="item.imgUrl">
+          <img class="img" v-lazy="imgUrl(item.logo)">
           <span class="name" v-text="item.name"></span>
           <span class="price" v-text="price(item.price)"></span>
         </li>
@@ -24,11 +24,14 @@
 </template>
 
 <script>
+  let size=10;
   import {mapGetters, mapMutations} from 'vuex';
   import NoResult from 'base/no-result/no-result'
   import Scroll from 'base/scroll/scroll';
   import Loading from 'base/loading/loading';
-  import {shopBarMixin, searchMoreMixin} from 'common/js/mixin'
+  import {shopBarMixin, searchMoreMixin} from 'common/js/mixin';
+  import {findFurnishingList} from 'api/shopList';
+  import {ERR_OK,baseURL} from 'api/config';
   import list from 'mock/shop';  //数据模拟
   export default {
     data(){
@@ -55,12 +58,24 @@
       ])
     },
     methods: {
+      search(){
+        findFurnishingList(this.page,size).then((ops)=>{
+          if(ops.code===ERR_OK){
+            this.result = this.result.concat(ops.data.content);
+            console.log(this.result);
+            this.hasMore=ops.data.last?false:true;
+          }
+        });
+      },
       selectItem(item){
         this.setCurrentShop(item);
         this.$router.push('/home/furnishing/commodity');
       },
+      imgUrl(url){
+        return url!=null?`${baseURL}/rwlmall/images/${url}`:'';
+      },
       price(price){
-        return `¥ ${price}`
+        return `¥ ${price/100}`
       },
       handleShopBar(shopList){
         this.$nextTick(() => {

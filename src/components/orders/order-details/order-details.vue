@@ -96,7 +96,7 @@
         return this.obj.payMode === 1 ? '余额支付' : '微信支付';
       },
       payStatus(){
-        return this.obj.payStatus === 1 ? '已支付' : '未支付';
+        return this.obj.payStatus === 1 ? '已支付' : this.obj.payStatus === 2 ?'已退款':'未支付';
       },
       ...mapGetters([
         'orderSelectItem'

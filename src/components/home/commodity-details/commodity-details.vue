@@ -115,6 +115,9 @@
       this.setBarState(true);
     },
     methods: {
+        search(){
+
+        },
       infoShow(){
         this.$refs.info.show();
       },
@@ -148,7 +151,7 @@
         return `快递：${express > 0 ? `${express}元` : '免运费'}`
       },
       price(price){
-        return `¥${price}`
+        return `¥${price/100}`
       },
       ...mapMutations({
         setShopList: 'SET_SHOP_LIST',

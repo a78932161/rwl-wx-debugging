@@ -32,3 +32,12 @@ export function finishOrder(url,orderid) {
     }
   })
 }
+
+export function cancelOrder(url,orderid) {
+  return fetch({
+    url:`/rwlmall/${url}/cancel`,
+    params:{
+      orderid
+    }
+  })
+}

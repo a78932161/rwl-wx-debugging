@@ -23,7 +23,7 @@
           <p class="price-sum"><span class="text">共{{item.items.length}}件商品合计：
         </span><span class="sum" v-text="totalPrice(item)"></span></p>
           <div class="button-container">
-            <span class="cancel" v-if="item.status===0">取消订单</span>
+            <span class="cancel" v-if="item.status===0" @click="cancelOrderClick(item.id)">取消订单</span>
             <span class="check" @click="checkProgress(item,totalPrice(item))">查看进度</span>
             <span class="finish" v-if="item.status===4" @click="finishOrderClick(item.id)">完结订单</span>
           </div>
@@ -61,6 +61,13 @@
     },
     mixins:[finishOrderMixin],
     methods: {
+      cancelOrderClick(id){
+        this.$alert('您确定取消该订单吗',['确定','取消']).then(()=>{
+           this._cancelOrder(this.judgeTypeUrl(id),id).then(()=>{
+             this.$emit('finishReload');
+           });
+        });
+      },
       finishOrderClick(id){
         this.$alert('您确定完结该订单吗',['确定','取消']).then(()=>{
           this._finishOrder(this.judgeTypeUrl(id),id).then(()=>{
@@ -113,7 +120,7 @@
         this.setSelectItem(item);
       },
       ...mapMutations({
-        setSelectItem: 'SET_SELECT_ITEM',
+        setSelectItem: 'SET_SELECT_ITEM'
 
       })
     }

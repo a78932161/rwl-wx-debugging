@@ -15,3 +15,15 @@ export function findLaundryList(category){
     }
   })
 }
+
+
+export function findFurnishingList(page,size){
+  return fetch({
+    url:'/rwlmall/furnitureproduct/findbystatus',
+    params:{
+      status:0,  //status:0 => 上架商品
+      page,
+      size
+    }
+  })
+}

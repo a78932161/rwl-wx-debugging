@@ -37,7 +37,7 @@
   import Scroll from 'base/scroll/scroll';
   import {shopBarMixin} from 'common/js/mixin'
   import {isShopAdd} from 'common/js/util';
-  import {findLaundryList} from 'api/laundry'
+  import {findLaundryList} from 'api/shopList'
   import {ERR_OK,baseURL} from 'api/config';
   import list from 'mock/shop'; //数据模拟
   export default {
