@@ -6,7 +6,7 @@
         <div class="buy-info">
           <img src=""/>
           <div class="text-box">
-            <span class="name" v-text="shop.name">清洁沙发</span>
+            <span class="name" v-text="shop.name"></span>
             <span class="price" v-text="price(shop.price)"></span>
           </div>
           <i class="iconfont icon-guanbi close" @click="hide"></i>
@@ -39,6 +39,7 @@
   import Alert from 'base/alert/alert';
   import Number from 'base/number/number';
   import BButton from 'base/b-button/b-button';
+  import {copyObj} from 'common/js/array';
   export default {
     data(){
       return {
@@ -72,8 +73,9 @@
           return ;
         }
         this.showFlag = false;
-        this.shop.number=this.number;
-        this.setShopList([this.shop]);
+        let shop=copyObj(this.shop);
+        shop.number=this.number;
+        this.setShopList([shop]);
         let category=(this.$route.name==='furnishing-commodity')?'furnishing':'mall';
         this.$router.push({path:'/home/pay/single',query:{category}});
       },

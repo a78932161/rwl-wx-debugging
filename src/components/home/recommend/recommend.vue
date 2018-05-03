@@ -9,7 +9,7 @@
     <ul class="recommend-list">
       <li class="recommend-item" @click="selectItem(item)" v-for="item in list">
         <div class="img-box">
-        <img v-lazy="item.imgUrl"/>
+          <img v-lazy="imgUrl(item.logo)"/>
         </div>
         <span class="name" v-text="item.name"></span>
         <p class="info-box">
@@ -24,6 +24,9 @@
 
 <script>
   import {mapMutations} from 'vuex';
+  import {copyObj} from 'common/js/array';
+  import {imgUrlMixin} from 'common/js/mixin';
+  import {baseURL} from 'api/config';
   export default {
 
     props: {
@@ -32,20 +35,27 @@
         default: []
       }
     },
+    mixins: [imgUrlMixin],
     methods: {
-        selectItem(item){
-          this.setCurrentShop(item);
-          this.$router.push('/home/furnishing/commodity');
-          this.$emit('selectItem');
-        },
+      selectItem(item){
+        let obj = copyObj(item);
+        obj.image = this.spliceImgUrl(obj.image);
+        obj.sowingMap = this.spliceImgUrl(obj.sowingMap);
+        this.setCurrentShop(obj);
+        this.$router.replace(`/home/furnishing/commodity/${obj.id}`);
+        this.$emit('selectItem');
+      },
+      imgUrl(url){
+        return url != null ? `${baseURL}/rwlmall/images/${url}` : '';
+      },
       price(price){
-        return `¥ ${price}`;
+        return `¥ ${price / 100}`;
       },
       stock(stock){
         return `库存：${stock}件`
       },
       ...mapMutations({
-        setCurrentShop:'SET_CURRENT_SHOP'
+        setCurrentShop: 'SET_CURRENT_SHOP'
       })
     }
   }
@@ -81,7 +91,7 @@
     .recommend-list {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-between;
       width: 10rem;
       background: $color-background-d;
       padding: px2rem(22) 0;
@@ -92,14 +102,17 @@
         @include px2rem(height, 365);
         box-shadow: px2rem(3) px2rem(4) px2rem(3) #F3F3F3;
         @include px2rem(margin-bottom, 50);
-        &:nth-child(2n) {
+        &:nth-child(odd) {
           @include px2rem(margin-left, 28);
         }
-        .img-box{
+        &:nth-child(even) {
+          @include px2rem(margin-right, 28);
+        }
+        .img-box {
           width: 100%;
           text-align: center;
           img {
-            @include px2rem(width,230);
+            @include px2rem(width, 230);
             @include px2rem(height, 226);
           }
         }
@@ -111,7 +124,7 @@
         }
         .info-box {
           display: flex;
-          align-items:center;
+          align-items: center;
           margin: 0 0 px2rem(28) px2rem(27);
           .price {
             @include font(3);

@@ -18,20 +18,20 @@ let constantRouterMap = [
     {name: 'laundry', path: 'laundry', component: _import('home/laundry/laundry')},
     {
       name: 'furnishing', path: 'furnishing', component: _import('home/furnishing/furnishing'), children: [
-      {
-        name: 'furnishing-commodity',
-        path: 'commodity',
-        component: _import('home/commodity-details/commodity-details'),
+      {name: 'furnishing-commodity', path: 'commodity/:id', component: _import('home/commodity-details/commodity-details'),
         children: [
-          {path: 'storeinfo', component: _import('home/store-info/store-info')}
+          {name:'details-image',path: 'image', component: _import('home/details-image/details-image')},
+          {name:'storeinfo',path: 'storeinfo', component: _import('home/store-info/store-info')}
         ]
       },
     ]
     },
     {
       name: 'mall', path: 'mall', component: _import('home/mall/mall'), children: [
-      {name: 'mall-commodity', path: 'commodity', component: _import('home/commodity-details/commodity-details')},
-      {path: 'storeinfo', component: _import('home/store-info/store-info')}
+      {name: 'mall-commodity', path: 'commodity/:id', component: _import('home/commodity-details/commodity-details'),
+        children: [
+        {path: 'storeinfo', component: _import('home/store-info/store-info')}
+      ]},
     ]
     },
     {name:'pay',path:'pay/:name', component: _import('home/pay/pay'),children:[

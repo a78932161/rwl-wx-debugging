@@ -12,8 +12,15 @@ export const payType = {
   laundry: 1,
   topLaundry: 2
 };
+
 export const idType = {
   laundry: 'A03',
   mall: 'A10',
   furniture:'A13'
+};
+
+export const shopDetailType={
+  laundry: 'A01',
+  mall: 'A09',
+  furniture:'A12'
 };

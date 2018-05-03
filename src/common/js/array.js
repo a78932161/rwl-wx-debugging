@@ -11,3 +11,8 @@ export function propEq(val,prop){
           return obj&&val===key;
   }
 }
+
+export function split(val){
+   val=val||'';
+  return val.split(/，|,/);
+}

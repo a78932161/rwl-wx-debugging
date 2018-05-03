@@ -21,7 +21,7 @@
       }
     },
     props: {
-      content: {
+      content:{
         type: String,
         default: '内容'
       },

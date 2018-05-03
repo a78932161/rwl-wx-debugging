@@ -64,7 +64,10 @@ service.interceptors.response.use(  // respone拦截器
   error => {
 
 
-
+    if (!error.response) {
+     alert('网络异常');
+      // 断网了
+    }
     switch (error.response.status){
       case 401:
       /* if (location.href === config.loginUrl) {    //登陆页面401错误，提示用户名或者密码错误

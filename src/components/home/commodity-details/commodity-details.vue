@@ -6,8 +6,8 @@
             :pullUp="pullUp"
             @scrollToEnd="searchMore">
       <div>
-        <slider class="slider-container">
-          <img v-for="item in images" :src="item"/>
+        <slider class="slider-container" ref="slider">
+          <img v-for="item in currentShop.sowingMap" :src="item"/>
         </slider>
         <div class="text-container">
           <span class="name" v-text="currentShop.name"></span>
@@ -22,7 +22,7 @@
             <span class="text">产品参数</span>
             <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
           </div>
-          <div class="detail">
+          <div class="detail" @click="toDetails">
             <span class="text">查看商品详情</span>
             <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
           </div>
@@ -33,7 +33,7 @@
             </div>
           </div>
         </div>
-        <div class="other">
+       <!-- <div class="other">
           <div class="un" @click="queryStore">
             <div>
               <i class="iconfont icon-zan un-icon"></i>
@@ -41,7 +41,7 @@
             </div>
             <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
           </div>
-        </div>
+        </div>-->
         <recommend :list="result" @selectItem="scrollTop"></recommend>
         <loading v-show="hasMore" title=""></loading>
       </div>
@@ -55,7 +55,7 @@
           加入购物车
           <span class="badge"
                 v-show="shopList.length>0"
-                v-text="shopList.length">1</span>
+                v-text="shopList.length"></span>
         </p>
       </span>
       <span class="buy" @click="onBuyClick">立即购买</span>
@@ -69,6 +69,7 @@
 
 
 <script>
+  let size = 12;
   import {mapGetters, mapMutations} from 'vuex'
   import Scroll from 'base/scroll/scroll';
   import Slider from 'base/slider/slider';
@@ -78,18 +79,18 @@
   import CommodityAuthentication from 'components/home/commodity-authentication/commodity-authentication';
   import CommodityBuy from'components/home/commodity-buy/commodity-buy';
   import commodityInfo from 'components/home/commodity-info/commodity-info'
-  import {searchMoreMixin} from 'common/js/mixin'
+  import {searchMoreMixin, keyTypeMixin,imgUrlMixin} from 'common/js/mixin'
   import {isShopAdd} from 'common/js/util';
-  import list from 'mock/shop'; //数据模拟
+  import {findFurnishingList, findOneProduct} from 'api/shopList';
+  import {ERR_OK, baseURL} from 'api/config';
   export default {
     data(){
       return {
         authentication: false,
-        pullUp: true,
-        images: [require('./1.jpg'), require('./2.jpg'), require('./3.jpg')]
+        pullUp: true
       }
     },
-    mixins: [searchMoreMixin],
+    mixins: [searchMoreMixin, keyTypeMixin,imgUrlMixin],
     components: {
       Recommend,
       CommodityAuthentication,
@@ -107,7 +108,7 @@
       ])
     },
     created(){
-      this.list = list;
+      this._findOneProduct();
       this.searchMore();
       this.setBarState(false);
     },
@@ -115,19 +116,40 @@
       this.setBarState(true);
     },
     methods: {
-        search(){
-
-        },
+      toDetails(){
+        this.$router.push({name:'details-image'})
+      },
+      _findOneProduct(){
+        let id = this.$route.params.id;
+        findOneProduct(this.judgeType(id), id).then((ops) => {
+          if (ops.code === ERR_OK) {
+          let data=ops.data;
+          data.image = this.spliceImgUrl(data.image);
+          data.sowingMap=this.spliceImgUrl(data.sowingMap);
+          this.setCurrentShop(data);
+          this.$refs.slider.update();  //更新slider
+          }
+        });
+      },
+      search(callback){ //  TODO 后续改动，需要根据点击的商品显示相应的栏目商品
+        findFurnishingList(this.page, size).then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.result = this.result.concat(ops.data.content);
+            this.hasMore = ops.data.last ? false : true;
+            typeof callback === 'function' && callback.call(this);
+          }
+        });
+      },
       infoShow(){
         this.$refs.info.show();
       },
       addShop(item){
-        let shopList=isShopAdd(this.shopList,item);
+        let shopList = isShopAdd(this.shopList, item);
         this.setShopList(shopList);
         this.$refs.msg.setShow();
-        if(this.$route.name==='furnishing-commodity'){  //是否为小让家居商品详情页面
+        if (this.$route.name === 'furnishing-commodity') {  //是否为小让家居商品详情页面
           this.setFurnishList(shopList);
-          return ;
+          return;
         }
         this.setMallList(shopList);
 
@@ -139,7 +161,7 @@
         this.$refs.scroll.scrollTo(0, 0);  //点击推荐列表时，重新滚动到顶部
       },
       queryStore(){   //  TODO 如果用id获取，后续路由改成id
-        this.$router.push('/home/furnishing/commodity/storeinfo');
+        this.$router.push({name: 'storeinfo'});
       },
       authenticationShow(){
         this.$refs.authentication.show();
@@ -151,14 +173,20 @@
         return `快递：${express > 0 ? `${express}元` : '免运费'}`
       },
       price(price){
-        return `¥${price/100}`
+        return `¥${price / 100}`
       },
       ...mapMutations({
+        setCurrentShop: 'SET_CURRENT_SHOP',
         setShopList: 'SET_SHOP_LIST',
-        setFurnishList:'SET_FURNISH_LIST',
+        setFurnishList: 'SET_FURNISH_LIST',
         setBarState: 'SET_BAR_STATE',
-        setMallList:'SET_MALL_LIST'
+        setMallList: 'SET_MALL_LIST'
       })
+    },
+    watch:{
+        '$route'(to,from){
+            this._findOneProduct();
+        }
     }
   }
 </script>
@@ -290,23 +318,23 @@
         @extend .button;
         width: 64%;
         background-color: #FF8854;
-       p{
-         position: relative;
-         .badge{
-           position: absolute;
-           @include px2rem(top,-16);
-           @include px2rem(right,-24);
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           @include px2rem(width, 30);
-           @include px2rem(height, 30);
-           @include font(-3);
-           border-radius: 50%;
-           background: #FE3B30;
-           color: #fff;
-         }
-       }
+        p {
+          position: relative;
+          .badge {
+            position: absolute;
+            @include px2rem(top, -16);
+            @include px2rem(right, -24);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            @include px2rem(width, 30);
+            @include px2rem(height, 30);
+            @include font(-3);
+            border-radius: 50%;
+            background: #FE3B30;
+            color: #fff;
+          }
+        }
       }
       .buy {
         @extend .button;

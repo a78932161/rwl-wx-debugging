@@ -27,3 +27,13 @@ export function findFurnishingList(page,size){
     }
   })
 }
+
+
+export function findOneProduct(url,productid){
+ return fetch({
+   url:`/rwlmall/${url}product/findone`,
+   params:{
+     productid
+   }
+ })
+}

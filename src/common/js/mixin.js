@@ -2,7 +2,8 @@
  * Created by Administrator on 2018/4/12.
  */
 import {mapMutations, mapGetters} from 'vuex';
-import {payType,idType,ERR_OK} from 'api/config';
+import {payType,idType,shopDetailType,ERR_OK,baseURL} from 'api/config';
+import {split} from 'common/js/array';
 
 export const shopBarMixin = {
   created(){
@@ -53,12 +54,12 @@ export const searchMoreMixin = {
     search(){
       throw new Error('search no Definition')
     },
-    searchMore(){
+    searchMore(callback){
       if (!this.hasMore) {
         return;
       }
       this.page++;
-      this.search();
+      this.search(callback);
       /*this.result = this.result.concat(this.list.slice((this.page - 1) * perpage, this.page * perpage));
       this.hasMore = (this.result.length >= this.list.length) ? false : true;*/
     }
@@ -137,7 +138,6 @@ export const setListMixin = {
 import {finishOrder,cancelOrder} from 'api/orders';
 export const finishOrderMixin={
   methods:{
-
     _cancelOrder(url,id){   //取消订单
       let promise=new Promise((resolve,reject)=>{
         cancelOrder(url,id).then((ops)=>{
@@ -178,5 +178,36 @@ export const finishOrderMixin={
     ...mapMutations({
       setIsFinish:'SET_IS_FINISH'
     })
+  }
+};
+
+export const keyTypeMixin={
+  methods:{
+    judgeType(id){ //判断当前订单的类型，api加上相应的订单return值
+      let type = id.slice(-3);
+      switch (type) {
+        case shopDetailType.laundry:
+          return 'laundry';
+          break;
+        case shopDetailType.mall:
+          return 'mall';
+          break;
+        case shopDetailType.furniture:
+          return 'furniture';
+          break;
+      }
+    }
+  }
+};
+
+export const imgUrlMixin={
+  methods:{
+    spliceImgUrl(item){
+      item=split(item);//字符串分割成数组
+      item=item.map((img)=>{
+        return `${baseURL}/rwlmall/images/${img}`;
+      });
+      return item;
+    }
   }
 };

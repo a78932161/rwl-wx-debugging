@@ -32,7 +32,6 @@ export function changeShopNumber(list,number,id){
   return shopList;
 }
 
-
 export function debounce(func,delay){
   let timer;
   return ()=>{
