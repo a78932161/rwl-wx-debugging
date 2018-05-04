@@ -2,7 +2,7 @@
   <div class="mall" ref="mall">
     <div class="bg-image"></div>
     <switches :list="switchList" @switchItem="switchItem"></switches>
-    <no-result class="zh-center" v-show="!result.length>0"></no-result>
+    <no-result class="zh-center" v-show="!result.length>0&&loading"></no-result>
     <scroll ref="scroll"
             :data="result"
             :pullUp="pullUp"
@@ -10,7 +10,7 @@
       <ul class="mall-list">
         <li class="mall-item" v-for="item in result" @click="selectItem(item)">
           <div class="img-box">
-            <img :src="item.imgUrl">
+            <img :src="imgUrl(item.logo)">
           </div>
           <span class="name" v-text="item.name"></span>
           <div class="info-box">
@@ -26,23 +26,26 @@
 </template>
 
 <script>
-  import {mapGetters, mapMutations} from 'vuex';
-  import {shopBarMixin, searchMoreMixin} from 'common/js/mixin'
+  let size = 10;
+  import {mapGetters,mapMutations} from 'vuex';
+  import {shopBarMixin,searchMoreMixin,imgUrlMixin} from 'common/js/mixin'
   import NoResult from 'base/no-result/no-result'
   import Loading from 'base/loading/loading'
   import Scroll from 'base/scroll/scroll';
   import Switches from 'base/switches/switches';
-  import list from 'mock/shop'; //数据模拟
+  import {findMallList} from 'api/shopList';
+  import {copyObj} from 'common/js/array';
+  import {ERR_OK,baseURL} from 'api/config';
   export default {
     data(){
       return {
-        switchVal: -1,
+        loading: false,
+        switchVal: 0,
         pullUp: true,
-        list: [],
         switchList: [
-          {name: '家电类', className: 'jd'},
           {name: '生活用品类', className: 'life'},
           {name: '服务类', className: 'service'},
+          {name: '家电类', className: 'jd'},
           {name: '鞋服类', className: 'shoes'}
         ]
       }
@@ -53,10 +56,9 @@
       Scroll,
       NoResult
     },
-    mixins: [shopBarMixin, searchMoreMixin],
+    mixins: [shopBarMixin, searchMoreMixin,imgUrlMixin],
     created(){
       this.setShopList(this.mallList);
-      this.list = list;
       this.searchMore();
     },
     computed: {
@@ -66,9 +68,24 @@
       ])
     },
     methods: {
+      search(callback){
+        findMallList(this.switchVal, this.page, size).then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.result = this.result.concat(ops.data.content);
+            this.hasMore = ops.data.last?false : true;
+            this.loading=true;
+            typeof callback === 'function' && callback.call(this);
+            console.log(ops.data)
+          }
+        })
+      },
       selectItem(item){
-        this.setCurrentShop(item);
-        this.$router.push('/home/mall/commodity');
+        let obj=copyObj(item);
+        obj.image = this.spliceImgUrl(obj.image);
+        obj.sowingMap=this.spliceImgUrl(obj.sowingMap);
+        obj.price=obj.price/100;
+        this.setCurrentShop(obj);
+        this.$router.push({path:`/home/mall/commodity/${obj.id}`,query:{category:this.switchVal}});
       },
       handleShopBar(shopList){
         this.$nextTick(() => {
@@ -77,15 +94,17 @@
           this.$refs.scroll.refresh();
         });
       },
+      imgUrl(url){
+        return url != null ? `${baseURL}/rwlmall/images/${url}` : '';
+      },
       price(price){
-        return `¥ ${price}`
+        return `¥ ${price/100}`
       },
       stock(stock){
         return `库存:${stock}件`
       },
       switchItem(index){
         this.switchVal = index;
-        console.log("index:" + this.switchVal);
       },
       ...mapMutations({
         setShopList: 'SET_SHOP_LIST',
@@ -95,12 +114,7 @@
     watch: {
       switchVal(newVal){
         this.$refs.scroll.scrollTo(0, 0); //switch变化时，滚动条到顶部
-        if (newVal === 1 || newVal === 2) {  //TODO  测试 no-result后续删除
-          this.list = [];
-        }
-        else {
-          this.list = list;
-        }
+        this.loading=false;
         this.hasMore = true;
         this.page = 0;
         this.result = [];
@@ -134,7 +148,7 @@
     .mall-list {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       width: 10rem;
       @include px2rem(padding-bottom, $switches-height+$bg-height+20);
@@ -147,8 +161,11 @@
         @include px2rem(border-radius, 5);
         background: $color-background-d;
         box-shadow: px2rem(2) px2rem(2) px2rem(2) rgba(127, 126, 126, .47);
-        &:nth-child(2n) {
-          @include px2rem(margin-left, 28);
+        &:nth-child(odd) {
+          @include px2rem(margin-left, 29);
+        }
+        &:nth-child(even) {
+          @include px2rem(margin-right, 29);
         }
         .img-box {
           @include px2rem(width, 332);

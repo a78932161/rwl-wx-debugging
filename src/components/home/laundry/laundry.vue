@@ -38,8 +38,7 @@
   import {shopBarMixin} from 'common/js/mixin'
   import {isShopAdd} from 'common/js/util';
   import {findLaundryList} from 'api/shopList'
-  import {ERR_OK,baseURL} from 'api/config';
-  import list from 'mock/shop'; //数据模拟
+  import {ERR_OK,baseURL,payType} from 'api/config';
   export default {
     data(){
       return {
@@ -62,13 +61,15 @@
     },
     mixins: [shopBarMixin],
     created(){
-
-      this._findLaundryList(this.switchVal);
         if(this.$route.query.top){   //top值存在，则为高端洗护
-           this.setShopList(this.topLaundryList)
+           this.type=payType.topLaundry;
+           this.setShopList(this.topLaundryList);
+          this._findLaundryList(this.switchVal);
         }
         else{
-          this.setShopList(this.laundryList)
+          this.type=payType.laundry;
+          this.setShopList(this.laundryList);
+          this._findLaundryList(this.switchVal);
         }
     },
     computed: {
@@ -81,7 +82,7 @@
     },
     methods: {
       _findLaundryList(category){
-        findLaundryList(category).then((ops)=>{
+        findLaundryList(category,this.type).then((ops)=>{
           if(ops.code===ERR_OK){
               console.log(ops.data)
             this.load=false;

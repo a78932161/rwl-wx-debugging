@@ -65,8 +65,9 @@ service.interceptors.response.use(  // respone拦截器
 
 
     if (!error.response) {
-     alert('网络异常');
+     //alert('网络异常');
       // 断网了
+      return ;
     }
     switch (error.response.status){
       case 401:

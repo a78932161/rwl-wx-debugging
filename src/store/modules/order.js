@@ -4,10 +4,14 @@
 const order={
 
   state:{
+    selectImages:[],
     selectItem:{},
     isFinish:false
   },
   mutations:{
+    SET_SELECT_IMAGES(state,flag){
+      state.selectImages=flag;
+    },
     SET_SELECT_ITEM(state,flag){
       state.selectItem=flag;
     },

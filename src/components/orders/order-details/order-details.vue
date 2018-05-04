@@ -3,14 +3,16 @@
     <scroll>
       <div>
         <div class="laundry-progress" :style="bgPosition" v-if="isLaundryProgress"></div>
-          <mall-progress class="mall-progress" v-else></mall-progress>
+          <mall-progress class="mall-progress"
+                         :progress="mallProgress"
+                         v-else></mall-progress>
         <div class="details">
           <div class="title-box">
             <span class="block"></span>
             <span class="title">订单详情</span>
           </div>
           <div class="details-box">
-            <p class="item"><span class="text">订单价格</span><span class="val price" v-text="totalPrice"></span></p>
+            <p class="item"><span class="text">订单价格</span><span class="val price">¥ {{totalPrice}}</span></p>
             <p class="item"><span class="text">付款方式</span><span class="val" v-text="payMode"></span></p>
             <p class="item"><span class="text">付款状态</span><span class="val status" v-text="payStatus"></span></p>
             <p class="item"><span class="text">订单编号</span><span class="val" v-text="obj.number"></span></p>
@@ -32,11 +34,13 @@
   import Scroll from 'base/scroll/scroll';
   import BButton from 'base/b-button/b-button';
   import {finishOrderMixin} from 'common/js/mixin';
+  import {getCurrentTime} from 'api/user';
+  import {ERR_OK} from 'api/config'
   export default {
     data(){
       return {
         obj: {},
-        totalPrice: '',
+        totalPrice:'',
         isLaundryProgress:false
       }
     },
@@ -47,16 +51,30 @@
     },
     mixins:[finishOrderMixin],
     created(){
-      if(!this.orderSelectItem.id){
-          this.$router.back();
-      }
+        console.log(this.orderSelectItem)
       this.isLaundryProgress=(this.$route.query.type==='laundryProduct')?true:false;
       this.obj = this.orderSelectItem;
       this.totalPrice = this.$route.query.totalPrice;
+
+      if(this.obj.payStatus===0&&this.obj.status!==6){ //订单未被取消且未被付款
+
+        getCurrentTime().then((ops)=>{
+          if(ops.code===ERR_OK){
+            let diff=ops.data-this.obj.createtime;
+            console.log(diff/3600000)
+          }
+        })
+      }
+
+
+
     },
     computed: {
       buttonContent(){
-          let status=this.obj.status;
+        let status=this.obj.status;
+          if(this.obj.payStatus===0&&status!==6){ //订单未被取消且未被付款
+              return '去付款';
+          }
           switch (status){
             case 4:
                 return '完结订单';
@@ -68,6 +86,21 @@
                 return '返回';
                 break;
           }
+      },
+      mallProgress(){
+        switch (this.obj.status) {
+          case 0:
+          case 6:
+              return 0;
+          case 1:
+          case 2:
+          case 3:
+          case 4:
+              return 1;
+          case 5:
+              return 2;
+
+        }
       },
       bgPosition(){  //(0, 新订单)(1,已派订单)(2,已收订单)(3,入站订单)(4,上挂订单)(5,完结订单)(6,取消订单);
         switch (this.obj.status) {
@@ -88,11 +121,12 @@
           case 5:
             return `background-position:-50rem 0`;
             break;
-
         }
-
       },
       payMode(){
+          if(this.obj.payStatus ===0){
+              return '无';
+          }
         return this.obj.payMode === 1 ? '余额支付' : '微信支付';
       },
       payStatus(){
@@ -104,8 +138,16 @@
     },
     methods:{
       buttonClick(){
+        if(this.obj.payStatus===0&&this.obj.status!==6){  //订单未被取消且未被付款
+          this.$router.push({
+            name: 'orders-payChose',
+            query: {totalPrice: this.totalPrice},
+            params: {id: this.orderSelectItem.id}
+          });
+          return ;
+        }
         let status=this.obj.status;
-        if(status===4){
+        if(status===4){  //处于可以完结订单的状态
           this.$alert('您确定完结该订单吗',['确定','取消']).then(()=>{
             this._finishOrder(this.judgeTypeUrl(this.obj.id),this.obj.id).then(()=>{
               this.setIsFinish(true);
@@ -114,7 +156,7 @@
           });
           return;
         }
-        this.$router.back();
+        this.$router.back(); //其它情况，一律返回至上一个历史记录
       },
       ...mapMutations({
         setSelectItem: 'SET_SELECT_ITEM',

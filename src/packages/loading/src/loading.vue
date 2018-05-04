@@ -54,7 +54,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index:100000;
+    z-index:9999;
     .loading-box {
       display: flex;
       flex-direction: column;

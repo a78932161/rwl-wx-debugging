@@ -83,6 +83,7 @@ export const setListMixin = {
       let route = this.$route;
       switch (route.params.name) {
         case 'laundry':
+          this.urlType='laundry';
           if (route.query.top) {
             this.category = '高端洗护';
             this.type=payType.topLaundry;
@@ -92,16 +93,20 @@ export const setListMixin = {
           this.type=payType.laundry;
           break;
         case 'furnishing':
+          this.urlType='furniture';
           this.category = '小让家居';
           break;
         case 'mall':
+          this.urlType='mall';
           this.category = '小让商城';
           break;
         case 'single':
           if (route.query.category === 'furnishing') {
+            this.urlType='furniture';
             this.category = '小让家居';
             return;
           }
+          this.urlType='mall';
           this.category = '小让商城';
           break;
 

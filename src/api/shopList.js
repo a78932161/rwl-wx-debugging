@@ -5,25 +5,38 @@ import fetch from 'common/js/fetch';
 
 
 
-export function findLaundryList(category){
+export function findLaundryList(category,type){
   return fetch({
     url:'/rwlmall/laundryproduct/findbytypeandcategoryandstatus',
     params:{
       category,
-      type:1,   //type:1 => 普通洗护
+      type,
+      status:0,  //status:0 => 上架商品
+    }
+  })
+}
+
+export function findMallList(category,page,size){
+  return fetch({
+    url:'/rwlmall/mallproduct/findbycategoryandstatus',
+    params:{
+      category,
+      page,
+      size,
       status:0,  //status:0 => 上架商品
     }
   })
 }
 
 
+
 export function findFurnishingList(page,size){
   return fetch({
     url:'/rwlmall/furnitureproduct/findbystatus',
     params:{
-      status:0,  //status:0 => 上架商品
       page,
-      size
+      size,
+      status:0  //status:0 => 上架商品
     }
   })
 }

@@ -65,12 +65,12 @@
       ])
     },
     methods: {
-      search(calllback){
+      search(callback){
         findFurnishingList(this.page, size).then((ops) => {
           if (ops.code === ERR_OK) {
             this.result = this.result.concat(ops.data.content);
             this.hasMore = ops.data.last ? false : true;
-            typeof calllback === 'function' && calllback.call(this);
+            typeof callback === 'function' && callback.call(this);
           }
         });
       },
@@ -78,6 +78,7 @@
         let obj=copyObj(item);
         obj.image = this.spliceImgUrl(obj.image);
         obj.sowingMap=this.spliceImgUrl(obj.sowingMap);
+        obj.price=obj.price/100;
         this.setCurrentShop(obj);
         this.$router.push(`/home/furnishing/commodity/${obj.id}`);
       },

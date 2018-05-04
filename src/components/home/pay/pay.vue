@@ -73,7 +73,7 @@
   import {setListMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
   import {getCurrentTime} from 'api/user';
-  import {laundryOrderCreate} from 'api/pay';
+  import {orderCreate} from 'api/pay';
   import {ERR_OK} from 'api/config';
   export  default {
     data(){
@@ -131,14 +131,14 @@
           if (this.shopList.length !== 0) {   //购物车是否有商品存在
             this.$loading.show('正在创建订单');
             let data = this.submitData();
-            laundryOrderCreate(data).then((ops) => {
+            orderCreate(this.urlType, data).then((ops) => {
               if (ops.code === ERR_OK) {
-                  let route=this.$route;
-                  let top=route.query.top||'';
+                let route = this.$route;
+                let top = route.query.top || '';
                 this.$loading.hide();
                 this.$router.push({
                   name: 'payChose',
-                  query: {totalPrice: this.totalPrice,type:route.params.name,top},
+                  query: {totalPrice: this.totalPrice, type: route.params.name, top},
                   params: {id: ops.data.id}
                 });
                 return;
@@ -161,7 +161,7 @@
       submitData(){
         let items = [];
         this.shopList.map((item) => {
-          items.push({laundryProduct: {id: item.id}, count: item.number});
+          items.push({[`${this.urlType}Product`]: {id: item.id}, count: item.number});
         });
         let date = this.date.value[0].replace(/(今天|明天|后天)|年|月|日/g, ',');
         date = date.split(',');
@@ -180,7 +180,7 @@
           address: address.address,
           deliveryDate,
           remark: this.remark,
-          type: this.type,
+          type: this.type||'',
           items
         };
         return data;
@@ -197,8 +197,10 @@
         }
       },
       _getCurrentTime(){
+         this.$loading.show() ;
         getCurrentTime().then((ops) => {
           if (ops.code === ERR_OK) {
+            this.$loading.hide();
             this.timeFormat(ops.data)
           }
         })
@@ -208,6 +210,7 @@
         let year = time.getFullYear();
         let month = time.getMonth() + 1;
         let date = time.getDate();
+        month = month < 10 ? '0' + month : month;
         date = date < 10 ? '0' + date : date;
         let arr = [];
         let format = `今天${year}年${month}月${date}日`;

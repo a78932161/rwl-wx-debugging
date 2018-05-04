@@ -20,7 +20,7 @@ let constantRouterMap = [
       name: 'furnishing', path: 'furnishing', component: _import('home/furnishing/furnishing'), children: [
       {name: 'furnishing-commodity', path: 'commodity/:id', component: _import('home/commodity-details/commodity-details'),
         children: [
-          {name:'details-image',path: 'image', component: _import('home/details-image/details-image')},
+          {name:'furnishing-details-image',path: 'image', component: _import('home/details-image/details-image')},
           {name:'storeinfo',path: 'storeinfo', component: _import('home/store-info/store-info')}
         ]
       },
@@ -30,6 +30,7 @@ let constantRouterMap = [
       name: 'mall', path: 'mall', component: _import('home/mall/mall'), children: [
       {name: 'mall-commodity', path: 'commodity/:id', component: _import('home/commodity-details/commodity-details'),
         children: [
+          {name:'mall-details-image',path: 'image', component: _import('home/details-image/details-image')},
         {path: 'storeinfo', component: _import('home/store-info/store-info')}
       ]},
     ]
@@ -43,7 +44,8 @@ let constantRouterMap = [
     {name:'rechargePay',path:':balance',component: _import('recharge/pay/pay')}
   ]},
   {path: '/orders', component: _import('orders/index/index'),children:[
-    {path:'details',component:_import('orders/order-details/order-details')}
+    {path:'details',component:_import('orders/order-details/order-details')},
+    {name:'orders-payChose',path:'payChose:id',component:_import('home/pay-chose/pay-chose')}
   ]},
   {path: '/my', component: _import('my/index/index'), children: [
     {path: 'address', component: _import('my/address/address'), children: [

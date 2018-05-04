@@ -12,9 +12,9 @@ export function findRecharge() {   //获取充值列表
 }
 
 
-export function laundryOrderCreate(data) {  //创建购物订单
+export function orderCreate(url,data) {  //创建购物订单
   return fetch({
-    url: '/rwlmall/laundryorder/create',
+    url: `/rwlmall/${url}order/create`,
     method: 'post',
     data
   })

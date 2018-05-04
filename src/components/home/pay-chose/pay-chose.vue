@@ -171,6 +171,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 10rem;
         .text {
           @include font(2);
           margin-bottom: px2rem(20);

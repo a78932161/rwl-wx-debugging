@@ -30,6 +30,7 @@ Loading.show=(text)=>{
   return Loading(text||true);
 };
 Loading.hide=()=>{
+  instance.title='正在载入...';
   return Loading(false);
 };
 export default Loading;

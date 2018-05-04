@@ -21,8 +21,11 @@
             </div>
           </div>
           <p class="price-sum"><span class="text">共{{item.items.length}}件商品合计：
-        </span><span class="sum" v-text="totalPrice(item)"></span></p>
+        </span><span class="sum">¥ {{totalPrice(item)}}</span></p>
           <div class="button-container">
+            <span class="pay"
+                  v-if="item.payStatus===0&&item.status===0"
+                  @click="payOrderClick(item.id,totalPrice(item))">付款</span>
             <span class="cancel" v-if="item.status===0" @click="cancelOrderClick(item.id)">取消订单</span>
             <span class="check" @click="checkProgress(item,totalPrice(item))">查看进度</span>
             <span class="finish" v-if="item.status===4" @click="finishOrderClick(item.id)">完结订单</span>
@@ -61,6 +64,13 @@
     },
     mixins:[finishOrderMixin],
     methods: {
+      payOrderClick(id,totalPrice){
+        this.$router.push({
+          name: 'orders-payChose',
+          query: {totalPrice},
+          params: {id}
+        });
+      },
       cancelOrderClick(id){
         this.$alert('您确定取消该订单吗',['确定','取消']).then(()=>{
            this._cancelOrder(this.judgeTypeUrl(id),id).then(()=>{
@@ -105,8 +115,7 @@
         items.forEach((obj) => {
           sum += obj.count * obj[type].price;
         });
-        return `¥ ${sum / 100}`
-
+        return sum / 100;
       },
       price(flag){
         return `¥ ${flag / 100}`
@@ -232,6 +241,12 @@
         .check {
           @extend .button;
           right:px2rem(204);
+        }
+        .pay{
+          @extend .button;
+          right:px2rem(23);
+          color:#FF4500;
+          border: px2rem(2) solid #FF4500;
         }
         .finish {
           @extend .button;

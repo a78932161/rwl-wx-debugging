@@ -24,3 +24,4 @@ export const shopDetailType={
   mall: 'A09',
   furniture:'A12'
 };
+

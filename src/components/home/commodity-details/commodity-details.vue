@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="shop-details">
-          <div class="parameter" @click="infoShow">
+          <div class="parameter" @click="infoShow" v-show="currentShop.productParameters">
             <span class="text">产品参数</span>
             <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
           </div>
@@ -33,22 +33,22 @@
             </div>
           </div>
         </div>
-       <!-- <div class="other">
-          <div class="un" @click="queryStore">
-            <div>
-              <i class="iconfont icon-zan un-icon"></i>
-              <span>小让商城</span>
-            </div>
-            <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
-          </div>
-        </div>-->
+        <!-- <div class="other">
+           <div class="un" @click="queryStore">
+             <div>
+               <i class="iconfont icon-zan un-icon"></i>
+               <span>小让商城</span>
+             </div>
+             <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
+           </div>
+         </div>-->
         <recommend :list="result" @selectItem="scrollTop"></recommend>
         <loading v-show="hasMore" title=""></loading>
       </div>
     </scroll>
     <commodity-authentication ref="authentication"></commodity-authentication>
     <commodity-buy ref="buy" :shop="currentShop"></commodity-buy>
-    <commodity-info ref="info"></commodity-info>
+    <commodity-info ref="info" :info="currentShop.productParameters||''"></commodity-info>
     <div class="button-container">
       <span class="add-shop" @click="addShop(currentShop)">
         <p>
@@ -79,9 +79,10 @@
   import CommodityAuthentication from 'components/home/commodity-authentication/commodity-authentication';
   import CommodityBuy from'components/home/commodity-buy/commodity-buy';
   import commodityInfo from 'components/home/commodity-info/commodity-info'
-  import {searchMoreMixin, keyTypeMixin,imgUrlMixin} from 'common/js/mixin'
+  import {searchMoreMixin, keyTypeMixin, imgUrlMixin} from 'common/js/mixin'
   import {isShopAdd} from 'common/js/util';
-  import {findFurnishingList, findOneProduct} from 'api/shopList';
+  import {copyObj} from 'common/js/array';
+  import {findFurnishingList,findMallList,findOneProduct} from 'api/shopList';
   import {ERR_OK, baseURL} from 'api/config';
   export default {
     data(){
@@ -90,7 +91,7 @@
         pullUp: true
       }
     },
-    mixins: [searchMoreMixin, keyTypeMixin,imgUrlMixin],
+    mixins: [searchMoreMixin, keyTypeMixin, imgUrlMixin],
     components: {
       Recommend,
       CommodityAuthentication,
@@ -117,22 +118,37 @@
     },
     methods: {
       toDetails(){
-        this.$router.push({name:'details-image'})
+          let name=this.$route.name;
+          this.setSelectImages(this.currentShop.image);
+         if(name==='furnishing-commodity'){ //如果从家居页面进来，则跳转到属于家居图片详情页
+           this.$router.push({name: 'furnishing-details-image'});
+           return ;
+         }
+        this.$router.push({name: 'mall-details-image'});
       },
       _findOneProduct(){
         let id = this.$route.params.id;
         findOneProduct(this.judgeType(id), id).then((ops) => {
           if (ops.code === ERR_OK) {
-          let data=ops.data;
-          data.image = this.spliceImgUrl(data.image);
-          data.sowingMap=this.spliceImgUrl(data.sowingMap);
-          this.setCurrentShop(data);
-          this.$refs.slider.update();  //更新slider
+            let data = ops.data;
+            data.image = this.spliceImgUrl(data.image);
+            data.sowingMap = this.spliceImgUrl(data.sowingMap);
+            data.price = data.price / 100;
+            this.setCurrentShop(data);
+            this.$refs.slider.update();  //更新slider
           }
         });
       },
-      search(callback){ //  TODO 后续改动，需要根据点击的商品显示相应的栏目商品
-        findFurnishingList(this.page, size).then((ops) => {
+      recommendApi(){  //获取当前推荐列表的api
+        let route=this.$route;
+        if(route.name==='furnishing-commodity'){
+          return findFurnishingList(this.page, size);
+        }
+          let category=this.$route.query.category;
+          return  findMallList(category, this.page, size);
+      },
+      search(callback){
+        this.recommendApi().then((ops) => {
           if (ops.code === ERR_OK) {
             this.result = this.result.concat(ops.data.content);
             this.hasMore = ops.data.last ? false : true;
@@ -144,7 +160,9 @@
         this.$refs.info.show();
       },
       addShop(item){
-        let shopList = isShopAdd(this.shopList, item);
+        let obj = copyObj(item);
+        obj.price = obj.price * 100;
+        let shopList = isShopAdd(this.shopList, obj);
         this.setShopList(shopList);
         this.$refs.msg.setShow();
         if (this.$route.name === 'furnishing-commodity') {  //是否为小让家居商品详情页面
@@ -173,9 +191,10 @@
         return `快递：${express > 0 ? `${express}元` : '免运费'}`
       },
       price(price){
-        return `¥${price / 100}`
+        return `¥${price}`
       },
       ...mapMutations({
+        setSelectImages: 'SET_SELECT_IMAGES',
         setCurrentShop: 'SET_CURRENT_SHOP',
         setShopList: 'SET_SHOP_LIST',
         setFurnishList: 'SET_FURNISH_LIST',
@@ -183,10 +202,10 @@
         setMallList: 'SET_MALL_LIST'
       })
     },
-    watch:{
-        '$route'(to,from){
-            this._findOneProduct();
-        }
+    watch: {
+      '$route'(to, from){  //每次从其他页面页面进入时，重新拉取数据，例如在该页面点击推荐商品
+        this._findOneProduct();
+      }
     }
   }
 </script>

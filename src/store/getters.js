@@ -3,6 +3,7 @@
  */
 const getters = {
   isFinish:state=>state.order.isFinish,
+  orderSelectImages:state=>state.order.selectImages,
   orderSelectItem:state=>state.order.selectItem,
   currentAddress:state=>state.shop.currentAddress,
   singleList: state => state.shop.singleList,

@@ -63,12 +63,9 @@
         default: {}
       }
     },
-    created(){
-      console.log(this.$route.name)
-    },
     methods: {
       onPayClick(){
-        if (this.number > this.shop.stock) {  //TODO 此时stock去拉服务器的检验，如果不符合刷新stock
+        if (this.number > this.shop.stock) {
           this.$refs.alert.show();
           return ;
         }

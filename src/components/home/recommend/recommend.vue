@@ -41,12 +41,22 @@
         let obj = copyObj(item);
         obj.image = this.spliceImgUrl(obj.image);
         obj.sowingMap = this.spliceImgUrl(obj.sowingMap);
+        obj.price=obj.price/100;
         this.setCurrentShop(obj);
-        this.$router.replace(`/home/furnishing/commodity/${obj.id}`);
+        let name=this.$route.name,apiUrl;
+        if(name==='furnishing-commodity'){
+          apiUrl='furnishing';
+          this.$router.replace(`/home/${apiUrl}/commodity/${obj.id}`);
+        }
+        else{
+            let category=this.$route.query.category;
+          apiUrl='mall';
+          this.$router.replace({path:`/home/${apiUrl}/commodity/${obj.id}`,query:{category}});
+        }
         this.$emit('selectItem');
       },
       imgUrl(url){
-        return url != null ? `${baseURL}/rwlmall/images/${url}` : '';
+        return url != null ? `${baseURL}/rwlmall/images/${url}`:'';
       },
       price(price){
         return `¥ ${price / 100}`;
