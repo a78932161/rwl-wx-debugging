@@ -32,3 +32,14 @@ export function getUserConsumeList(){
     }
   })
 }
+
+
+export function submitSuggest(content) {
+  return fetch({
+    url:'rwlmall/feedback/save',
+    method:'post',
+    params:{
+      content
+    }
+  })
+}

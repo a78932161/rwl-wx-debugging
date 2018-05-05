@@ -5,7 +5,7 @@
         <textarea :placeholder="placeholder"
                   v-model="text"
                   class="textarea"></textarea>
-        <span :style="buttonStyle" class="button">提交</span>
+        <span :style="buttonStyle" class="button" @click="submitSuggest">提交</span>
       </div>
     </scroll>
   </div>
@@ -13,6 +13,8 @@
 
 <script>
   import Scroll from 'base/scroll/scroll';
+  import {submitSuggest} from 'api/user';
+  import {ERR_OK} from 'api/config';
   export default {
     data(){
       return {
@@ -26,6 +28,19 @@
     computed: {
       buttonStyle(){
         return `background-color:${this.text ? '#01C6FD' : ''}`
+      }
+    },
+    methods:{
+      submitSuggest(){
+        this.text&&this._submitSuggest(this.text);
+      },
+      _submitSuggest(content){
+        submitSuggest(content).then((ops)=>{
+          if(ops.code===ERR_OK){
+              this.text='';
+            this.$msg.setShow('提交成功');
+          }
+        })
       }
     }
   }
