@@ -80,7 +80,7 @@
         border-radius: 50%;
         i {
           color: #fff;
-          font-size: 70px;
+          @include font(27);
         }
         &.bg-xy {
           background: #00C6FF;
