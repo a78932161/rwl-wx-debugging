@@ -2,6 +2,7 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
+  express:state=>state.order.express,
   isFinish:state=>state.order.isFinish,
   orderSelectImages:state=>state.order.selectImages,
   orderSelectItem:state=>state.order.selectItem,

@@ -216,3 +216,16 @@ export const imgUrlMixin={
     }
   }
 };
+
+export const expressTipMixin={
+  computed: {
+    postageText(){
+      let express = this.express;
+      let threshold = express.threshold / 100;
+      return `全场满${threshold}包邮，未满${threshold}邮费${express.freight / 100}。`
+    },
+    ...mapGetters([
+      'express'
+    ])
+  }
+};

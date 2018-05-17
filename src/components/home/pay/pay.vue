@@ -39,6 +39,7 @@
                       :cancelBtnText="alert.cancelBtnText"></number>
             </li>
           </transition-group>
+          <span v-show="postageTip" class="postageText" v-text="postageText"></span>
         </div>
       </div>
       <!--    <div class="official-info">
@@ -70,7 +71,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {PopupPicker} from 'vux';
   import Number from 'base/number/number';
-  import {setListMixin} from 'common/js/mixin';
+  import {setListMixin,expressTipMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
   import {getCurrentTime} from 'api/user';
   import {orderCreate} from 'api/pay';
@@ -111,6 +112,10 @@
         this.shopList.forEach((item) => {
           totalPrice += item.number * item.price;
         });
+        if(this.$route.params.name==='laundry'){
+          let express=this.express;
+          totalPrice=(totalPrice>=express.threshold/100)?totalPrice:totalPrice+express.freight/100;
+        }
         return totalPrice;
       },
       address(){
@@ -118,11 +123,14 @@
       },
       ...mapGetters([
         'shopList',
-        'currentAddress'
+        'currentAddress',
+        'express'
       ])
     },
-    mixins: [setListMixin],
+    mixins: [setListMixin,expressTipMixin],
     created(){
+      this.postageTip=(this.$route.params.name==='laundry')?true:false;
+        console.log(this.$route.params.name)
       this._getCurrentTime();
     },
     methods: {
@@ -378,6 +386,13 @@
               white-space: nowrap;
             }
           }
+        }
+        .postageText{
+          display: flex;
+          align-items: center;
+          height:px2rem(46);
+          @include font(-3);
+          color: $color-theme;
         }
       }
 

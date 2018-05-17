@@ -84,7 +84,6 @@
       _findLaundryList(category){
         findLaundryList(category,this.type).then((ops)=>{
           if(ops.code===ERR_OK){
-              console.log(ops.data)
             this.load=false;
             this.list = ops.data;
           }
@@ -92,7 +91,8 @@
       },
       handleShopBar(shopList){
         this.$nextTick(() => {
-          let bottom = shopList.length > 0 ? `${this.shopBarHeight}px` : '';
+          let tip=46; //邮费tip的高度
+          let bottom = shopList.length > 0 ? `${this.shopBarHeight+tip}px` : '';
           this.$refs.scrollContainer.style.bottom = bottom;
           this.$refs.scroll.refresh();
         });
@@ -165,7 +165,7 @@
             justify-content: center;
             align-items: center;
             width: 33.33%;
-            @include px2rem(height, 273);
+            @include px2rem(height,273);
             border-right: px2rem(3) solid $color-line;
             border-bottom: px2rem(3) solid $color-line;
             &:nth-child(3n) {

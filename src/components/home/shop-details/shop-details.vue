@@ -3,6 +3,7 @@
     <div class="shop-details" v-if="showFlag" @touchmove.prevent @click="coverHide">
       <div class="details-container" @click.stop>
         <div class="details-header">
+          <div class="postage-tip" v-show="tip" v-text="postageText"></div>
           <div class="logo">
             <span class="badge" v-text="list.length"></span>
           </div>
@@ -38,7 +39,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import Number  from 'base/number/number';
   import Alert from 'base/alert/alert';
-  import {setListMixin} from 'common/js/mixin';
+  import {setListMixin,expressTipMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
   export default {
     data(){
@@ -57,8 +58,12 @@
       Number,
       Alert
     },
-    mixins:[setListMixin],
+    mixins:[setListMixin,expressTipMixin],
     props: {
+      tip:{
+        type:Boolean,
+        default:false
+      },
       list: {
         type: Array,
         default: []
@@ -155,11 +160,23 @@
         }
       }
       .details-header {
+        position: relative;
         display: flex;
         justify-content: space-between;
         width: 10rem;
         @include px2rem(height, 90);
         background: #F7F7F9;
+        .postage-tip{
+          position: absolute;
+          top: px2rem(-46);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 10rem;
+          height:px2rem(46);
+          @include font(-3);
+          background: #FFFCDF;
+        }
         .logo {
           transform: translate(0, -50%);
           @extend .E-logo;

@@ -117,7 +117,8 @@
         }
         else {
           this._payMoney(mode, this.$route.params.id, (ops) => {
-            wxPay(ops.data, () => {
+
+            wxPay(ops, () => {
               this.PaySuccess();
             });
           });

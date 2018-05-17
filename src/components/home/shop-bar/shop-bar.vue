@@ -1,6 +1,7 @@
 <template>
   <transition name="shop-bar">
     <div class="shop-bar" ref="shopBar">
+      <div class="postage-tip" v-if="postageTip&&detailsShow"  v-text="postageText"></div>
       <div class="left-box" @click="detailsToggle">
         <div v-show="detailsShow" class="logo">
           <span class="badge" v-text="list.length"></span>
@@ -8,7 +9,10 @@
         <span class="price" v-text="totalPrice"></span>
       </div>
       <span class="right-button" @click="onPayClick">去结算</span>
-      <shop-details ref="shopDetails" @coverHide="detailsToggle" :list="list"></shop-details>
+      <shop-details :tip="postageTip"
+                    ref="shopDetails"
+                    @coverHide="detailsToggle"
+                    :list="list"></shop-details>
     </div>
   </transition>
 </template>
@@ -17,15 +21,18 @@
 <script>
   import {mapGetters,mapMutations} from 'vuex';
   import ShopDetails from 'components/home/shop-details/shop-details';
+  import {expressTipMixin} from 'common/js/mixin';
   export default {
     data(){
       return {
+        postageTip:false,
         detailsShow: true
       }
     },
     components: {
       ShopDetails
     },
+    mixins:[expressTipMixin],
     props: {
       list: {
         type: Array,
@@ -38,6 +45,11 @@
         this.list.forEach((item) => {
           totalPrice += item.number * item.price;
         });
+        if(this.$route.name==='laundry'){
+            let express=this.express;
+            totalPrice=(totalPrice>=express.threshold/100)?totalPrice:totalPrice+express.freight/100;
+        }
+
         return `¥ ${totalPrice}`;
       },
       ...mapGetters([
@@ -45,6 +57,7 @@
       ])
     },
     mounted(){
+      this.postageTip=(this.$route.name==='laundry')?true:false;
       this.setHeight();
     },
     methods: {
@@ -106,7 +119,17 @@
       opacity: 0;
       transform: translate3d(0, 100%, 0)
     }
-
+    .postage-tip{
+      position: absolute;
+      top: px2rem(-46);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 10rem;
+      height:px2rem(46);
+      @include font(-3);
+      background: #FFFCDF;
+    }
     .E-logo {
       position: relative;
       @include px2rem(width, 88);

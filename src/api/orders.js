@@ -41,3 +41,8 @@ export function cancelOrder(url,orderid) {
     }
   })
 }
+export function getPostage(){
+  return fetch({
+    url:'/rwlmall/freightset/get'
+  })
+}

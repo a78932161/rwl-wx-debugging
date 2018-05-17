@@ -44,7 +44,8 @@ export function debounce(func,delay){
   }
 }
 
-export function wxPay(data,callback){  //调用微信付款
+export function wxPay(options,callback){  //调用微信付款
+  let data=options.data;
   WeixinJSBridge.invoke(
     'getBrandWCPayRequest', {
       "appId": data.appId,

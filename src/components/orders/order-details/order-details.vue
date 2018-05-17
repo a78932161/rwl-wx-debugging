@@ -135,7 +135,7 @@
       getCountDown(){
         getCurrentTime().then((ops) => {
           if (ops.code === ERR_OK) {
-            let oneHour = 3120 * 1000;
+            let oneHour = 3600 * 1000;
             let diff = ops.data - this.obj.createtime;
             let countDown = parseInt((oneHour - diff) / 1000); //倒计时的毫秒数
             this.countDownText=this.countDown(countDown);//定时器未加载时显示格式化时间
@@ -212,7 +212,7 @@
       justify-content: center;
       width: 100%;
       @include font(3);
-      margin-top: px2rem(30);
+      margin-top: px2rem(90);
       color:$color-theme;
     }
     .details {

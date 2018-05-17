@@ -6,9 +6,13 @@ const order={
   state:{
     selectImages:[],
     selectItem:{},
-    isFinish:false
+    isFinish:false,
+    express:{}
   },
   mutations:{
+    SET_EXPRESS(state,flag){
+      state.express=flag;
+    },
     SET_SELECT_IMAGES(state,flag){
       state.selectImages=flag;
     },

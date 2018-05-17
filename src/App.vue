@@ -8,11 +8,29 @@
 </template>
 
 <script>
-  import Tab from 'components/tab/tab'
+  import {mapMutations} from 'vuex';
+  import Tab from 'components/tab/tab';
+  import {getPostage} from 'api/orders';
+  import {ERR_OK} from 'api/config';
   export default {
     name: 'App',
     components: {
       Tab
+    },
+    created(){
+      this._getPostage();
+    },
+    methods:{
+      _getPostage(){
+        getPostage().then((ops)=>{
+          if(ops.code===ERR_OK){
+            this.setExpress(ops.data);
+          }
+        })
+      },
+      ...mapMutations({
+          setExpress:'SET_EXPRESS'
+      })
     }
   }
 </script>

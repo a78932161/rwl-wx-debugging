@@ -20,7 +20,7 @@
       </div>
     </router-link>
 
-    <div class="item">
+    <div class="item" @click="toRechargePay">
       <div class="left-box">
         <i class="icon iconfont icon-icon-test1"></i>
         <span class="text">余额</span>
@@ -43,16 +43,39 @@
   </div>
 </template>
 
+
+<script>
+  import {getUserInfo} from 'api/user';
+  import {ERR_OK} from 'api/config';
+  export default {
+    methods: {
+      toRechargePay(){
+        this.$loading.show();
+        getUserInfo().then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.balance = ops.data.balance;
+            this.$loading.hide();
+            this.$router.push(`/recharge/${this.balance}`)
+          }
+        }).catch(() => {
+          this.$loading.hide();
+        });
+      }
+    }
+  }
+</script>
+
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "~common/css/mixin";
   @import "~common/css/variable";
+
   .tab {
     .item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-top: px2rem(63);
-      &:nth-child(1){
+      &:nth-child(1) {
         margin-top: 0;
       }
       &:nth-child(3) {
@@ -79,15 +102,15 @@
         display: flex;
         align-items: center;
         margin-right: px2rem(35);
-        .button{
+        .button {
           display: flex;
           justify-content: center;
           align-items: center;
           width: px2rem(134);
           height: px2rem(53);
-          border:px2rem(2) solid $color-theme;
+          border: px2rem(2) solid $color-theme;
           border-radius: px2rem(25);
-          margin-right:px2rem(20);
+          margin-right: px2rem(20);
         }
         .icon {
           @include font(3);
