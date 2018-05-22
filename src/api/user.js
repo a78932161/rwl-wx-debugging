@@ -43,3 +43,35 @@ export function submitSuggest(content) {
     }
   })
 }
+
+export function getCode(phonenumber){
+  return fetch({
+    url:'rwlmall/verify/getcode',
+    method:'post',
+    params:{
+      phonenumber
+    }
+  })
+}
+
+export function verifyCode(phonenumber,code){
+  return fetch({
+    url:'rwlmall/verify/verifycode',
+    method:'post',
+    params:{
+      phonenumber,
+      code
+    }
+  })
+}
+
+export function changePhone(phonenumber){
+  return fetch({
+    url:'rwlmall/user/changephone',
+    method:'post',
+    params:{
+      phonenumber
+    }
+  })
+}
+

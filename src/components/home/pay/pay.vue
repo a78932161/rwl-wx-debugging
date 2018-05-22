@@ -124,7 +124,8 @@
       ...mapGetters([
         'shopList',
         'currentAddress',
-        'express'
+        'express',
+        'binding'
       ])
     },
     mixins: [setListMixin,expressTipMixin],
@@ -135,12 +136,14 @@
     },
     methods: {
       onCreatePayClick(){
-        if (this.currentAddress != null) {     //地址是否为空
-          if (this.shopList.length !== 0) {   //购物车是否有商品存在
-            this.$loading.show('正在创建订单');
-            let data = this.submitData();
-            orderCreate(this.urlType, data).then((ops) => {
-              if (ops.code === ERR_OK) {
+
+        if(this.binding){   //判断用法是否绑定手机
+          if (this.currentAddress != null) {     //地址是否为空
+            if (this.shopList.length !== 0) {   //购物车是否有商品存在
+              this.$loading.show('正在创建订单');
+              let data = this.submitData();
+              orderCreate(this.urlType, data).then((ops) => {
+                if (ops.code === ERR_OK) {
                 let route = this.$route;
                 let top = route.query.top || '';
                 this.$loading.hide();
@@ -154,17 +157,23 @@
               this.$loading.hide();
               this.$msg.setShow(ops.msg);
             }).catch(() => {
-              this.$loading.hide();
+                this.$loading.hide();
               this.$msg.setShow('网络异常');
             })
+            }
+            else {
+              this.$alert('您的购物车目前没有商品')
+            }
           }
           else {
-            this.$alert('您的购物车目前没有商品')
+            this.$alert('请选择地址')
           }
         }
-        else {
-          this.$alert('请选择地址')
+        else{
+          this.$msg.setShow('需要先绑定手机');
+          this.$router.push({path:'/my/phone',query:{pay:true}});
         }
+
       },
       submitData(){
         let items = [];

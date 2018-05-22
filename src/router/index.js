@@ -48,6 +48,7 @@ let constantRouterMap = [
     {name:'orders-payChose',path:'payChose:id',component:_import('home/pay-chose/pay-chose')}
   ]},
   {path: '/my', component: _import('my/index/index'), children: [
+    {path:'phone',component: _import('my/phone/phone')},
     {path: 'address', component: _import('my/address/address'), children: [
       {path: 'add', component: _import('my/add-address/add-address')}
     ]},

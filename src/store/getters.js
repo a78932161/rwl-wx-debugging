@@ -2,6 +2,9 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
+  mPhone:state=>state.user.phone,
+  binding:state=>state.user.binding,
+  codeDown:state=>state.user.codeDown,
   express:state=>state.order.express,
   isFinish:state=>state.order.isFinish,
   orderSelectImages:state=>state.order.selectImages,

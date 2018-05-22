@@ -11,6 +11,7 @@
   import {mapMutations} from 'vuex';
   import Tab from 'components/tab/tab';
   import {getPostage} from 'api/orders';
+  import {getUserInfo} from 'api/user';
   import {ERR_OK} from 'api/config';
   export default {
     name: 'App',
@@ -18,6 +19,7 @@
       Tab
     },
     created(){
+      this._getUserInfo();
       this._getPostage();
     },
     methods:{
@@ -28,8 +30,18 @@
           }
         })
       },
+      _getUserInfo(){
+          getUserInfo().then((ops)=>{
+              if(ops.code===ERR_OK){
+                this.setBinding(ops.data.binding);
+                this.setPhone(ops.data.phone);
+              }
+          })
+      },
       ...mapMutations({
-          setExpress:'SET_EXPRESS'
+          setExpress:'SET_EXPRESS',
+          setBinding:'SET_BINDING',
+          setPhone:'SET_PHONE'
       })
     }
   }

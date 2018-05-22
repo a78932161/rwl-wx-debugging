@@ -1,6 +1,6 @@
 <template>
   <div class="tab">
-    <div class="item">
+    <router-link tag="div" to="/my/phone" class="item">
       <div class="left-box">
         <i class="icon iconfont icon-shouji01"></i>
         <span class="text">更改绑定</span>
@@ -8,7 +8,7 @@
       <div class="right-box">
         <i class="icon iconfont  icon-iconfonticonfonti2copycopy"></i>
       </div>
-    </div>
+    </router-link>
 
     <router-link tag="div" to="/my/address" class="item">
       <div class="left-box">
