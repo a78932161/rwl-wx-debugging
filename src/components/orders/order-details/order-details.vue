@@ -21,6 +21,10 @@
             <p class="item"><span class="text">联系人</span><span class="val" v-text="obj.name"></span></p>
             <p class="item"><span class="text">联系方式</span><span class="val" v-text="obj.phone"></span></p>
             <p class="item"><span class="text">收货地址</span><span class="val" v-text="obj.address"></span></p>
+            <p class="item express" v-if="obj.waybillImage">
+              <span class="text">顺丰单号</span>
+              <img :src="imgUrl(obj.waybillImage)" />
+            </p>
           </div>
         </div>
       </div>
@@ -37,7 +41,7 @@
   import BButton from 'base/b-button/b-button';
   import {finishOrderMixin} from 'common/js/mixin';
   import {getCurrentTime} from 'api/user';
-  import {ERR_OK} from 'api/config'
+  import {ERR_OK,baseURL} from 'api/config'
   export default {
     data(){
       return {
@@ -179,6 +183,9 @@
         }
         this.$router.back(); //其它情况，一律返回至上一个历史记录
       },
+      imgUrl(url){
+        return url != null ? `${baseURL}/rwlmall/images/${url}` : '';
+      },
       ...mapMutations({
         setSelectItem: 'SET_SELECT_ITEM',
       })
@@ -238,6 +245,9 @@
           display: flex;
           align-items: center;
           margin-bottom: px2rem(26);
+          &.express{
+            align-items: flex-start;
+          }
           .text {
             width: px2rem(190);
             color: $color-text-ll;
@@ -253,6 +263,11 @@
             &.status {
               color: $color-theme;
             }
+          }
+          img{
+            width:px2rem(400);
+            height:px2rem(256);
+            background: #DCDCDC;
           }
         }
 

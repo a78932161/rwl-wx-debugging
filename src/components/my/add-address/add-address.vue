@@ -45,6 +45,7 @@
 </template>
 
 <script>
+  import {mapMutations} from 'vuex';
   import cityData from 'components/my/address/citydata' //城市数据
   import {PopupPicker} from 'vux';
   import Scroll from 'base/scroll/scroll';
@@ -186,6 +187,10 @@
           this.load.showFlag = true;
           this._curreyId((id) => {
             updateAddress(id, this.user).then((ops) => {  //修改地址
+          let data=ops.data;
+              if(data.status===0){
+                 this.setCurrentAddress(data);
+              }
               this._apiMsg(ops.code, '修改');
             })
           }, () => {
@@ -196,7 +201,10 @@
 
 
         }
-      }
+      },
+      ...mapMutations({
+        setCurrentAddress: 'SET_CURRENT_ADDRESS'
+      })
     }
   }
 

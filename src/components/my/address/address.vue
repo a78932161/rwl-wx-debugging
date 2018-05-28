@@ -132,6 +132,7 @@
     watch: {
       '$route'(to, from){
         if (from.path === '/my/address/add') {  //当从地址添加页回来时，刷新页面
+          console.log(1234345)
           this._findAddress();
         }
       }

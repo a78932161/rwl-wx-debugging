@@ -3,7 +3,6 @@
  */
 
 import fetch from 'common/js/fetch';
-import {userid} from './config'  //token后删除
 
 
 export function getCurrentTime(){
@@ -15,10 +14,7 @@ export function getCurrentTime(){
 export function getUserInfo(){
   return fetch({
     url:'/rwlmall/user/findone',
-    method:'post',
-    params:{
-      userid
-    }
+    method:'post'
   })
 }
 
@@ -26,10 +22,7 @@ export function getUserInfo(){
 export function getUserConsumeList(){
   return fetch({
     url:'/rwlmall/user/obtainuserrecord',
-    method:'post',
-    params:{
-      userid
-    }
+    method:'post'
   })
 }
 

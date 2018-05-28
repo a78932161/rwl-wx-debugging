@@ -188,12 +188,15 @@
         time = time.match(/[0-9]+(:|：)[0-9]+/)[0];
         let deliveryDate = `${date[0]}-${date[1]}-${date[2]} ${time}`;
         let address = this.currentAddress;
+
+        console.log(address)
+
         let data = {
           name: address.consignee,
           phone: address.phone,
           province: address.province,
           city: address.city,
-          area: address.area,
+          area: address.area||address.city,
           address: address.address,
           deliveryDate,
           remark: this.remark,

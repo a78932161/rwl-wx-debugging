@@ -33,7 +33,7 @@
         result: [],
         hasMore: true,
         switchVal: 1,
-        page: 0,
+        page: 0
       }
     },
     created(){
