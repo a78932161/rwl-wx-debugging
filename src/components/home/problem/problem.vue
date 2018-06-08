@@ -1,8 +1,8 @@
 <template>
   <div class="problem-container">
-    <scroll>
-    <div class="text-container">
-      <div class="box">
+    <scroll :data="text">
+    <div class="text-container" v-html="text">
+ <!--     <div class="box">
         <span class="ask">
           1.下单成功后，是谁上门收衣服？需要多久上门？
         </span>
@@ -33,16 +33,35 @@
         <span class="answer">
        答：小主，您的衣服到达中央洗涤工厂后会由专业人员检查每件衣服的规格、污渍区域、原本起球起皱破损等问题并拍照，检查完会自动生成价格发到您手机，小主直接点击收到付款信息即可完成付款。
         </span>
-      </div>
+      </div>-->
     </div>
     </scroll>
   </div>
 </template>
 <script>
-  import Scroll from 'base/scroll/scroll'
+  import Scroll from 'base/scroll/scroll';
+  import {getText} from 'api/info';
+  import {ERR_OK,platformText} from 'api/config';
   export default {
+      data(){
+        return {
+            text:''
+        }
+      },
     components:{
         Scroll
+    },
+    created(){
+          this._getText();
+    },
+    methods:{
+        _getText(){
+          getText(platformText.problem).then((ops)=>{
+            if(ops.code===ERR_OK){
+            this.text=ops.data.content
+          }
+        })
+        }
     }
   }
 </script>
@@ -58,13 +77,14 @@
     left: 0;
     right: 0;
     background: #fff;
-
       .text-container {
         display: flex;
         flex-direction: column;
-        align-items:center;
-        width: 10rem;
+       // align-items:center;
+        width:px2rem(700);
+        margin: 0 auto;
         padding: px2rem(32) 0;
+        text-align:justify;
         .box {
           @include px2rem(width, 700);
           display: flex;

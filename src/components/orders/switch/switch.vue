@@ -24,7 +24,7 @@
     data(){
       return {
         indexArr: [0, 1, 2],
-        index: 1
+        index: 2
       }
     },
 

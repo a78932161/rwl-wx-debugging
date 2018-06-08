@@ -7,7 +7,7 @@
       <ul>
         <li class="item" v-for="item in list">
           <div class="item-info" v-for="obj in item.items">
-            <img src=""/>
+            <img :src="imgUrl(obj[judgeType(item.id)].logo)"/>
             <!--<img v-lazy="imgUrl(obj[judgeType(item.id)].logo)"  />-->
             <div class="wrapper">
               <div class="price-container">
@@ -106,7 +106,7 @@
         }
       },
       imgUrl(url){
-        return url != null ? `${baseURL}/rwlmall/images/${url}` : '';
+        return url != null ? `${baseURL}/${url}` : '';
       },
       totalPrice(item){
         let type = this.judgeType(item.id);
@@ -178,9 +178,8 @@
               font-weight: 600;
             }
             .price {
-
               font-weight: 600;
-              margin-right: px2rem(27);
+              margin-right: px2rem(57);
             }
           }
           .number-container {
@@ -193,7 +192,7 @@
               flex-grow: 1;
             }
             .number {
-              margin-right: px2rem(27);
+              margin-right: px2rem(57);
             }
           }
         }

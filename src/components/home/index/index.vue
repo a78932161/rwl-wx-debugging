@@ -4,8 +4,8 @@
     <scroll>
       <div class="scroll-container">
         <m-header></m-header>
-        <slider class="slider-container">
-          <img v-for="item in images" :src="item"/>
+        <slider ref="slider" :interval="time" class="slider-container">
+          <img @click="toWebAddress(index)" v-for="(item,index) in images" :src="item" />
         </slider>
         <m-menu></m-menu>
         <div class="problem" @click="selectProblem"></div>
@@ -26,12 +26,17 @@
   import ShopBar from 'components/home/shop-bar/shop-bar';
   import Slider from 'base/slider/slider';
   import Scroll from 'base/scroll/scroll';
+  import {imgUrlMixin} from 'common/js/mixin'
+  import {split} from 'common/js/array';
   import {getDefaultAddress} from 'api/address';
+  import {getAdvertisement} from 'api/info';
   import {ERR_OK} from 'api/config';
   export default {
     data(){
       return {
-        images: [require('./1.jpg'), require('./2.jpg'), require('./3.jpg')]
+        images: [],
+        webAddress:[],
+        time:5000,
       }
     },
     components: {
@@ -41,6 +46,7 @@
       Slider,
       Scroll
     },
+    mixins: [imgUrlMixin],
     computed: {
       ...mapGetters([
         'shopBarState',
@@ -49,8 +55,26 @@
     },
     created(){
       this._getDefaultAddress();
+      this._getAdvertisement();
     },
     methods: {
+      toWebAddress(index){
+          if(!this.webAddress[index]){
+              return ;
+          }
+          location.href=this.webAddress[index];
+      },
+      _getAdvertisement(){
+        getAdvertisement().then((ops) => {
+          if (ops.code === ERR_OK) {
+            let data=ops.data;
+            this.webAddress=split(data.webAddress);
+            this.images = this.spliceImgUrl(data.image);
+            this.time=data.time;
+            this.$refs.slider.update();  //更新slider
+          }
+        })
+      },
       _getDefaultAddress(){
         getDefaultAddress().then((ops) => {
           if (ops.code === ERR_OK) {
@@ -62,7 +86,7 @@
         this.$router.push('/home/problem');
       },
       ...mapMutations({
-        setCurrentAddress:'SET_CURRENT_ADDRESS'
+        setCurrentAddress: 'SET_CURRENT_ADDRESS'
       })
 
     }

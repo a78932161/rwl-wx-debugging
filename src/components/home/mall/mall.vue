@@ -95,7 +95,7 @@
         });
       },
       imgUrl(url){
-        return url != null ? `${baseURL}/rwlmall/images/${url}` : '';
+        return url != null ? `${baseURL}/${url}` : '';
       },
       price(price){
         return `¥ ${price/100}`

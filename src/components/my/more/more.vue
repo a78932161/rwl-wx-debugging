@@ -1,33 +1,43 @@
 <template>
   <div class="more">
-    <div class="item">
-      <span class="text">关于小让</span>
+
+    <div class="item" v-for="item in list"  @click="toMoreInfo(item.type)">
+      <span class="text" v-text="item.name"></span>
       <i class="icon iconfont icon-iconfonticonfonti2copycopy"></i>
     </div>
-    <div class="item">
-      <span class="text">加入小让</span>
-      <i class="icon iconfont icon-iconfonticonfonti2copycopy"></i>
-    </div>
-    <div class="item">
-      <span class="text">加盟小让</span>
-      <i class="icon iconfont icon-iconfonticonfonti2copycopy"></i>
-    </div>
-    <div class="item">
-      <span class="text">用户协议</span>
-      <i class="icon iconfont icon-iconfonticonfonti2copycopy"></i>
-    </div>
+
+
     <router-link tag="div" to="/my/more/suggest" class="item">
       <span class="text">意见反馈</span>
       <i class="icon iconfont icon-iconfonticonfonti2copycopy"></i>
     </router-link>
-    <div class="item">
-      <span class="text">beta测试版</span>
-      <i class="icon iconfont icon-iconfonticonfonti2copycopy"></i>
-    </div>
+
+
     <router-view></router-view>
 
   </div>
 </template>
+
+<script>
+  import {platformText} from 'api/config';
+  export default {
+      data(){
+        return {
+            list:[
+              {name:'关于小让',type:platformText.about},
+              {name:'加入小让',type:platformText.accede},
+              {name:'加盟小让',type:platformText.joinIn},
+              {name:'用户协议',type:platformText.userProtocol}
+            ]
+        }
+      },
+      methods:{
+        toMoreInfo(type){
+            this.$router.push({path:'/my/more/info',query:{type}});
+        }
+      }
+  }
+</script>
 
 
 <style lang="scss" rel="stylesheet/scss" scoped>

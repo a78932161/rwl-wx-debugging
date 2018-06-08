@@ -32,7 +32,7 @@
         default:false
       },
       data: {
-        type: Array,
+        //type: Array,  //不设定type
         default: null
       }
     },

@@ -53,6 +53,7 @@ let constantRouterMap = [
       {path: 'add', component: _import('my/add-address/add-address')}
     ]},
     {path: 'more', component: _import('my/more/more'),children:[
+      {path:'info',component:_import('my/more-info/more-info')},
       {path:'suggest',component:_import('my/more-suggest/more-suggest')}
     ]}
   ]

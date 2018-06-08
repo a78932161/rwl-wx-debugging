@@ -1,9 +1,10 @@
 import axios from 'axios'
 import qs from 'qs';
-import {baseURL} from 'api/config';
+//import {baseURL} from 'api/config';
 import {getLimited,setLimited,getLimitedUrl,setLimitedUrl,setToken,getToken} from 'common/js/auth';
 
 
+const baseURL='https://rtest.rwlai.com';
 
 let config={
   loginUrl:'',  //登陆地址

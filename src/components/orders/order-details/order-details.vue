@@ -184,10 +184,10 @@
         this.$router.back(); //其它情况，一律返回至上一个历史记录
       },
       imgUrl(url){
-        return url != null ? `${baseURL}/rwlmall/images/${url}` : '';
+        return url != null ? `${baseURL}/${url}` : '';
       },
       ...mapMutations({
-        setSelectItem: 'SET_SELECT_ITEM',
+        setSelectItem: 'SET_SELECT_ITEM'
       })
     }
   }

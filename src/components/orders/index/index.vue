@@ -32,12 +32,12 @@
         orderList: [],
         result: [],
         hasMore: true,
-        switchVal: 1,
+        switchVal:2,
         page: 0
       }
     },
     created(){
-      this._findFinishOrders();
+      this._findConductOrders();
     },
     components: {
       OrdersList,

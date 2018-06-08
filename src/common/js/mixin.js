@@ -210,7 +210,7 @@ export const imgUrlMixin={
     spliceImgUrl(item){
       item=split(item);//字符串分割成数组
       item=item.map((img)=>{
-        return `${baseURL}/rwlmall/images/${img}`;
+        return `${baseURL}/${img}`;
       });
       return item;
     }

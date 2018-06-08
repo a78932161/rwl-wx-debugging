@@ -115,7 +115,7 @@
         return `¥ ${price/100}`
       },
       imgUrl(url){
-          return url!=null?`${baseURL}/rwlmall/images/${url}`:'';
+          return url!=null?`${baseURL}/${url}`:'';
       },
       bgImg(url){
         return `background-image:url(${url})`

@@ -93,7 +93,7 @@
         });
       },
       money(number, category){
-        let symbol = category === '充值' ? '+' : '-';
+        let symbol = category === '充值' || category === '退款'? '+' : '-';
         return symbol + number / 100;
       },
       toPay(){
