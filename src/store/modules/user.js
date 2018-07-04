@@ -7,6 +7,8 @@ import {getCode} from 'api/user';
 const user = {
     state: {
       binding: false,
+      bindCard: false,
+      cid:'',
       phone: '',
       codeDown: 0
     },
@@ -14,16 +16,28 @@ const user = {
       SET_BINDING(state, flag){
         state.binding = flag;
       },
-      SET_PHONE(state,flag){
-        state.phone=flag;
+      SET_CID(state, flag){
+        state.cid = flag;
+      },
+      SET_BIND_CARD(state, flag){
+        state.bindCard = flag;
+      },
+      SET_PHONE(state, flag){
+        state.phone = flag;
       },
       SET_CODE_DOWN(state, flag){
         state.codeDown = flag;
       }
     },
     actions: {
+      setUserInfo({commit}, data){
+        commit('SET_BINDING', data.binding);
+        commit('SET_PHONE', data.phone);
+        commit('SET_BIND_CARD', data.bindingCard);
+        commit('SET_CID', data.cid);
+      },
       codeCountDown({commit, state}, phone){
-        const countDown =90;
+        const countDown = 90;
         commit('SET_CODE_DOWN', countDown);
         getCode(phone); //发送验证码
         let timer = setInterval(() => {

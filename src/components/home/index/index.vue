@@ -26,19 +26,10 @@
   import ShopBar from 'components/home/shop-bar/shop-bar';
   import Slider from 'base/slider/slider';
   import Scroll from 'base/scroll/scroll';
-  import {imgUrlMixin} from 'common/js/mixin'
-  import {split} from 'common/js/array';
+  import {imgUrlMixin,advertisementMixin} from 'common/js/mixin'
   import {getDefaultAddress} from 'api/address';
-  import {getAdvertisement} from 'api/info';
-  import {ERR_OK} from 'api/config';
+  import {ERR_OK,advertisement} from 'api/config';
   export default {
-    data(){
-      return {
-        images: [],
-        webAddress:[],
-        time:5000,
-      }
-    },
     components: {
       MHeader,
       MMenu,
@@ -46,7 +37,7 @@
       Slider,
       Scroll
     },
-    mixins: [imgUrlMixin],
+    mixins: [imgUrlMixin,advertisementMixin],
     computed: {
       ...mapGetters([
         'shopBarState',
@@ -55,26 +46,9 @@
     },
     created(){
       this._getDefaultAddress();
-      this._getAdvertisement();
+      this._getAdvertisement(advertisement.homePage);
     },
     methods: {
-      toWebAddress(index){
-          if(!this.webAddress[index]){
-              return ;
-          }
-          location.href=this.webAddress[index];
-      },
-      _getAdvertisement(){
-        getAdvertisement().then((ops) => {
-          if (ops.code === ERR_OK) {
-            let data=ops.data;
-            this.webAddress=split(data.webAddress);
-            this.images = this.spliceImgUrl(data.image);
-            this.time=data.time;
-            this.$refs.slider.update();  //更新slider
-          }
-        })
-      },
       _getDefaultAddress(){
         getDefaultAddress().then((ops) => {
           if (ops.code === ERR_OK) {

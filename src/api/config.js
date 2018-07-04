@@ -30,3 +30,8 @@ export const platformText={
   userProtocol:4,//用户协议
   accede:5//加入小让
 };
+
+export const advertisement={
+  homePage:0,   //首页广告位
+  mall:1       //商城广告位
+};

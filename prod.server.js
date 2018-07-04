@@ -12,4 +12,4 @@ let port=7071;
 
 app.listen(port,()=>{
   console.log(`http://localhost:${port}`)
-})
+});

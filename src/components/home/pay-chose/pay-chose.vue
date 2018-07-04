@@ -25,6 +25,19 @@
             </div>
             <i :style="iconStyle(2)" :class="['icon','z-center','iconfont',iconClass(2)]"></i>
           </div>
+          <div class="pay-mode"
+               data-mode="3"
+               @click="chosePayMode"
+               v-if="bindCard">
+            <i class="card-icon iconfont icon-cardb-copy"></i>
+            <div class="text-box">
+              <span class="text">会员卡支付</span>
+              <span class="tip">使用会员卡余额支付</span>
+            </div>
+            <i :style="iconStyle(3)" :class="['icon','z-center','iconfont',iconClass(3)]"></i>
+          </div>
+
+
         </div>
         <div class="button" @click="onPayClick">确认支付</div>
       </div>
@@ -39,7 +52,7 @@
 </template>
 
 <script>
-  import {mapMutations} from 'vuex';
+  import {mapGetters,mapMutations} from 'vuex';
   import Scroll from 'base/scroll/scroll'
   import PaySuccess from 'base/pay-success/pay-success'
   import {payMoney} from 'api/pay';
@@ -53,7 +66,7 @@
         mode: 1,
         success: {
           text: '支付成功',
-          nextButton: '返回首页',
+          nextButton: '返回首页'
         }
       }
     },
@@ -64,7 +77,10 @@
     computed: {
       totalPrice(){
         return `¥ ${this.$route.query.totalPrice}`
-      }
+      },
+      ...mapGetters([
+        'bindCard'
+      ])
     },
     created(){
 
@@ -107,9 +123,11 @@
         this.setShopList([]);
       },
       onPayClick(){
-        let mode = (this.mode === 1) ? 'wechatpay' : 'balancepay';
-        if (mode === 'balancepay') {
-          this.$alert('您确定使用余额进行支付吗?', ['确定', '取消']).then(() => {
+        let mode = (this.mode === 1) ? 'wechatpay' :
+          (this.mode === 2) ? 'balancepay':'cardpay';
+        if (mode !== 'wechatpay') {
+          let text= (mode==='balancepay')?'余额':'会员卡';
+          this.$alert(`您确定使用${text}进行支付吗?`, ['确定', '取消']).then(() => {
             this._payMoney(mode, this.$route.params.id, () => {
               this.PaySuccess();
             });
@@ -135,7 +153,7 @@
         return this.mode === flag ? 'icon-selected' : 'icon-unselected';
       },
       ...mapMutations({
-        setShopList:'SET_SHOP_LIST',
+        setShopList: 'SET_SHOP_LIST',
         setLaundryList: 'SET_LAUNDRY_LIST',
         setTopLaundryList: 'SET_TOP_LAUNDRY_LIST',
         setFurnishList: 'SET_FURNISH_LIST',
@@ -192,17 +210,24 @@
         align-items: center;
         height: px2rem(116);
         border-top: px2rem(4) solid $color-line-d;
-        border-bottom: px2rem(4) solid $color-line-d;
+
         &:nth-last-child(1) {
-          border-top: 0;
+          border-bottom: px2rem(4) solid $color-line-d;
+        }
+        .icon-font {
+          @include font(7);
         }
         .wx-icon {
-          @include font(7);
+          @extend .icon-font;
           color: #11B578;
         }
         .balance-icon {
-          @include font(7);
+          @extend .icon-font;
           color: $color-theme;
+        }
+        .card-icon{
+          @extend .icon-font;
+          color: #F56C6C;
         }
         .text-box {
           display: flex;

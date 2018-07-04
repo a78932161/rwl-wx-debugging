@@ -2,7 +2,7 @@
  * Created by Administrator on 2018/4/12.
  */
 import {mapMutations, mapGetters} from 'vuex';
-import {payType,idType,shopDetailType,ERR_OK,baseURL} from 'api/config';
+import {payType,idType,shopDetailType,ERR_OK,baseURL} from 'api/config'
 import {split} from 'common/js/array';
 
 export const shopBarMixin = {
@@ -227,5 +227,35 @@ export const expressTipMixin={
     ...mapGetters([
       'express'
     ])
+  }
+};
+
+import {getAdvertisement} from 'api/info';
+export const advertisementMixin={
+  data(){
+    return {
+      images: [],
+      webAddress:[],
+      time:5000
+    }
+  },
+  methods:{
+    _getAdvertisement(type){
+      getAdvertisement(type).then((ops) => {
+        if (ops.code === ERR_OK) {
+          let data=ops.data;
+          this.webAddress=split(data.webAddress);
+          this.images = this.spliceImgUrl(data.image);
+          this.time=data.time;
+          this.$refs.slider.update();  //更新slider
+        }
+      })
+    },
+    toWebAddress(index){
+      if(!this.webAddress[index]){
+        return;
+      }
+      location.href=this.webAddress[index];
+    }
   }
 };

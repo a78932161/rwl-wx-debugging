@@ -2,6 +2,8 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
+  cid:state=>state.user.cid,
+  bindCard:state=>state.user.bindCard,
   mPhone:state=>state.user.phone,
   binding:state=>state.user.binding,
   codeDown:state=>state.user.codeDown,

@@ -49,6 +49,7 @@ let constantRouterMap = [
   ]},
   {path: '/my', component: _import('my/index/index'), children: [
     {path:'phone',component: _import('my/phone/phone')},
+    {path:'bindcard',component: _import('my/bind-card/bind-card')},
     {path: 'address', component: _import('my/address/address'), children: [
       {path: 'add', component: _import('my/add-address/add-address')}
     ]},

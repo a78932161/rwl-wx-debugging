@@ -1,6 +1,8 @@
 <template>
   <div class="mall" ref="mall">
-    <div class="bg-image"></div>
+    <slider ref="slider" :interval="time" class="slider-container">
+      <img @click="toWebAddress(index)" v-for="(item,index) in images" :src="item" />
+    </slider>
     <switches :list="switchList" @switchItem="switchItem"></switches>
     <no-result class="zh-center" v-show="!result.length>0&&loading"></no-result>
     <scroll ref="scroll"
@@ -28,14 +30,18 @@
 <script>
   let size = 10;
   import {mapGetters,mapMutations} from 'vuex';
-  import {shopBarMixin,searchMoreMixin,imgUrlMixin} from 'common/js/mixin'
+  import {shopBarMixin,searchMoreMixin,imgUrlMixin,advertisementMixin} from 'common/js/mixin'
+  import Slider from 'base/slider/slider';
   import NoResult from 'base/no-result/no-result'
   import Loading from 'base/loading/loading'
   import Scroll from 'base/scroll/scroll';
   import Switches from 'base/switches/switches';
-  import {findMallList} from 'api/shopList';
   import {copyObj} from 'common/js/array';
-  import {ERR_OK,baseURL} from 'api/config';
+  import {findMallList} from 'api/shopList';
+  import {getAdvertisement} from 'api/info';
+  import {ERR_OK,baseURL,advertisement} from 'api/config';
+
+
   export default {
     data(){
       return {
@@ -54,10 +60,12 @@
       Loading,
       Switches,
       Scroll,
-      NoResult
+      NoResult,
+      Slider
     },
-    mixins: [shopBarMixin, searchMoreMixin,imgUrlMixin],
+    mixins: [shopBarMixin, searchMoreMixin,imgUrlMixin,advertisementMixin],
     created(){
+      this._getAdvertisement(advertisement.mall);
       this.setShopList(this.mallList);
       this.searchMore();
     },
@@ -138,12 +146,12 @@
     left: 0;
     right: 0;
     background: #EFF0F5;
-    .bg-image {
+    .slider-container {
       width: 10rem;
-      @include px2rem(height, $bg-height);
-      @include bg-image('./bg');
-      background-size: 10rem px2rem($bg-height);
-      background-color: $color-background-d;
+      @include px2rem(height, 170);
+      img {
+        @include px2rem(height, 170);
+      }
     }
     .mall-list {
       display: flex;

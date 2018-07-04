@@ -3,12 +3,25 @@
     <router-link tag="div" to="/my/phone" class="item">
       <div class="left-box">
         <i class="icon iconfont icon-shouji01"></i>
-        <span class="text">更改绑定</span>
+        <span class="text">更改注册手机号</span>
       </div>
       <div class="right-box">
         <i class="icon iconfont  icon-iconfonticonfonti2copycopy"></i>
       </div>
     </router-link>
+
+
+    <router-link tag="div" to="/my/bindcard" class="item">
+      <div class="left-box">
+        <i class="icon iconfont icon-shouji01"></i>
+        <span class="text">绑定会员卡</span>
+      </div>
+      <div class="right-box">
+        <i class="icon iconfont  icon-iconfonticonfonti2copycopy"></i>
+      </div>
+    </router-link>
+
+
 
     <router-link tag="div" to="/my/address" class="item">
       <div class="left-box">
@@ -78,7 +91,7 @@
       &:nth-child(1) {
         margin-top: 0;
       }
-      &:nth-child(3) {
+      &:nth-child(4) {
         .left-box i, span, .right-box i, span {
           color: $color-theme !important;
 
