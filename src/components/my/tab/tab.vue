@@ -33,16 +33,16 @@
       </div>
     </router-link>
 
-    <div class="item" @click="toRechargePay">
+    <router-link tag="div" to="/recharge" class="item" >
       <div class="left-box">
         <i class="icon iconfont icon-icon-test1"></i>
         <span class="text">余额</span>
       </div>
       <div class="right-box">
-        <span class="button">充余额</span>
+        <span class="button" @click.stop="toRechargePay">充余额</span>
         <i class="icon iconfont  icon-iconfonticonfonti2copycopy"></i>
       </div>
-    </div>
+    </router-link>
 
     <router-link tag="div" to="/my/more" class="item">
       <div class="left-box">

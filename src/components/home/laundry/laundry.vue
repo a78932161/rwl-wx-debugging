@@ -14,11 +14,11 @@
       <scroll ref="scroll" :data="list">
         <div class="shop-container">
           <ul class="shop-list">
-            <li class="shop-item" v-for="item in list" v-if="item.stock!==0">
+            <li class="shop-item" @click="addShop(item)" v-for="item in list" v-if="item.stock!==0">
               <img v-lazy="imgUrl(item.logo)" class="clothes-img"/>
               <span class="text" v-text="item.name"></span>
               <span class="price" v-text="price(item.price)"></span>
-              <div class="add-shop" @click="addShop(item)">
+              <div class="add-shop">
                 <i class="iconfont icon-icon-test"></i>
               </div>
             </li>
