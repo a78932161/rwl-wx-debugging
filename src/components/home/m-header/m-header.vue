@@ -44,7 +44,7 @@
     },
     computed: {
        phone(){
-        return `tel:${120}`;
+        return `tel:${4000878315}`;
        },
       positionText(){
         return this.position ? this.position : '手动定位';

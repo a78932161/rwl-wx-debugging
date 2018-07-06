@@ -38,7 +38,7 @@
     right: 0;
     background: $color-background-d;
     .scroll-wrapper{
-      height: 105%;
+      height: 125%;
       .img{
         width:10rem;
         height:px2rem(423);
@@ -54,7 +54,7 @@
         width: 10rem;
         @include font(3);
         font-weight: 600;
-        margin-top: px2rem(212);
+        margin-top: px2rem(200);
         color: $color-text-l;
       }
     }
