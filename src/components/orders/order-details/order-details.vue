@@ -23,7 +23,7 @@
             <p class="item"><span class="text">收货地址</span><span class="val" v-text="obj.address"></span></p>
             <p class="item express" v-if="obj.waybillImage">
               <span class="text">顺丰单号</span>
-              <img :src="imgUrl(obj.waybillImage)" />
+              <img :src="imgUrl(obj.waybillImage)"/>
             </p>
           </div>
         </div>
@@ -41,11 +41,11 @@
   import BButton from 'base/b-button/b-button';
   import {finishOrderMixin} from 'common/js/mixin';
   import {getCurrentTime} from 'api/user';
-  import {ERR_OK,baseURL} from 'api/config'
+  import {ERR_OK, baseURL} from 'api/config'
   export default {
     data(){
       return {
-        countDownText:'',
+        countDownText: '',
         obj: {},
         totalPrice: '',
         isLaundryProgress: false
@@ -101,7 +101,7 @@
 
         }
       },
-      bgPosition(){  //(0, 新订单)(1,已派订单)(2,已收订单)(3,入站订单)(4,上挂订单)(5,完结订单)(6,取消订单);
+      bgPosition(){  //(0, 新订单)(1,已派订单)(2,已收订单)(3,入站订单)(4,上挂订单)(7,送还订单)(5,完结订单)(6,取消订单);
         switch (this.obj.status) {
           case 0:
           case 6:
@@ -115,6 +115,9 @@
             return `background-position:-20rem 0`;
             break;
           case 4:
+            return `background-position:-30rem 0`;
+            break;
+          case 7:
             return `background-position:-40rem 0`;
             break;
           case 5:
@@ -142,15 +145,15 @@
             let oneHour = 3600 * 1000;
             let diff = ops.data - this.obj.createtime;
             let countDown = parseInt((oneHour - diff) / 1000); //倒计时的毫秒数
-            this.countDownText=this.countDown(countDown);//定时器未加载时显示格式化时间
+            this.countDownText = this.countDown(countDown);//定时器未加载时显示格式化时间
             this.timer = setInterval(() => {
               countDown--;
-              if (countDown <0) { //倒计时小于0，清除定时器
-                this.countDownText='订单已被关闭';
+              if (countDown < 0) { //倒计时小于0，清除定时器
+                this.countDownText = '订单已被关闭';
                 clearInterval(this.timer);
                 return;
               }
-              this.countDownText=this.countDown(countDown)
+              this.countDownText = this.countDown(countDown)
             }, 1000);
           }
         })
@@ -214,13 +217,13 @@
     .mall-progress {
       margin-top: px2rem(40);
     }
-    .count-down{
+    .count-down {
       display: flex;
       justify-content: center;
       width: 100%;
       @include font(3);
       margin-top: px2rem(90);
-      color:$color-theme;
+      color: $color-theme;
     }
     .details {
       margin-top: px2rem(120);
@@ -245,7 +248,7 @@
           display: flex;
           align-items: center;
           margin-bottom: px2rem(26);
-          &.express{
+          &.express {
             align-items: flex-start;
           }
           .text {
@@ -264,9 +267,9 @@
               color: $color-theme;
             }
           }
-          img{
-            width:px2rem(400);
-            height:px2rem(256);
+          img {
+            width: px2rem(400);
+            height: px2rem(256);
             background: #DCDCDC;
           }
         }

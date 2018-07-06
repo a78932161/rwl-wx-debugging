@@ -5,7 +5,7 @@
         <div class="details-header">
           <div class="postage-tip" v-show="tip" v-text="postageText"></div>
           <div class="logo">
-            <span class="badge" v-text="list.length"></span>
+            <span class="badge" v-text="shopNumber"></span>
           </div>
           <div class="clear" @click="clearShop">
             <i class="icon iconfont icon-icon-test"></i>
@@ -99,6 +99,13 @@
       })
     },
     computed: {
+      shopNumber(){
+        let number=0;
+        this.list.forEach((item) => {
+          number += item.number;
+        });
+        return number;
+      },
       ...mapGetters([
         'shopList'
       ])

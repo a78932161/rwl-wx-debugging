@@ -54,8 +54,8 @@
         <p>
           加入购物车
           <span class="badge"
-                v-show="shopList.length>0"
-                v-text="shopList.length"></span>
+                v-show="shopNumber>0"
+                v-text="shopNumber"></span>
         </p>
       </span>
       <span class="buy" @click="onBuyClick">立即购买</span>
@@ -103,6 +103,13 @@
       Msg
     },
     computed: {
+      shopNumber(){
+        let number=0;
+        this.shopList.forEach((item) => {
+          number += item.number;
+        });
+        return number;
+      },
       ...mapGetters([
         'shopList',
         'currentShop'
