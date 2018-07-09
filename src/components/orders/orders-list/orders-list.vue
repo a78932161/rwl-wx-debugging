@@ -28,7 +28,7 @@
                   @click="payOrderClick(item.id,totalPrice(item))">付款</span>
             <span class="cancel" v-if="item.status===0" @click="cancelOrderClick(item.id)">取消订单</span>
             <span class="check" @click="checkProgress(item,totalPrice(item))">查看进度</span>
-            <span class="finish" v-if="item.status===4" @click="finishOrderClick(item.id)">完结订单</span>
+            <span class="finish" v-if="finishButtonShow(item)" @click="finishOrderClick(item.id)">完结订单</span>
           </div>
         </li>
         <loading v-show="hasMore"></loading>
@@ -62,9 +62,16 @@
         default: false
       }
     },
-    mixins:[finishOrderMixin],
+    mixins: [finishOrderMixin],
     methods: {
-      payOrderClick(id,totalPrice){
+      finishButtonShow(item){
+        let type = this.judgeType(item.id);
+        if (type !== 'laundryProduct' && item.status === 4 || item.status === 7) {
+          return true;
+        }
+        return false;
+      },
+      payOrderClick(id, totalPrice){
         this.$router.push({
           name: 'orders-payChose',
           query: {totalPrice},
@@ -72,15 +79,15 @@
         });
       },
       cancelOrderClick(id){
-        this.$alert('您确定取消该订单吗',['确定','取消']).then(()=>{
-           this._cancelOrder(this.judgeTypeUrl(id),id).then(()=>{
-             this.$emit('finishReload');
-           });
+        this.$alert('您确定取消该订单吗', ['确定', '取消']).then(() => {
+          this._cancelOrder(this.judgeTypeUrl(id), id).then(() => {
+            this.$emit('finishReload');
+          });
         });
       },
       finishOrderClick(id){
-        this.$alert('您确定完结该订单吗',['确定','取消']).then(()=>{
-          this._finishOrder(this.judgeTypeUrl(id),id).then(()=>{
+        this.$alert('您确定完结该订单吗', ['确定', '取消']).then(() => {
+          this._finishOrder(this.judgeTypeUrl(id), id).then(() => {
             this.$emit('finishReload');
           });
         });
@@ -221,8 +228,8 @@
         border-bottom: px2rem(15) solid #F4F4F4;
         .button {
           position: absolute;
-          top:50%;
-          transform: translate(0,-50%);
+          top: 50%;
+          transform: translate(0, -50%);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -235,21 +242,21 @@
         }
         .cancel {
           @extend .button;
-          right:px2rem(389);
+          right: px2rem(389);
         }
         .check {
           @extend .button;
-          right:px2rem(204);
+          right: px2rem(204);
         }
-        .pay{
+        .pay {
           @extend .button;
-          right:px2rem(23);
-          color:#FF4500;
+          right: px2rem(23);
+          color: #FF4500;
           border: px2rem(2) solid #FF4500;
         }
         .finish {
           @extend .button;
-          right:px2rem(23);
+          right: px2rem(23);
           color: $color-theme;
           border: px2rem(2) solid $color-theme;
         }

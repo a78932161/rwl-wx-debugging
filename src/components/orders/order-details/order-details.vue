@@ -41,7 +41,7 @@
   import BButton from 'base/b-button/b-button';
   import {finishOrderMixin} from 'common/js/mixin';
   import {getCurrentTime} from 'api/user';
-  import {ERR_OK, baseURL} from 'api/config'
+  import {ERR_OK, baseURL,idType} from 'api/config'
   export default {
     data(){
       return {
@@ -71,11 +71,16 @@
     computed: {
       buttonContent(){
         let status = this.obj.status;
+        let type=this.judgeType(this.obj.id);
         if (this.obj.payStatus === 0 && status !== 6) { //订单未被取消且未被付款
           return '去付款';
         }
+        if(type==='laundryProduct'&&status===4){  //判断为洗衣订单且状态为4时
+          return '返回'
+        }
         switch (status) {
           case 4:
+          case 7:
             return '完结订单';
             break;
           case 5:
@@ -139,6 +144,20 @@
       ])
     },
     methods: {
+      judgeType(id){
+        let type = id.slice(-3);
+        switch (type) {
+          case idType.laundry:
+            return 'laundryProduct';
+            break;
+          case idType.mall:
+            return 'mallProduct';
+            break;
+          case idType.furniture:
+            return 'furnitureProduct';
+            break;
+        }
+      },
       getCountDown(){
         getCurrentTime().then((ops) => {
           if (ops.code === ERR_OK) {
@@ -175,7 +194,8 @@
           return;
         }
         let status = this.obj.status;
-        if (status === 4) {  //处于可以完结订单的状态
+        let type=this.judgeType(this.obj.id);
+        if (status === 4&&type!=='laundryProduct'||status===7) {  //处于可以完结订单的状态
           this.$alert('您确定完结该订单吗', ['确定', '取消']).then(() => {
             this._finishOrder(this.judgeTypeUrl(this.obj.id), this.obj.id).then(() => {
               this.setIsFinish(true);
