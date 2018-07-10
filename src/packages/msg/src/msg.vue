@@ -56,6 +56,7 @@
     @include px2rem(border-radius, 9);
     color: #fff;
     @include font(2);
+    white-space: nowrap;
 
   }
 </style>

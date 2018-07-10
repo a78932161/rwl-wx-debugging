@@ -84,6 +84,7 @@
                   this.bindStatus = 2;
                   this.phone='';
                   this.code = '';
+                  this.setCodeDown(0);
                   this.$loading.hide();
                   this.$msg.setShow('手机验证成功');
                   break;
@@ -125,7 +126,8 @@
       },
       ...mapMutations({
         setBinding: 'SET_BINDING',
-        setPhone:'SET_PHONE'
+        setPhone:'SET_PHONE',
+        setCodeDown:'SET_CODE_DOWN'
       }),
       ...mapActions([
         'codeCountDown'

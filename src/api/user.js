@@ -68,13 +68,14 @@ export function changePhone(phonenumber){
   })
 }
 
-export function bindingCard(cid,cno){
+export function bindingCard(phone, cno, code){
   return fetch({
     url:'rwlmall/user/bindingcard',
     method:'post',
     params:{
-      cid,
-      cno
+      phone,
+      cno,
+      code
     }
   })
 }

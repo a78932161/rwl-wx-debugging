@@ -42,8 +42,9 @@ const user = {
         getCode(phone); //发送验证码
         let timer = setInterval(() => {
           commit('SET_CODE_DOWN', state.codeDown - 1);
-          if (state.codeDown === 0) {
-            clearInterval(timer)
+          if (state.codeDown <= 0) {
+            clearInterval(timer);
+            commit('SET_CODE_DOWN', 0);
           }
         }, 1000)
       }
