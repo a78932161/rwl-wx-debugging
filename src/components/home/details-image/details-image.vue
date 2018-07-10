@@ -43,10 +43,7 @@
       align-items: center;
       width: 10rem;
       .item {
-        margin-top: px2rem(28);
-        &:nth-last-child(1){
-          margin-bottom: px2rem(28);
-        }
+        margin-bottom: px2rem(-3);
         img {
           width: px2rem(640);
           height: px2rem(415);
