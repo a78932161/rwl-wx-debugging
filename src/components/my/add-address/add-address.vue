@@ -108,7 +108,7 @@
           findOneAddress(id).then((ops) => {
            if(ops.code===ERR_OK){
              let data = ops.data;
-             this.city.value = [data.province, data.city, data.area];
+             this.city.value = [data.province,data.city,data.area];
              for (let key in this.user) {
                this.user[key] = data[key];
              }
@@ -127,17 +127,17 @@
           arr = this._push(arr, item, 0);
           if (item.children && item.children.length > 0) {  //判断市级数据是否存在
             this._each(item.children, (aItem) => {  //循环市级数据
-              arr = this._push(arr, aItem, item.name);
+              arr = this._push(arr, aItem, item.label);
               if (aItem.children && aItem.children.length > 0) {  //判断县级数据是否存在
                 this._each(aItem.children, (bItem) => {  //循环县级数据
-                  arr = this._push(arr, bItem, aItem.name);
+                  arr = this._push(arr, bItem, aItem.label);
                 })
               }
               else {  //市级数据没有子数据时，给其加上子数据（picker需加上，否则其他数据没有三联）
                 arr.push({
                   name: '',
                   value: '',
-                  parent: aItem.name
+                  parent: aItem.label
                 });
               }
             })
@@ -146,7 +146,7 @@
             arr.push({
               name: '',
               value: '',
-              parent: item.name
+              parent: item.label
             });
           }
         });
@@ -159,8 +159,8 @@
       },
       _push(arr, item, parent){
         arr.push({
-          name: item.name,
-          value: item.name,
+          name: item.label,
+          value: item.label,
           parent
         });
         return arr;
