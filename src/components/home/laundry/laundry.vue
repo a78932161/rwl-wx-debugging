@@ -18,9 +18,9 @@
               <img v-lazy="imgUrl(item.logo)" class="clothes-img"/>
               <span class="text" v-text="item.name"></span>
               <span class="price" v-text="price(item.price)"></span>
-              <div class="add-shop">
+            <!--  <div class="add-shop">
                 <i class="iconfont icon-icon-test"></i>
-              </div>
+              </div>-->
             </li>
           </ul>
         </div>
@@ -173,8 +173,8 @@
             }
             box-sizing: border-box;
             .clothes-img {
-              @include px2rem(width, 82);
-              @include px2rem(height, 98);
+              @include px2rem(width, 112);
+              @include px2rem(height, 128);
             }
             .text {
               color: $color-text;

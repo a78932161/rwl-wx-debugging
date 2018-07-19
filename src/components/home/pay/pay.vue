@@ -14,16 +14,19 @@
         </p>
         <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
       </div>
-      <div class="picker-container">
+
+      <div class="picker-container" v-show="urlType!=='mall'">
         <popup-picker class="picker" confirm-text="确定" :title="date.title"
                       v-model="date.value" :data='date.list'></popup-picker>
         <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
       </div>
-      <div class="picker-container">
+      <div class="picker-container" v-show="urlType!=='mall'">
         <popup-picker class="picker line" confirm-text="确定" :title="time.title"
                       v-model="time.value" :data='time.list'></popup-picker>
         <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
       </div>
+
+
       <div class="shop-list">
         <div class="shop-container">
           <span class="title" v-text="category"></span>

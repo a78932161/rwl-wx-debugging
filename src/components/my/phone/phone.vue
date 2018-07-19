@@ -67,6 +67,7 @@
         if (this.phone && this.code) {   //手机号码和验证码都有填写的情况下
           this.$loading.show('请稍等');
           verifyCode(this.phone, this.code).then((ops) => {
+            this.$loading.hide();
             if (ops.code === ERR_OK) {
               switch (this.bindStatus) {
                 case 0:  //未绑定状态，成功后，更改vuex=>binding
@@ -74,7 +75,6 @@
                   this.setPhone(this.phone);
                   this.bindStatus = 1;
                   this.code = '';
-                  this.$loading.hide();
                   this.$msg.setShow('手机绑定成功');
                   if(this.$route.query.pay){ //query.pay存在时，即从支付页面进来
                       this.$router.back();
@@ -85,7 +85,6 @@
                   this.phone='';
                   this.code = '';
                   this.setCodeDown(0);
-                  this.$loading.hide();
                   this.$msg.setShow('手机验证成功');
                   break;
                 case 2:
@@ -94,7 +93,6 @@
                         this.setPhone(this.phone);
                         this.bindStatus = 1;
                         this.code = '';
-                        this.$loading.hide();
                         this.$msg.setShow('手机修改成功');
                       }
                   }).catch(()=>{
