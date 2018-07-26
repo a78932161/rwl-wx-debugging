@@ -3,7 +3,7 @@
        class="alert"
        v-if="showFlag">
     <div class="alert-container zh-center">
-      <span class="content" v-text="content"></span>
+      <span class="content" v-html="content"></span>
       <div class="button-box">
         <span class="button" @click="confirm" v-text="confirmBtnText"></span>
         <span v-show="cancelBtnText!==''" class="button" @click="cancel" v-text="cancelBtnText"></span>

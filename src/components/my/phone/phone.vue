@@ -10,6 +10,8 @@
     </div>
     <input type="number" v-model="code" placeholder="输入验证码" class="code"/>
     <span :style="bindTextStyle" class="bind" v-text="bindText" @click="bindPhone"></span>
+    <alert-box title="用户协议" ref="alertBox" :content="userProtocol"
+               @cancelClick="cancelClick"></alert-box>
   </div>
 </template>
 
@@ -17,15 +19,21 @@
 
 
   import {mapGetters, mapActions, mapMutations} from 'vuex';
-  import {verifyCode,changePhone} from 'api/user';
-  import {ERR_OK} from 'api/config';
+  import AlertBox from 'base/alert-box/alert-box';
+  import {verifyCode, changePhone} from 'api/user';
+  import {getText} from 'api/info';
+  import {ERR_OK, platformText} from 'api/config';
   export default {
     data(){
       return {
         bindStatus: 0,//0:未绑定，1:已绑定，2:旧手机验证成功
         phone: '',
-        code: ''
+        code: '',
+        userProtocol: ''
       }
+    },
+    components: {
+      AlertBox
     },
     computed: {
       phoneBorderClass(){
@@ -49,20 +57,36 @@
     directives: {
       border: {
         bind(el, binding, vnode){
-          el.disabled =(vnode.context.bindStatus === 1)?'disabled':''
+          el.disabled = (vnode.context.bindStatus === 1) ? 'disabled' : ''
         },
         update(el, binding, vnode){
-          el.disabled =(vnode.context.bindStatus === 1)?'disabled':''
+          el.disabled = (vnode.context.bindStatus === 1) ? 'disabled' : ''
         }
       }
     },
     created(){
-        if(this.binding){ //binding存在时，即已经绑定手机
-          this.bindStatus =1;
-          this.phone=this.mPhone;
-        }
+      if (this.binding) { //binding存在时，即已经绑定手机
+        this.bindStatus = 1;
+        this.phone = this.mPhone;
+        return;
+      }
+      this.$loading.show();
+      this.$nextTick(() => {   //注册前显示用户协议
+        getText(platformText.userProtocol).then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.userProtocol = ops.data.content;
+            this.$refs.alertBox.show();
+            this.$loading.hide();
+          }
+        });
+
+      });
     },
     methods: {
+      cancelClick(){
+        this.$router.back();
+        this.$msg.setShow('同意协议以后，才可注册');
+      },
       bindPhone(){
         if (this.phone && this.code) {   //手机号码和验证码都有填写的情况下
           this.$loading.show('请稍等');
@@ -76,26 +100,26 @@
                   this.bindStatus = 1;
                   this.code = '';
                   this.$msg.setShow('手机绑定成功');
-                  if(this.$route.query.pay){ //query.pay存在时，即从支付页面进来
-                      this.$router.back();
+                  if (this.$route.query.pay) { //query.pay存在时，即从支付页面进来
+                    this.$router.back();
                   }
                   break;
                 case 1:   //绑定状态，成功后，可以更换手机
                   this.bindStatus = 2;
-                  this.phone='';
+                  this.phone = '';
                   this.code = '';
                   this.setCodeDown(0);
                   this.$msg.setShow('手机验证成功');
                   break;
                 case 2:
-                  changePhone(this.phone).then((ops)=>{
-                      if(ops.code===ERR_OK){
-                        this.setPhone(this.phone);
-                        this.bindStatus = 1;
-                        this.code = '';
-                        this.$msg.setShow('手机修改成功');
-                      }
-                  }).catch(()=>{
+                  changePhone(this.phone).then((ops) => {
+                    if (ops.code === ERR_OK) {
+                      this.setPhone(this.phone);
+                      this.bindStatus = 1;
+                      this.code = '';
+                      this.$msg.setShow('手机修改成功');
+                    }
+                  }).catch(() => {
                     this.$loading.hide();
                   });
                   break;
@@ -105,7 +129,7 @@
               this.$msg.setShow('验证码错误');
               this.$loading.hide();
             }
-          }).catch(()=>{
+          }).catch(() => {
             this.$loading.hide();
           })
 
@@ -124,8 +148,8 @@
       },
       ...mapMutations({
         setBinding: 'SET_BINDING',
-        setPhone:'SET_PHONE',
-        setCodeDown:'SET_CODE_DOWN'
+        setPhone: 'SET_PHONE',
+        setCodeDown: 'SET_CODE_DOWN'
       }),
       ...mapActions([
         'codeCountDown'
@@ -149,6 +173,7 @@
     flex-direction: column;
     align-items: center;
     background: $color-background-d;
+
     .phone-wrapper {
       display: flex;
       align-items: center;

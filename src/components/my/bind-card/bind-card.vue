@@ -192,9 +192,9 @@
       margin-top: px2rem(38);
       .bg-card {
         position: relative;
-        width: px2rem(700);
+        width: px2rem(650);
         height: px2rem(422);
-        background-size: px2rem(700) px2rem(422);
+        background-size: px2rem(650) px2rem(422);
         @include bg-image('./card')
       }
       .card-number{

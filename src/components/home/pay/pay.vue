@@ -53,8 +53,7 @@
         <span class="text">备注:</span>
         <input type="text"
                v-model="remark"
-               class="content"
-               placeholder="洗衣等要求(请勿填写手机)"/>
+               class="content"/>
       </div>
       <div class="space"></div>
 
