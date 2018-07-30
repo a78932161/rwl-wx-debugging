@@ -70,19 +70,25 @@
         this.phone = this.mPhone;
         return;
       }
-      this.$loading.show();
-      this.$nextTick(() => {   //注册前显示用户协议
-        getText(platformText.userProtocol).then((ops) => {
-          if (ops.code === ERR_OK) {
-            this.userProtocol = ops.data.content;
-            this.$refs.alertBox.show();
-            this.$loading.hide();
-          }
-        });
+     this.loadUserProtocol();
 
-      });
+    },
+    activated(){
+      this.loadUserProtocol();
     },
     methods: {
+      loadUserProtocol(){
+        this.$loading.show();
+        this.$nextTick(() => {   //注册前显示用户协议
+          getText(platformText.userProtocol).then((ops) => {
+            if (ops.code === ERR_OK) {
+              this.userProtocol = ops.data.content;
+              this.$refs.alertBox.show();
+              this.$loading.hide();
+            }
+          });
+        });
+      },
       cancelClick(){
         this.$router.back();
         this.$msg.setShow('同意协议以后，才可注册');

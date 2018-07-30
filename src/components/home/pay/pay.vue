@@ -26,7 +26,6 @@
         <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
       </div>
 
-
       <div class="shop-list">
         <div class="shop-container">
           <span class="title" v-text="category"></span>
@@ -56,8 +55,6 @@
                class="content"/>
       </div>
       <div class="space"></div>
-
-
     </div>
     <div class="bottom-button">
       <div class="price-sum">
@@ -139,7 +136,7 @@
     methods: {
       onCreatePayClick(){
 
-        if(this.binding){   //判断用法是否绑定手机
+        if(this.binding){   //判断用户是否绑定手机
           if (this.currentAddress != null) {     //地址是否为空
             if (this.shopList.length !== 0) {   //购物车是否有商品存在
               this.$loading.show('正在创建订单');
