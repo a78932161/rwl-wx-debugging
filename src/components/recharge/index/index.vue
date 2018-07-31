@@ -15,7 +15,7 @@
             <li class="consume-item" v-for="item in consumeList">
               <div class="info-box">
                 <span class="name" v-text="item.category"></span>
-                <span class="time">{{timeFormat(item.time)}}</span>
+                <span class="time">{{timeFormat(item.createtime)}}</span>
               </div>
               <span class="num" v-text="money(item.money,item.category)"></span>
             </li>
