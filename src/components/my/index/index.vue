@@ -16,11 +16,8 @@
   import Tab from 'components/my/tab/tab'
   import Scroll from 'base/scroll/scroll'
   export default {
-    data(){
-      return {}
-    },
     components: {
-        Tab,
+      Tab,
       Scroll
     }
   }

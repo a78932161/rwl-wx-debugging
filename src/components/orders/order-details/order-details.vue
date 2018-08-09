@@ -3,7 +3,9 @@
     <scroll>
       <div>
 
-        <div class="laundry-progress" :style="bgPosition" v-if="isLaundryProgress"></div>
+        <div class="laundry-progress" :style="bgPosition" v-if="isLaundryProgress">
+          <div :class="['clothes-location',clothesText]"  @click="toClothesDetails"></div>
+        </div>
         <mall-progress class="mall-progress"
                        :progress="mallProgress"
                        v-else></mall-progress>
@@ -30,6 +32,7 @@
       </div>
     </scroll>
     <b-button :content="buttonContent" @buttonClick="buttonClick"></b-button>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -106,6 +109,9 @@
 
         }
       },
+      clothesText(){
+         return this.obj.status===5?'complete':'problem';
+      },
       bgPosition(){  //(0, 新订单)(1,已派订单)(2,已收订单)(3,入站订单)(4,上挂订单)(7,送还订单)(5,完结订单)(6,取消订单);
         switch (this.obj.status) {
           case 0:
@@ -144,6 +150,16 @@
       ])
     },
     methods: {
+      toClothesDetails(){
+          let result=this.orderSelectItem.items.some((item)=>{
+              if(item.problemImage!=null){
+                this.$router.push('/orders/details/clothesdetails');
+                return true;
+              }
+          })
+        if(!result)this.$msg.setShow('暂无问题衣物');
+
+      },
       judgeType(id){
         let type = id.slice(-3);
         switch (type) {
@@ -229,10 +245,25 @@
     right: 0;
     background: $color-background-d;
     .laundry-progress {
+      position: relative;
       width: 10rem;
       height: px2rem(457);
       @include bg-image('./laundry-img');
       background-size: px2rem(4500) px2rem(457);
+      .clothes-location{
+        position: absolute;
+        top: px2rem(326);
+        left: px2rem(195);
+        width: px2rem(361);
+        height: px2rem(82);
+        background-size: px2rem(361) px2rem(82);
+        &.problem{
+          @include bg-image('./problem-text');
+        }
+        &.complete{
+          @include bg-image('./complete-text');
+        }
+      }
     }
     .mall-progress {
       margin-top: px2rem(40);

@@ -81,7 +81,7 @@
     overflow-y: auto;
     .protocol {
       width: px2rem(682);
-      height: px2rem(1127);
+      height: px2rem(1027);
       border-radius: px2rem(8);
       background: #fff;
       margin-top: px2rem(40);
@@ -95,17 +95,18 @@
         font-weight: 500;
         color: #000;
         border-bottom: px2rem(3) solid $color-line;
+        box-sizing: border-box;
       }
       .content-container {
         width: px2rem(600);
-        height: px2rem(841);
+        height: px2rem(741);
         padding: px2rem(36) px2rem(41);
         text-align: justify;
       }
       .button-container {
         display: flex;
         width: 100%;
-        height: px2rem(106);
+        height: px2rem(107);
         span {
           display: flex;
           flex-direction: column;
