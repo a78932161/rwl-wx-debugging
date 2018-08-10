@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex';
   import Scroll from 'base/scroll/scroll';
   import {submitSuggest} from 'api/user';
   import {ERR_OK} from 'api/config';
@@ -28,14 +29,21 @@
     computed: {
       buttonStyle(){
         return `background-color:${this.text ? '#01C6FD' : ''}`
-      }
+      },
+      ...mapGetters([
+          'mPhone'
+      ])
     },
     methods:{
       submitSuggest(){
-        this.text&&this._submitSuggest(this.text);
+          if(this.mPhone){
+            this.text&&this._submitSuggest(this.text);
+            return ;
+          }
+          this.$msg.setShow('需在绑定手机后才能进行操作');
       },
       _submitSuggest(content){
-        submitSuggest(content).then((ops)=>{
+        submitSuggest(content,this.mPhone).then((ops)=>{
           if(ops.code===ERR_OK){
               this.text='';
             this.$msg.setShow('提交成功');

@@ -27,12 +27,13 @@ export function getUserConsumeList(){
 }
 
 
-export function submitSuggest(content) {
+export function submitSuggest(content,phone) {
   return fetch({
     url:'rwlmall/feedback/save',
     method:'post',
     params:{
-      content
+      content,
+      phone
     }
   })
 }
