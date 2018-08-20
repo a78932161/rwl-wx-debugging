@@ -54,7 +54,7 @@
     },
     computed: {
       cardInfo(){
-        return `No.${this.cid}`
+        return `No.${this.cno}`
       },
       bindText(){
         return this.bindCard ? '更改卡号' : '绑定卡号';
@@ -68,7 +68,7 @@
       ...mapGetters([
         'codeDown',
         'bindCard',
-        'cid'
+        'cno'
       ])
     },
     methods: {
@@ -89,7 +89,7 @@
             this.$loading.hide();
             if (ops.code === ERR_OK) {
               this.setBindCard(true);
-              this.setCid(this.card);
+              this.setCno(this.card);
               this.setCodeDown(0);
               this.card = '';
               this.code = '';
@@ -106,7 +106,7 @@
       },
       ...mapMutations({
         setBindCard: 'SET_BIND_CARD',
-        setCid: 'SET_CID',
+        setCno: 'SET_CNO',
         setCodeDown: 'SET_CODE_DOWN'
       }),
       ...mapActions([

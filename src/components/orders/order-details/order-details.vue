@@ -19,6 +19,7 @@
             <p class="item"><span class="text">订单价格</span><span class="val price">¥ {{totalPrice}}</span></p>
             <p class="item"><span class="text">付款方式</span><span class="val" v-text="payMode"></span></p>
             <p class="item"><span class="text">付款状态</span><span class="val status" v-text="payStatus"></span></p>
+            <p class="item"><span class="text">下单时间</span><span class="val" v-text="timeFormat(obj.createtime)"></span></p>
             <p class="item"><span class="text">订单编号</span><span class="val" v-text="obj.number"></span></p>
             <p class="item"><span class="text">联系人</span><span class="val" v-text="obj.name"></span></p>
             <p class="item"><span class="text">联系方式</span><span class="val" v-text="obj.phone"></span></p>
@@ -150,6 +151,9 @@
       ])
     },
     methods: {
+      timeFormat(time){
+          return new Date(parseInt(time)).toLocaleString()
+      },
       toClothesDetails(){
           let result=this.orderSelectItem.items.some((item)=>{
               if(item.problemImage!=null){

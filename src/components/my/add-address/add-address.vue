@@ -10,7 +10,7 @@
               <input type="text" placeholder="请填写联系人姓名" v-model="user.consignee"/>
             </div>
             <div class="box-item">
-              <span class="text">电话：</span>
+              <span class="text">手机号码：</span>
               <input type="text" placeholder="请填写手机号码" v-model="user.phone"/>
             </div>
           </div>
@@ -184,20 +184,27 @@
       saveAddress(){
         let user = this.user;
         if (user.phone && user.consignee && user.address && this.city.value.length > 0) {
-          this.load.showFlag = true;
-          this._curreyId((id) => {
-            updateAddress(id, this.user).then((ops) => {  //修改地址
-          let data=ops.data;
-              if(data.status===0){
-                 this.setCurrentAddress(data);
-              }
-              this._apiMsg(ops.code, '修改');
-            })
-          }, () => {
-            saveAddress(this.user).then((ops) => {    //添加地址
-              this._apiMsg(ops.code, '添加');
-            });
-          });
+             let phoneTest=/^[1][3578]\d{9}$/;
+            if(phoneTest.test(user.phone)){
+              this.load.showFlag = true;
+              this._curreyId((id) => {
+                updateAddress(id, this.user).then((ops) => {  //修改地址
+                  let data=ops.data;
+                  if(data.status===0){
+                    this.setCurrentAddress(data);
+                  }
+                  this._apiMsg(ops.code, '修改');
+                })
+              }, () => {
+                saveAddress(this.user).then((ops) => {    //添加地址
+                  this._apiMsg(ops.code, '添加');
+                });
+              });
+            }
+            else{
+                this.$msg.setShow('手机格式错误')
+            }
+
 
 
         }

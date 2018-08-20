@@ -2,7 +2,7 @@
  * Created by Administrator on 2018/4/9.
  */
 const getters = {
-  cid:state=>state.user.cid,
+  cno:state=>state.user.cno,
   bindCard:state=>state.user.bindCard,
   mPhone:state=>state.user.phone,
   binding:state=>state.user.binding,
@@ -21,7 +21,6 @@ const getters = {
   shopBarHeight: state => state.shop.barHeight,
   shopList: state => state.shop.list,
   shopBarState: state => state.shop.barState
-
 };
 
 export default getters;

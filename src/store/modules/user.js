@@ -8,7 +8,7 @@ const user = {
     state: {
       binding: false,
       bindCard: false,
-      cid:'',
+      cno:'',
       phone: '',
       codeDown: 0
     },
@@ -16,8 +16,8 @@ const user = {
       SET_BINDING(state, flag){
         state.binding = flag;
       },
-      SET_CID(state, flag){
-        state.cid = flag;
+      SET_CNO(state, flag){
+        state.cno = flag;
       },
       SET_BIND_CARD(state, flag){
         state.bindCard = flag;
@@ -34,7 +34,7 @@ const user = {
         commit('SET_BINDING', data.binding);
         commit('SET_PHONE', data.phone);
         commit('SET_BIND_CARD', data.bindingCard);
-        commit('SET_CID', data.cid);
+        commit('SET_CNO', data.cno);
       },
       codeCountDown({commit, state}, phone){
         const countDown = 90;

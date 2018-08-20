@@ -92,7 +92,7 @@
         time: {
           title: "选择时间",
           list: [[
-            {name: '9:00 至 11:00', value: '9:00 至 11:00'},
+            {name: '9:00 至 11:00',  value: '9:00 至 11:00'},
             {name: '11:00 至 13:00', value: '11:00 至 13:00'},
             {name: '13:00 至 15:00', value: '13:00 至 15:00'},
             {name: '15:00 至 17:30', value: '15:00 至 17:30'}
@@ -135,7 +135,6 @@
     },
     methods: {
       onCreatePayClick(){
-
         if(this.binding){   //判断用户是否绑定手机
           if (this.currentAddress != null) {     //地址是否为空
             if (this.shopList.length !== 0) {   //购物车是否有商品存在
@@ -220,7 +219,8 @@
         getCurrentTime().then((ops) => {
           if (ops.code === ERR_OK) {
             this.$loading.hide();
-            this.timeFormat(ops.data)
+            this.timeFormat(ops.data);
+            this.defaultTime(ops.data);
           }
         })
       },
@@ -229,6 +229,7 @@
         let year = time.getFullYear();
         let month = time.getMonth() + 1;
         let date = time.getDate();
+        let hour=time.getHours();
         month = month < 10 ? '0' + month : month;
         date = date < 10 ? '0' + date : date;
         let arr = [];
@@ -241,6 +242,22 @@
         }
         this.date.value = [arr[0].value];
         this.date.list = [arr];
+      },
+      defaultTime(data){
+        let date=new Date(data),
+          hour=date.getHours(),
+          minute=date.getMinutes(),
+          timeArr=[11,13,15,17.30];
+        if(hour===17&&minute>30||hour>17){  //超过当天五点半，选择日期默认为明天
+          this.date.value =[this.date.list[0][1].value];
+        }
+        let formAtDate=hour+minute/100;
+        timeArr.some((date,index)=>{
+          if(formAtDate<=date){
+            this.time.value=[this.time.list[0][index].value];
+            return true;
+          }
+        });
       },
       ...mapMutations({
         setShopList: 'SET_SHOP_LIST'
