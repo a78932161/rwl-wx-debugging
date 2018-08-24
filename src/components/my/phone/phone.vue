@@ -82,9 +82,9 @@
         this.$nextTick(() => {   //注册前显示用户协议
           getText(platformText.userProtocol).then((ops) => {
             if (ops.code === ERR_OK) {
-              this.userProtocol = ops.data.content;
-              this.$refs.alertBox.show();
               this.$loading.hide();
+              this.userProtocol = ops.data?ops.data.content:'';
+              this.$refs.alertBox.show();
             }
           });
         });
