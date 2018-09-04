@@ -80,7 +80,7 @@
   import CommodityBuy from'components/home/commodity-buy/commodity-buy';
   import commodityInfo from 'components/home/commodity-info/commodity-info'
   import {searchMoreMixin, keyTypeMixin, imgUrlMixin} from 'common/js/mixin'
-  import {isShopAdd} from 'common/js/util';
+  import {isShopAdd,wxConfig} from 'common/js/util';
   import {copyObj} from 'common/js/array';
   import {findFurnishingList,findMallList,findOneProduct} from 'api/shopList';
   import {ERR_OK, baseURL} from 'api/config';
@@ -143,6 +143,12 @@
             data.price = data.price / 100;
             this.setCurrentShop(data);
             this.$refs.slider.update();  //更新slider
+
+            let currentShop=this.currentShop,
+                title=`${currentShop.price}元 ${currentShop.name}`,
+                path=this.$route.path,
+                imgUrl= encodeURI(`${baseURL}${currentShop.logo}`);
+            wxConfig(title,path,imgUrl);
           }
         });
       },

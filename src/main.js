@@ -11,6 +11,7 @@ import store from './store'
 import 'common/js/flexible';
 import './wxShare';
 
+
 Vue.use(Loading);
 Vue.prototype.$loading=Loading.service;
 Vue.prototype.$alert=Alert;
@@ -18,8 +19,10 @@ Vue.prototype.$msg=Msg;
 
 
 
+
 Vue.config.productionTip = false;
 fastclick.attach(document.body);
+
 
 
 let defaultImg =require(`./common/images/default@${window.devicePixelRatio!==3?2:3}x.png`);

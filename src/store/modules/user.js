@@ -10,9 +10,13 @@ const user = {
       bindCard: false,
       cno:'',
       phone: '',
-      codeDown: 0
+      codeDown: 0,
+      sdk:{}
     },
     mutations: {
+      SET_SDK(state,flag){
+        state.sdk=flag;
+      },
       SET_BINDING(state, flag){
         state.binding = flag;
       },

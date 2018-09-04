@@ -2,7 +2,7 @@
  * Created by Administrator on 2018/4/13.
  */
 import {propEq, copyObj} from './array';
-
+import {getSdk} from 'api/user';
 export function isShopAdd(list,obj){
   let shopList = copyObj(list);  //复制一份进行改动，否则vuex警告
   let index = shopList.findIndex(propEq(obj.id, 'id'));
@@ -61,4 +61,33 @@ export function wxPay(options,callback){  //调用微信付款
       }
     }
   );
+}
+
+
+export function wxConfig(title,path,imgUrl){
+
+  let url = location.href.split('#')[0];
+  getSdk(url).then((ops)=>{
+    let data=ops;
+    wx.config({
+      debug: false,
+      appId:data.appId,
+      timestamp:data.timestamp ,
+      nonceStr: data.nonceStr,
+      signature: data.signature,
+      jsApiList: [
+        'onMenuShareAppMessage'
+      ]
+    });
+    wx.ready(function () {
+      wx.onMenuShareAppMessage({
+        title,//分享标题
+        link: encodeURI('https://rtest.rwlai.com/rwlmall/wechat/authorize?returnUrl=' + 'https://rtest.rwlai.com' + path), // 分享链接，该链接域名必须与当前企业的可信域名一致
+        imgUrl:imgUrl||'' // 分享图标
+      });
+    });
+
+  });
+
+
 }

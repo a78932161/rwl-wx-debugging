@@ -22,25 +22,8 @@
     created(){
       this._getUserInfo();
       this._getPostage();
-      this._getWxSdk();
     },
     methods:{
-      _getWxSdk(){
-        let url = location.href.split('#')[0];
-        getSdk(url).then((ops)=>{
-          let data=ops;
-          wx.config({
-            debug: false,
-            appId:data.appId,
-            timestamp:data.timestamp ,
-            nonceStr: data.nonceStr,
-            signature: data.signature,
-            jsApiList: [
-              'onMenuShareAppMessage'
-            ]
-          });
-        })
-      },
       _getPostage(){
         getPostage().then((ops)=>{
           if(ops.code===ERR_OK){
