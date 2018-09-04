@@ -151,7 +151,7 @@
         if(route.name==='furnishing-commodity'){
           return findFurnishingList(this.page, size);
         }
-          let category=this.$route.query.category;
+          let category=route.query.category;
           return  findMallList(category, this.page, size);
       },
       search(callback){

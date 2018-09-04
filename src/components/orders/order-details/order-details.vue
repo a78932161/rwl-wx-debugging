@@ -141,7 +141,8 @@
         if (this.obj.payStatus === 0) {
           return '无';
         }
-        return this.obj.payMode === 1 ? '余额支付' : '微信支付';
+        let payMode=this.obj.payMode;
+        return (payMode === 1) ? '余额支付' :(payMode===0) ?'微信支付':'卡支付';
       },
       payStatus(){
         return this.obj.payStatus === 1 ? '已支付' : this.obj.payStatus === 2 ? '已退款' : '未支付';

@@ -18,14 +18,12 @@ export function getUserInfo(){
   })
 }
 
-
 export function getUserConsumeList(){
   return fetch({
     url:'/rwlmall/user/obtainuserrecord',
     method:'post'
   })
 }
-
 
 export function submitSuggest(content,phone) {
   return fetch({
@@ -77,6 +75,15 @@ export function bindingCard(phone, cno, code){
       phone,
       cno,
       code
+    }
+  })
+}
+
+export function getSdk(url){
+  return fetch({
+    url:'rwlmall/wechat/jsapisignature',
+    params:{
+      url
     }
   })
 }

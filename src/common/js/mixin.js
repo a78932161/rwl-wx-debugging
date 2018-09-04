@@ -5,6 +5,8 @@ import {mapMutations, mapGetters} from 'vuex';
 import {payType,idType,shopDetailType,ERR_OK,baseURL} from 'api/config'
 import {split} from 'common/js/array';
 
+
+
 export const shopBarMixin = {
   created(){
     this.setBarState(true);  //设置下方购物车为显示（当shopList长度大于0时显示购物车）
@@ -259,3 +261,5 @@ export const advertisementMixin={
     }
   }
 };
+
+

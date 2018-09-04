@@ -12,7 +12,7 @@
       <i class="icon iconfont icon-icondd2"></i>
       <span class="text">订单</span>
     </router-link>
-    <router-link class="tab-item" to="my" replace>
+    <router-link class="tab-item" to="/my" replace>
       <i class="icon iconfont icon-wode"></i>
       <span class="text">我的</span>
     </router-link>

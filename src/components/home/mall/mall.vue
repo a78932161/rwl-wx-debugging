@@ -51,7 +51,7 @@
         switchList: [
           {name: '生活用品类', className: 'life'},
           {name: '服务类', className: 'service'},
-          {name: '家电类', className: 'jd'},
+          {name: '爆款类', className: 'jd'},
           {name: '鞋服类', className: 'shoes'}
         ]
       }
