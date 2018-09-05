@@ -82,7 +82,7 @@ export function wxConfig(title,path,imgUrl){
     wx.ready(function () {
       wx.onMenuShareAppMessage({
         title,//分享标题
-        link: encodeURI('https://rtest.rwlai.com/rwlmall/wechat/authorize?returnUrl=' + 'https://rtest.rwlai.com' + path), // 分享链接，该链接域名必须与当前企业的可信域名一致
+        link: encodeURI('https://rtest.rwlai.com/rwlmall/wechat/authorize?returnUrl=' + location.origin + path), // 分享链接，该链接域名必须与当前企业的可信域名一致
         imgUrl:imgUrl||'' // 分享图标
       });
     });

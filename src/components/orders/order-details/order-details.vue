@@ -64,6 +64,7 @@
     created(){
       this.isLaundryProgress = (this.$route.query.type === 'laundryProduct') ? true : false;
       this.obj = this.orderSelectItem;
+      this.isOldOrder=this.judgeType(this.obj.id)==='oldProduct';
       this.totalPrice = this.$route.query.totalPrice;
       if (this.obj.payStatus === 0 && this.obj.status !== 6) { //订单未被取消且未被付款
         this.getCountDown(); //倒计时时间获取
@@ -96,6 +97,7 @@
         }
       },
       mallProgress(){
+        if(this.isOldOrder)return 2; //老订单全部默认完结
         switch (this.obj.status) {
           case 0:
           case 6:
@@ -142,10 +144,10 @@
           return '无';
         }
         let payMode=this.obj.payMode;
-        return (payMode === 1) ? '余额支付' :(payMode===0) ?'微信支付':'卡支付';
+        return (payMode === 1|| payMode==='BALANCE') ? '余额支付' :(payMode===0||payMode==='WXPAY') ?'微信支付':'卡支付';
       },
-      payStatus(){
-        return this.obj.payStatus === 1 ? '已支付' : this.obj.payStatus === 2 ? '已退款' : '未支付';
+      payStatus(){  //老订单全部默认已支付
+        return this.obj.payStatus === 1 ||this.isOldOrder? '已支付' : this.obj.payStatus === 2 ? '已退款' : '未支付';
       },
       ...mapGetters([
         'orderSelectItem'
@@ -177,6 +179,9 @@
           case idType.furniture:
             return 'furnitureProduct';
             break;
+          case idType.old:
+              return 'oldProduct';
+              break;
         }
       },
       getCountDown(){

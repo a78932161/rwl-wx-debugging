@@ -7,21 +7,22 @@
       <ul>
         <li class="item" v-for="item in list">
           <div class="item-info" v-for="obj in item.items">
-            <img :src="imgUrl(obj[judgeType(item.id)].logo)"/>
-            <!--<img v-lazy="imgUrl(obj[judgeType(item.id)].logo)"  />-->
+          <img :src="imgUrl(compatibleData(obj,judgeType(item.id)).logo)"/>
+
             <div class="wrapper">
               <div class="price-container">
-                <span class="name" v-text="obj[judgeType(item.id)].name"></span>
-                <span class="price" v-text="price(obj[judgeType(item.id)].price)"></span>
+                <span class="name" v-text="compatibleData(obj,judgeType(item.id)).name"></span>
+                <span class="price" v-text="price(compatibleData(obj,judgeType(item.id)).price)"></span>
               </div>
               <div class="number-container">
-                <span class="name" v-text="standard(obj[judgeType(item.id)].standard)"></span>
-                <span class="number">x{{obj.count}}</span>
+                <span class="name" v-text="standard(compatibleData(obj,judgeType(item.id)).standard)"></span>
+               <span class="number">x{{obj.count}}</span>
               </div>
             </div>
           </div>
-          <p class="price-sum"><span class="text">共{{item.items.length}}件商品合计：
-        </span><span class="sum">¥ {{totalPrice(item)}}</span></p>
+         <p class="price-sum"><span class="text">共{{item.items.length}}件商品合计：
+        </span><span class="sum">¥ {{totalPrice(item)}}</span>
+         </p>
           <div class="button-container">
             <span class="pay"
                   v-if="item.payStatus===0&&item.status===0"
@@ -110,7 +111,15 @@
           case idType.furniture:
             return 'furnitureProduct';
             break;
+          default:
+              return '';
         }
+      },
+      compatibleData(obj,key){
+          if(key){
+              return obj[key];
+          }
+          return obj;
       },
       imgUrl(url){
         return url != null ? `${baseURL}/${url}` : '';
@@ -120,7 +129,7 @@
         let items = item.items;
         let sum = 0;
         items.forEach((obj) => {
-          sum += obj.count * obj[type].price;
+          sum += obj.count * this.compatibleData(obj,type).price;
         });
         return sum / 100;
       },

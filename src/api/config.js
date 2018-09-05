@@ -12,9 +12,10 @@ export const payType = {
 };
 
 export const idType = {
-  laundry: 'A03',
-  mall: 'A10',
-  furniture:'A13'
+  laundry: 'A03', //洗衣订单
+  old:'A07',//老订单
+  mall: 'A10',   //商城订单
+  furniture:'A13' //家居订单
 };
 
 export const shopDetailType={
