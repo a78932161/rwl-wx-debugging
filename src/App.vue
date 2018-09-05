@@ -14,6 +14,8 @@
   import {getUserInfo,getSdk} from 'api/user';
   import {ERR_OK} from 'api/config';
 
+
+
   export default {
     name: 'App',
     components: {

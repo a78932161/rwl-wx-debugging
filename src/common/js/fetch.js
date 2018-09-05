@@ -4,7 +4,8 @@ import qs from 'qs';
 import {getLimited,setLimited,getLimitedUrl,setLimitedUrl,setToken,getToken} from 'common/js/auth';
 
 
-const baseURL='https://rtest.rwlai.com';
+const baseURL='https://rtest.rwlai.com',
+      tokenName='x-auth-token';
 
 let config={
   loginUrl:'',  //登陆地址
@@ -21,9 +22,15 @@ const service = axios.create({
 });
 
 
-let search=location.search.substring(1);
-let searchArr=search.split('=');
-setToken(searchArr[1]);
+
+let searchArr=location.search.substring(1).split('&'),
+  variables={};
+searchArr.forEach((arr)=>{
+  let strArr=arr.split('=');
+  variables[strArr[0]]=strArr[1];
+});
+
+setToken(variables[tokenName]);
 
 
 
@@ -32,7 +39,7 @@ service.interceptors.request.use(config => {  // request拦截器
      config.data = qs.stringify(config.data);
    }
   if (getToken()) {
-   config.headers['x-auth-token'] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
+   config.headers[tokenName] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
    }
 
   return config

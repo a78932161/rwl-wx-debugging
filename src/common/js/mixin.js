@@ -10,7 +10,7 @@ import {wxConfig} from 'common/js/util';
 
 export const wxShareMixin={
   beforeRouteEnter (to, from, next) {
-    wxConfig('分享页面',to.path);
+    wxConfig('分享页面',to.fullPath);
     next();
   }
 };

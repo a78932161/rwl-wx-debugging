@@ -146,7 +146,7 @@
 
             let currentShop=this.currentShop,
                 title=`${currentShop.price}元 ${currentShop.name}`,
-                path=this.$route.path,
+                path=this.$route.fullPath,
                 imgUrl= encodeURI(`${baseURL}${currentShop.logo}`);
             wxConfig(title,path,imgUrl);
           }
