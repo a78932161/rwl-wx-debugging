@@ -5,9 +5,15 @@ import {mapMutations, mapGetters} from 'vuex';
 import {payType,idType,shopDetailType,ERR_OK,baseURL} from 'api/config'
 import {split} from 'common/js/array';
 
+import {wxConfig} from 'common/js/util';
 
 
-
+export const wxShareMixin={
+  beforeRouteEnter (to, from, next) {
+    wxConfig('分享页面',to.path);
+    next();
+  }
+};
 
 
 export const shopBarMixin = {

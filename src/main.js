@@ -9,7 +9,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import 'common/js/flexible';
-import './wxShare';
+import {wxShareMixin} from 'common/js/mixin';
 
 
 Vue.use(Loading);
@@ -17,6 +17,7 @@ Vue.prototype.$loading=Loading.service;
 Vue.prototype.$alert=Alert;
 Vue.prototype.$msg=Msg;
 
+Vue.mixin(wxShareMixin);
 
 
 
