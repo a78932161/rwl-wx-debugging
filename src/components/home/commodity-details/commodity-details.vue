@@ -10,7 +10,7 @@
           <img v-for="item in currentShop.sowingMap" :src="item"/>
         </slider>
         <div class="text-container">
-          <span class="name" v-text="currentShop.name"></span>
+          <span class="name" v-text="currentShop.heading||currentShop.name"></span>
           <span class="price" v-text="price(currentShop.price)"></span>
           <div class="text-box">
             <span class="express" v-text="express(currentShop.express)"></span>
