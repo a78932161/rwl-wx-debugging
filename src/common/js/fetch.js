@@ -1,19 +1,22 @@
 import axios from 'axios'
 import qs from 'qs';
 //import {baseURL} from 'api/config';
-import {getLimited,setLimited,getLimitedUrl,setLimitedUrl,setToken,getToken} from 'common/js/auth';
+import {getLimited, setLimited, getLimitedUrl, setLimitedUrl, setToken, getToken} from 'common/js/auth';
 
 
-const baseURL='https://rtest.rwlai.com',
-      tokenName='x-auth-token';
+const
 
-let config={
-  loginUrl:'',  //登陆地址
-  loginApi:`${baseURL}/wechatmini/login`,    //登陆API
+  // baseURL='https://rtest.rwlai.com',
+  baseURL = 'http://www.embracex.com',
+  tokenName = 'x-auth-token';
+
+let config = {
+  loginUrl: '',  //登陆地址
+  loginApi: `${baseURL}/wechatmini/login`,    //登陆API
 
 
-  logoutApi:`${baseURL}/logout`,  //退出API
-  indexUrl:'' //首页
+  logoutApi: `${baseURL}/logout`,  //退出API
+  indexUrl: '' //首页
 };
 const service = axios.create({
   baseURL,
@@ -22,25 +25,30 @@ const service = axios.create({
 });
 
 
+// let searchArr = location.search.substring(1).split('&'),
+//   variables = {};
+// console.log(searchArr);
+// searchArr.forEach((arr) => {
+//   let strArr = arr.split('=');
+//   variables[strArr[0]] = strArr[1];
+// });
+// setToken(variables[tokenName]);
 
-let searchArr=location.search.substring(1).split('&'),
-  variables={};
-searchArr.forEach((arr)=>{
-  let strArr=arr.split('=');
-  variables[strArr[0]]=strArr[1];
-});
 
-setToken(variables[tokenName]);
+let searchArr = location.search.substring(1);
 
+setToken(searchArr.split('=')[1]);
 
+window.alert(getToken());
+// console.log(getToken());
 
 service.interceptors.request.use(config => {  // request拦截器
-   if (config.headers['Content-Type'] === "multipart/form-data") {
-     config.data = qs.stringify(config.data);
-   }
+  if (config.headers['Content-Type'] === "multipart/form-data") {
+    config.data = qs.stringify(config.data);
+  }
   if (getToken()) {
-   config.headers[tokenName] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
-   }
+    config.headers[tokenName] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
+  }
 
   return config
 }, error => {
@@ -52,20 +60,20 @@ service.interceptors.response.use(  // respone拦截器
   response => {
     let request = response.request;
 
-    if (request.responseURL === config.loginApi && request.status === 200 ) {  //登陆成功
+    if (request.responseURL === config.loginApi && request.status === 200) {  //登陆成功
 
       // setToken(response.headers['x-auth-token']);
 
-     /* if(getLimited()==='true'){
-        setLimited('false');
-        location.href=getLimitedUrl();
-      }
-      else{
-        location.href=config.indexUrl;
-      }*/
+      /* if(getLimited()==='true'){
+         setLimited('false');
+         location.href=getLimitedUrl();
+       }
+       else{
+         location.href=config.indexUrl;
+       }*/
     }
-    else if (request.responseURL === config.logoutApi && request.status === 200 ) {   //注销
-      location.href=config.loginUrl;
+    else if (request.responseURL === config.logoutApi && request.status === 200) {   //注销
+      location.href = config.loginUrl;
     }
     return response.data;
   },
@@ -73,28 +81,27 @@ service.interceptors.response.use(  // respone拦截器
 
 
     if (!error.response) {
-     //alert('网络异常');
+      //alert('网络异常');
       // 断网了
-      return ;
+      return;
     }
-    switch (error.response.status){
+    switch (error.response.status) {
       case 401:
-      /* if (location.href === config.loginUrl) {    //登陆页面401错误，提示用户名或者密码错误
-       }
-       else {    //访问受限资源，跳转至登陆页面
-       setLimited('true');
-       setLimitedUrl(location.href);
-       }*/
-      break;
+        /* if (location.href === config.loginUrl) {    //登陆页面401错误，提示用户名或者密码错误
+         }
+         else {    //访问受限资源，跳转至登陆页面
+         setLimited('true');
+         setLimitedUrl(location.href);
+         }*/
+        break;
       case 403:     //403权限不足，提示用户
         this.$vux.alert.show({
-          title:'提示',
+          title: '提示',
           content: '权限不足'
         });
-      //自行修改
-      break;
+        //自行修改
+        break;
     }
-
 
 
     return Promise.reject(error)

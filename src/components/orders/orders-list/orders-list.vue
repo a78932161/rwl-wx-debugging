@@ -15,7 +15,7 @@
                 <span class="price" v-text="price(compatibleData(obj,judgeType(item.id)).price)"></span>
               </div>
               <div class="number-container">
-                <span class="name" v-text="standard(compatibleData(obj,judgeType(item.id)).standard)"></span>
+                <!--<span class="name" v-text="standard(compatibleData(obj,judgeType(item.id)).standard)"></span>-->
                <span class="number">x{{obj.count}}</span>
               </div>
             </div>
@@ -191,7 +191,7 @@
             margin-bottom: px2rem(63);
             .name {
               flex-grow: 1;
-              font-weight: 600;
+              width: px2rem(420);
             }
             .price {
               font-weight: 600;

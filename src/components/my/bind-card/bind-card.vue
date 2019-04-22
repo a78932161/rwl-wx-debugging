@@ -6,31 +6,32 @@
         <span class="card-number" v-text="cardInfo"></span>
       </div>
       <span class="text" @click="showCard=false">更改卡号</span>
+      <div class="card-balance">
+        当前余额:{{this.balance}}
+      </div>
     </div>
 
-     <div class="info-container" v-else>
-        <div class="phone-wrapper">
-          <input type="number"
-                 v-model="phone"
-                 placeholder="请输入手机号码"
-                 class="text"/>
-          <span class="get-button" v-text="codeText" @click="getCode"></span>
-        </div>
+    <div class="info-container" v-else>
+      <div class="phone-wrapper">
         <input type="number"
-               placeholder="请输入卡号"
-               v-model="card"
-               class="input card"/>
-        <input type="number"
-               placeholder="请输入验证码"
-               v-model="code"
-               class="input code"/>
-        <span :style="bindTextStyle"
-              v-text="bindText"
-              class="bind"
-              @click="bindCardClick"></span>
-       </div>
-
-
+               v-model="phone"
+               placeholder="请输入手机号码"
+               class="text"/>
+        <span class="get-button" v-text="codeText" @click="getCode"></span>
+      </div>
+      <input type="number"
+             placeholder="请输入卡号"
+             v-model="card"
+             class="input card"/>
+      <input type="number"
+             placeholder="请输入验证码"
+             v-model="code"
+             class="input code"/>
+      <span :style="bindTextStyle"
+            v-text="bindText"
+            class="bind"
+            @click="bindCardClick"></span>
+    </div>
 
 
   </div>
@@ -39,30 +40,30 @@
 
 <script>
   import {mapGetters, mapMutations, mapActions} from 'vuex';
-  import {bindingCard} from 'api/user';
+  import {bindingCard, getCardBalance} from 'api/user';
   import {ERR_OK} from 'api/config';
 
   export default {
-    data(){
+    data() {
       return {
         phone: '',
         card: '',
         code: '',
-        showCard:true
-
+        showCard: true,
+        balance: ''
       }
     },
     computed: {
-      cardInfo(){
+      cardInfo() {
         return `No.${this.cno}`
       },
-      bindText(){
+      bindText() {
         return this.bindCard ? '更改卡号' : '绑定卡号';
       },
-      bindTextStyle(){
+      bindTextStyle() {
         return `background-color:${this.card && this.code && this.phone ? '#01C6FD' : '#DFDFDF'}`
       },
-      codeText(){
+      codeText() {
         return this.codeDown ? `${this.codeDown}s` : '获取验证码'
       },
       ...mapGetters([
@@ -72,7 +73,7 @@
       ])
     },
     methods: {
-      getCode(){
+      getCode() {
         let phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/;
         if (phoneReg.test(this.phone)) {
           this.codeDown === 0 ? this.codeCountDown(this.phone) : ''
@@ -80,9 +81,8 @@
         else {
           this.$msg.setShow('手机格式错误')
         }
-
       },
-      bindCardClick(){
+      bindCardClick() {
         if (this.card && this.code && this.phone) {
           this.$loading.show('请稍等');
           bindingCard(this.phone, this.card, this.code).then((ops) => {
@@ -102,6 +102,18 @@
             this.$loading.hide();
           })
         }
+      },
+      cardBalance() {
+        if (this.cno) {
+          let a = {
+            cno: this.cno
+          };
+          getCardBalance(a).then((res) => {
+            this.balance = res.data / 100;
+          });
+        } else {
+          console.log(this.cno);
+        }
 
       },
       ...mapMutations({
@@ -112,7 +124,10 @@
       ...mapActions([
         'codeCountDown'
       ])
-    }
+    },
+    mounted() {
+      this.cardBalance();
+    },
   }
 
 </script>
@@ -186,7 +201,7 @@
     }
     .card-container {
       display: flex;
-      flex-direction:column;
+      flex-direction: column;
       align-items: center;
       width: 10rem;
       margin-top: px2rem(38);
@@ -197,19 +212,23 @@
         background-size: px2rem(650) px2rem(422);
         @include bg-image('./card')
       }
-      .card-number{
+      .card-number {
         position: absolute;
-        left:px2rem(56);
-        bottom:px2rem(23) ;
+        left: px2rem(56);
+        bottom: px2rem(23);
         color: #fff;
         @include font(5);
       }
-      .text{
+      .text {
         margin-top: px2rem(28);
         @include font(5);
         color: #441859;
         text-decoration: underline;
-
+      }
+      .card-balance {
+        margin-top: px2rem(10);
+        color: #2db7ff;
+        @include font(6);
       }
     }
 

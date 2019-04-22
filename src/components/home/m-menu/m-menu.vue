@@ -36,7 +36,7 @@
       </div>
       <div class="name-box">
         <span class="name">小让商城</span>
-        <span class="introduce">箱包/皮具/皮革</span>
+        <span class="introduce">百货/食品</span>
       </div>
     </router-link>
   </div>

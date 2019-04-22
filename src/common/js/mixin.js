@@ -241,6 +241,35 @@ export const expressTipMixin={
   }
 };
 
+export const shopExpressTipMixin={
+  computed: {
+    shoPpostageText(){
+      let express = this.shopExpress;
+      let threshold = express.threshold / 100;
+      return `全场满${threshold}包邮，未满${threshold}邮费${express.freight / 100}。`
+    },
+    ...mapGetters([
+      'shopExpress'
+    ])
+  }
+};
+
+export const directExpressTipMixin={
+  computed: {
+    directpostageText(){
+      let express = this.shopExpress;
+      let threshold = express.threshold / 100;
+      return `全场满${threshold}包邮，未满${threshold}邮费${express.freight / 100}。`
+    },
+    ...mapGetters([
+      'shopExpress'
+    ])
+  }
+};
+
+
+
+
 import {getAdvertisement} from 'api/info';
 export const advertisementMixin={
   data(){

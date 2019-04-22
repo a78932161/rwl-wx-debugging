@@ -1,11 +1,11 @@
 <template>
   <div class="details-image">
-    <scroll>
-    <ul class="img-list">
-      <li class="item" v-for="item in orderSelectImages">
-        <img :src="item" />
-      </li>
-    </ul>
+    <scroll :data="orderSelectImages" ref="scroll">
+      <ul class="img-list">
+        <li class="item" v-for="item in orderSelectImages">
+          <img :src="item"/>
+        </li>
+      </ul>
     </scroll>
   </div>
 </template>
@@ -14,15 +14,21 @@
 <script>
   import {mapGetters} from 'vuex';
   import Scroll from 'base/scroll/scroll';
+
   export default {
     components: {
       Scroll
+    },
+    data() {
+      return {
+        imgList: [],
+      }
     },
     computed: {
       ...mapGetters([
         'orderSelectImages'
       ])
-    }
+    },
   }
 </script>
 
@@ -41,12 +47,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 10rem;
       .item {
-        margin-bottom: px2rem(-3);
+        margin-bottom: px2rem(-5);
         img {
-          width: px2rem(640);
-          height: px2rem(415);
+          width: px2rem(750);
+          background-size: auto;
+          height: px2rem(600);
+          /*width: 100%;*/
+          /*height: 100%;*/
+          /*max-width: 100%;*/
+          /*max-height: 100%;*/
         }
       }
     }

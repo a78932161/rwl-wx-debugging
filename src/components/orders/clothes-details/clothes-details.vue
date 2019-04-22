@@ -10,10 +10,17 @@
           <div class="result-box">洗后效果：<span v-text="item.washingEffect"></span></div>
           入站照片：
           <div class="img-result">
-            <img :src="imgUrl"  v-for="imgUrl in spliceImgUrl(item.problemImage)" />
+            <img :src="imgUrl" v-for="imgUrl in spliceImgUrl(item.problemImage)"/>
+          </div>
+        </div>
+        <div class="detail-container" v-for="item in orderSelectItem.items" v-if="item.image">
+          图片:
+          <div class="img-result">
+            <img :src="imgUrl" v-for="imgUrl in spliceImgUrl(item.image)"/>
           </div>
         </div>
       </div>
+
     </scroll>
 
   </div>
@@ -25,8 +32,10 @@
   import {mapGetters} from 'vuex';
   import Scroll from 'base/scroll/scroll';
   import {imgUrlMixin} from 'common/js/mixin';
+
   export default {
-    mixins:[imgUrlMixin],
+    mixins: [imgUrlMixin],
+
     components: {
       Scroll
     },

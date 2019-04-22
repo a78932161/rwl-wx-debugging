@@ -11,17 +11,21 @@
         </slider>
         <div class="text-container">
           <span class="name" v-text="currentShop.heading||currentShop.name"></span>
-          <span class="price" v-text="price(currentShop.price)"></span>
+          <div class="prices">
+            <span class="price" v-text="price(currentShop.price)"></span>
+            <span class="original" v-text="oldPrice(currentShop.oldPrice)"></span>
+          </div>
+
           <div class="text-box">
             <span class="express" v-text="express(currentShop.express)"></span>
             <span class="stock" v-text="stock(currentShop.stock)"></span>
           </div>
         </div>
         <div class="shop-details">
-          <div class="parameter" @click="infoShow" v-show="currentShop.productParameters">
-            <span class="text">产品参数</span>
-            <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
-          </div>
+          <!--<div class="parameter" @click="infoShow" v-show="currentShop.productParameters">-->
+          <!--<span class="text">产品参数</span>-->
+          <!--<i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>-->
+          <!--</div>-->
           <div class="detail" @click="toDetails">
             <span class="text">查看商品详情</span>
             <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
@@ -42,13 +46,16 @@
              <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
            </div>
          </div>-->
+        <div class="standardImg" v-if="currentShop.standard">
+          <img :src="currentShop.standard">
+        </div>
         <recommend :list="result" @selectItem="scrollTop"></recommend>
         <loading v-show="hasMore" title=""></loading>
       </div>
     </scroll>
     <commodity-authentication ref="authentication"></commodity-authentication>
     <commodity-buy ref="buy" :shop="currentShop"></commodity-buy>
-    <commodity-info ref="info" :info="currentShop.productParameters||''"></commodity-info>
+    <!--<commodity-info ref="info" :info="currentShop.productParameters||''"></commodity-info>-->
     <div class="button-container">
       <span class="add-shop" @click="addShop(currentShop)">
         <p>
@@ -60,7 +67,7 @@
       </span>
       <span class="buy" @click="onBuyClick">立即购买</span>
     </div>
-    <msg ref="msg" content="添加成功"></msg>
+    <msg ref="msg" :content="msgContent"></msg>
     <router-view></router-view>
   </div>
 
@@ -77,18 +84,20 @@
   import Msg from 'base/msg/msg';
   import Recommend from 'components/home/recommend/recommend';
   import CommodityAuthentication from 'components/home/commodity-authentication/commodity-authentication';
-  import CommodityBuy from'components/home/commodity-buy/commodity-buy';
+  import CommodityBuy from 'components/home/commodity-buy/commodity-buy';
   import commodityInfo from 'components/home/commodity-info/commodity-info'
   import {searchMoreMixin, keyTypeMixin, imgUrlMixin} from 'common/js/mixin'
-  import {isShopAdd,wxConfig} from 'common/js/util';
+  import {isShopAdd, wxConfig} from 'common/js/util';
   import {copyObj} from 'common/js/array';
-  import {findFurnishingList,findMallList,findOneProduct} from 'api/shopList';
+  import {findFurnishingList, findMallList, findOneProduct} from 'api/shopList';
   import {ERR_OK, baseURL} from 'api/config';
+
   export default {
-    data(){
+    data() {
       return {
         authentication: false,
-        pullUp: true
+        pullUp: true,
+        msgContent: '添加成功'
       }
     },
     mixins: [searchMoreMixin, keyTypeMixin, imgUrlMixin],
@@ -103,8 +112,8 @@
       Msg
     },
     computed: {
-      shopNumber(){
-        let number=0;
+      shopNumber() {
+        let number = 0;
         this.shopList.forEach((item) => {
           number += item.number;
         });
@@ -112,28 +121,32 @@
       },
       ...mapGetters([
         'shopList',
-        'currentShop'
+        'currentShop',
+        'shopExpress'
       ])
     },
-    created(){
+    created() {
       this._findOneProduct();
       this.searchMore();
       this.setBarState(false);
     },
-    destroyed(){
+    destroyed() {
       this.setBarState(true);
     },
     methods: {
-      toDetails(){
-          let name=this.$route.name;
-          this.setSelectImages(this.currentShop.image);
-         if(name==='furnishing-commodity'){ //如果从家居页面进来，则跳转到属于家居图片详情页
-           this.$router.push({name: 'furnishing-details-image'});
-           return ;
-         }
+      toDetails() {
+        let name = this.$route.name;
+        this.setSelectImages(this.currentShop.image);
+
+
+        if (name === 'furnishing-commodity') { //如果从家居页面进来，则跳转到属于家居图片详情页
+          this.$router.push({name: 'furnishing-details-image'});
+          return;
+        }
         this.$router.push({name: 'mall-details-image'});
+
       },
-      _findOneProduct(){
+      _findOneProduct() {
         let id = this.$route.params.id;
         findOneProduct(this.judgeType(id), id).then((ops) => {
           if (ops.code === ERR_OK) {
@@ -141,26 +154,29 @@
             data.image = this.spliceImgUrl(data.image);
             data.sowingMap = this.spliceImgUrl(data.sowingMap);
             data.price = data.price / 100;
+            // data.oldPrice = data.oldPrice / 100;
+
             this.setCurrentShop(data);
             this.$refs.slider.update();  //更新slider
 
-            let currentShop=this.currentShop,
-                title=`${currentShop.price}元 ${currentShop.name}`,
-                path=this.$route.fullPath,
-                imgUrl= encodeURI(`${baseURL}${currentShop.logo}`);
-            wxConfig(title,path,imgUrl);
+            let currentShop = this.currentShop,
+              title = `${currentShop.price}元 ${currentShop.name}`,
+              path = this.$route.fullPath,
+              imgUrl = encodeURI(`${baseURL}${currentShop.logo}`);
+
+            wxConfig(title, path, imgUrl);
           }
         });
       },
-      recommendApi(){  //获取当前推荐列表的api
-        let route=this.$route;
-        if(route.name==='furnishing-commodity'){
+      recommendApi() {  //获取当前推荐列表的api
+        let route = this.$route;
+        if (route.name === 'furnishing-commodity') {
           return findFurnishingList(this.page, size);
         }
-          let category=route.query.category;
-          return  findMallList(category, this.page, size);
+        let category = route.query.category;
+        return findMallList(category, this.page, size);
       },
-      search(callback){
+      search(callback) {
         this.recommendApi().then((ops) => {
           if (ops.code === ERR_OK) {
             this.result = this.result.concat(ops.data.content);
@@ -169,42 +185,49 @@
           }
         });
       },
-      infoShow(){
+      infoShow() {
         this.$refs.info.show();
       },
-      addShop(item){
-        let obj = copyObj(item);
-        obj.price = obj.price * 100;
-        let shopList = isShopAdd(this.shopList, obj);
-        this.setShopList(shopList);
-        this.$refs.msg.setShow();
-        if (this.$route.name === 'furnishing-commodity') {  //是否为小让家居商品详情页面
-          this.setFurnishList(shopList);
-          return;
+      addShop(item) {
+        if (item.stock > 0) {
+          let obj = copyObj(item);
+          obj.price = obj.price * 100;
+          let shopList = isShopAdd(this.shopList, obj);
+          this.setShopList(shopList);
+          this.$refs.msg.setShow();
+          if (this.$route.name === 'furnishing-commodity') {  //是否为小让家居商品详情页面
+            this.setFurnishList(shopList);
+            return;
+          }
+          this.setMallList(shopList);
+        } else {
+          this.msgContent = '添加失败,库存不足';
+          this.$refs.msg.setShow();
         }
-        this.setMallList(shopList);
-
       },
-      onBuyClick(){
+      onBuyClick() {
         this.$refs.buy.show();
       },
-      scrollTop(){
+      scrollTop() {
         this.$refs.scroll.scrollTo(0, 0);  //点击推荐列表时，重新滚动到顶部
       },
-      queryStore(){   //  TODO 如果用id获取，后续路由改成id
+      queryStore() {   //  TODO 如果用id获取，后续路由改成id
         this.$router.push({name: 'storeinfo'});
       },
-      authenticationShow(){
+      authenticationShow() {
         this.$refs.authentication.show();
       },
-      stock(stock){
+      stock(stock) {
         return `剩余：${stock}件`
       },
-      express(express){
-        return `快递：${express > 0 ? `${express}元` : '免运费'}`
+      express(express) {
+        return `快递：${express > 0 ? `${express}元` : `满${this.shopExpress.threshold / 100}免运费,不满则为${this.shopExpress.freight / 100}元`}`
       },
-      price(price){
+      price(price) {
         return `¥${price}`
+      },
+      oldPrice(price) {
+        return `原价¥${price / 100}`
       },
       ...mapMutations({
         setSelectImages: 'SET_SELECT_IMAGES',
@@ -216,7 +239,7 @@
       })
     },
     watch: {
-      '$route'(to, from){  //每次从其他页面页面进入时，重新拉取数据，例如在该页面点击推荐商品
+      '$route'(to, from) {  //每次从其他页面页面进入时，重新拉取数据，例如在该页面点击推荐商品
         this._findOneProduct();
       }
     }
@@ -256,11 +279,21 @@
           @include font(2);
           margin: px2rem(25) 0 0 px2rem($margin-left);
         }
-        .price {
-          color: #D7574C;
-          @include font(5);
-          margin: px2rem(33) 0 px2rem(27) px2rem($margin-left);
+        .prices {
+          margin: px2rem(33) 0 px2rem(27) 0;
+          .price {
+            color: #D7574C;
+            @include font(5);
+            margin: px2rem(33) 0 px2rem(27) px2rem($margin-left);
+          }
+          .original {
+            color: #999;
+            @include font(1);
+            margin: 0 0 0 px2rem($margin-left);
+            text-decoration: line-through;
+          }
         }
+
         .text-box {
           @include px2rem(margin-bottom, 20);
           color: $color-text-d;
@@ -284,11 +317,13 @@
         @include px2rem(height, 75);
         @include font(-1);
         .text {
-          @include px2rem(margin-left, 3);
+          margin: 0 auto;
+          @include font(2);
         }
       }
       .icon-right {
-        @include px2rem(margin-right, 30);
+        position: absolute;
+        right: px2rem(30);
         @include font(3);
         color: #D5D5D5;
       }
@@ -305,6 +340,7 @@
         }
       }
       .shop-details {
+        position: relative;
         @extend .container-flex;
         @include px2rem(margin-top, 21);
         .parameter {
@@ -374,6 +410,13 @@
         background-color: #FE4543;
       }
     }
-
+    .standardImg img {
+      width: px2rem(750);
+      background-size: auto;
+      /*max-width: 100%;*/
+      /*max-height: 100%;*/
+      /*width: auto;*/
+      /*height: auto;*/
+    }
   }
 </style>

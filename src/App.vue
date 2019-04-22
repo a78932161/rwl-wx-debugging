@@ -8,12 +8,11 @@
 </template>
 
 <script>
-  import {mapMutations,mapActions} from 'vuex';
+  import {mapMutations, mapActions} from 'vuex';
   import Tab from 'components/tab/tab';
   import {getPostage} from 'api/orders';
-  import {getUserInfo,getSdk} from 'api/user';
+  import {getUserInfo, getSdk, getShopExpress} from 'api/user';
   import {ERR_OK} from 'api/config';
-
 
 
   export default {
@@ -21,30 +20,41 @@
     components: {
       Tab
     },
-    created(){
+    created() {
       this._getUserInfo();
       this._getPostage();
+      this._getExpress();
     },
-    methods:{
-      _getPostage(){
-        getPostage().then((ops)=>{
-          if(ops.code===ERR_OK){
+    methods: {
+      _getPostage() {
+        getPostage().then((ops) => {
+          if (ops.code === ERR_OK) {
             this.setExpress(ops.data);
           }
         })
       },
-      _getUserInfo(){
-          getUserInfo().then((ops)=>{
-              if(ops.code===ERR_OK){
-                this.setUserInfo(ops.data)
-              }
-          })
+      _getUserInfo() {
+        getUserInfo().then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.setUserInfo(ops.data)
+          }
+        })
       },
+      _getExpress() {
+        getShopExpress('mallFreightSet').then((ops) => {
+          if (ops.code === ERR_OK) {
+            this.setShopExpress(ops.data);
+            console.log(this.$store.state.shop);
+          }
+        })
+      },
+
       ...mapMutations({
-          setExpress:'SET_EXPRESS',
+        setExpress: 'SET_EXPRESS',
+        setShopExpress: 'SET_SHOP_EXPRESS'
       }),
       ...mapActions([
-          'setUserInfo'
+        'setUserInfo'
       ])
     }
   }

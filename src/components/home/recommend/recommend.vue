@@ -109,7 +109,7 @@
         display: flex;
         flex-direction: column;
         @include px2rem(width, 332);
-        @include px2rem(height, 365);
+        @include px2rem(height, 414);
         box-shadow: px2rem(3) px2rem(4) px2rem(3) #F3F3F3;
         @include px2rem(margin-bottom, 50);
         &:nth-child(odd) {
@@ -128,9 +128,19 @@
         }
 
         .name {
-          @include font(5);
+          /*<!--@include font(4);-->*/
+          /*<!--color: #3A3A3A;-->*/
+          /*<!--margin: px2rem(30) 0 px2rem(22) px2rem(29);-->*/
+          margin: px2rem(29) 0 px2rem(30) px2rem(29);
+          @include font(3);
           color: #3A3A3A;
-          margin: px2rem(30) 0 px2rem(22) px2rem(29);
+          height: px2rem(64);
+          width: 88%;
+          display: inline-block;
+          overflow: hidden;
+          -webkit-line-clamp: 2;
+          word-break: break-all;
+
         }
         .info-box {
           display: flex;

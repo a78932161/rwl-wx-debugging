@@ -51,10 +51,11 @@
   import Alert from 'base/alert/alert';
   import Scroll from 'base/scroll/scroll';
   import BButton from 'base/b-button/b-button';
-  import {findAddress, removeAddress, setDefaultAddress,getDefaultAddress} from 'api/address';
+  import {findAddress, removeAddress, setDefaultAddress, getDefaultAddress} from 'api/address';
   import {ERR_OK, ADDRESS_DEFAULT} from 'api/config';
+
   export default {
-    data(){
+    data() {
       return {
         fetchLoad: false,
         addressList: []
@@ -65,21 +66,21 @@
       Scroll,
       Alert
     },
-    created(){
+    created() {
       this._findAddress();
     },
     methods: {
-      choseAddress(item){
-          if(this.$route.query.pay){
-            this.setCurrentAddress(item);
-            this.$router.back();
-          }
+      choseAddress(item) {
+        if (this.$route.query.pay) {
+          this.setCurrentAddress(item);
+          this.$router.back();
+        }
 
       },
-      selectEdit(id){
+      selectEdit(id) {
         this.$router.push({path: '/my/address/add', query: {id}})
       },
-      defaultAddress(id){
+      defaultAddress(id) {
         this.$loading.show('正在设置');
         setDefaultAddress(id).then(() => {
           this._findAddress();
@@ -87,20 +88,20 @@
           this._getDefaultAddress();
         })
       },
-      defaultIcon(status){
+      defaultIcon(status) {
         return `${ADDRESS_DEFAULT !== status ? 'icon-unselected' : 'icon-xuanzhong'}`;
       },
-      defaultStyle(status){
+      defaultStyle(status) {
         return `color:${ADDRESS_DEFAULT !== status ? '#C7C7C7' : ''}`;
       },
-      _getDefaultAddress(){
+      _getDefaultAddress() {
         getDefaultAddress().then((ops) => {
           if (ops.code === ERR_OK) {
             this.setCurrentAddress(ops.data);
           }
         })
       },
-      _findAddress(){
+      _findAddress() {
         findAddress().then((ops) => {
           if (ops.code === ERR_OK) {
             this.addressList = ops.data;
@@ -110,19 +111,21 @@
           this.fetchLoad = true;
         })
       },
-      removeAddress(id){
+      removeAddress(id) {
         this.$alert('您确定删除此条地址信息吗？', ['确定', '取消']).then(() => {
           this.$loading.show();
           removeAddress(id).then((ops) => {
             if (ops.code === ERR_OK) {
               this._findAddress();
+              this.setCurrentAddress(null);
+              console.log(this.$store.state);
               this.$loading.hide();
               this.$msg.setShow('删除成功');
             }
           });
         });
       },
-      addAddress(){
+      addAddress() {
         this.$router.push('/my/address/add');
       },
       ...mapMutations({
@@ -130,9 +133,8 @@
       })
     },
     watch: {
-      '$route'(to, from){
+      '$route'(to, from) {
         if (from.path === '/my/address/add') {  //当从地址添加页回来时，刷新页面
-          console.log(1234345)
           this._findAddress();
         }
       }
@@ -222,7 +224,7 @@
             height: px2rem(96);
             box-sizing: border-box;
             border-top: px2rem(3) solid $color-text-l;
-            .h100{
+            .h100 {
               display: flex;
               align-items: center;
               height: px2rem(96);

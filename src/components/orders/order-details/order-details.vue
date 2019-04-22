@@ -4,7 +4,7 @@
       <div>
 
         <div class="laundry-progress" :style="bgPosition" v-if="isLaundryProgress">
-          <div :class="['clothes-location',clothesText]"  @click="toClothesDetails"></div>
+          <div :class="['clothes-location',clothesText]" @click="toClothesDetails"></div>
         </div>
         <mall-progress class="mall-progress"
                        :progress="mallProgress"
@@ -19,7 +19,8 @@
             <p class="item"><span class="text">订单价格</span><span class="val price">¥ {{totalPrice}}</span></p>
             <p class="item"><span class="text">付款方式</span><span class="val" v-text="payMode"></span></p>
             <p class="item"><span class="text">付款状态</span><span class="val status" v-text="payStatus"></span></p>
-            <p class="item"><span class="text">下单时间</span><span class="val" v-text="timeFormat(obj.createtime)"></span></p>
+            <p class="item"><span class="text">下单时间</span><span class="val" v-text="timeFormat(obj.createtime)"></span>
+            </p>
             <p class="item"><span class="text">订单编号</span><span class="val" v-text="obj.number"></span></p>
             <p class="item"><span class="text">联系人</span><span class="val" v-text="obj.name"></span></p>
             <p class="item"><span class="text">联系方式</span><span class="val" v-text="obj.phone"></span></p>
@@ -45,9 +46,10 @@
   import BButton from 'base/b-button/b-button';
   import {finishOrderMixin} from 'common/js/mixin';
   import {getCurrentTime} from 'api/user';
-  import {ERR_OK, baseURL,idType} from 'api/config'
+  import {ERR_OK, baseURL, idType} from 'api/config'
+
   export default {
-    data(){
+    data() {
       return {
         countDownText: '',
         obj: {},
@@ -61,26 +63,26 @@
       Scroll
     },
     mixins: [finishOrderMixin],
-    created(){
+    created() {
       this.isLaundryProgress = (this.$route.query.type === 'laundryProduct') ? true : false;
       this.obj = this.orderSelectItem;
-      this.isOldOrder=this.judgeType(this.obj.id)==='oldProduct';
+      this.isOldOrder = this.judgeType(this.obj.id) === 'oldProduct';
       this.totalPrice = this.$route.query.totalPrice;
       if (this.obj.payStatus === 0 && this.obj.status !== 6) { //订单未被取消且未被付款
         this.getCountDown(); //倒计时时间获取
       }
     },
-    destroyed(){
+    destroyed() {
       this.timer && clearInterval(this.timer);
     },
     computed: {
-      buttonContent(){
+      buttonContent() {
         let status = this.obj.status;
-        let type=this.judgeType(this.obj.id);
+        let type = this.judgeType(this.obj.id);
         if (this.obj.payStatus === 0 && status !== 6) { //订单未被取消且未被付款
           return '去付款';
         }
-        if(type==='laundryProduct'&&status===4){  //判断为洗衣订单且状态为4时
+        if (type === 'laundryProduct' && status === 4) {  //判断为洗衣订单且状态为4时
           return '返回'
         }
         switch (status) {
@@ -96,8 +98,8 @@
             break;
         }
       },
-      mallProgress(){
-        if(this.isOldOrder)return 2; //老订单全部默认完结
+      mallProgress() {
+        if (this.isOldOrder) return 2; //老订单全部默认完结
         switch (this.obj.status) {
           case 0:
           case 6:
@@ -112,10 +114,10 @@
 
         }
       },
-      clothesText(){
-         return this.obj.status===5?'complete':'problem';
+      clothesText() {
+        return this.obj.status === 5 ? 'complete' : 'problem';
       },
-      bgPosition(){  //(0, 新订单)(1,已派订单)(2,已收订单)(3,入站订单)(4,上挂订单)(7,送还订单)(5,完结订单)(6,取消订单);
+      bgPosition() {  //(0, 新订单)(1,已派订单)(2,已收订单)(3,入站订单)(4,上挂订单)(7,送还订单)(5,完结订单)(6,取消订单);
         switch (this.obj.status) {
           case 0:
           case 6:
@@ -139,35 +141,37 @@
             break;
         }
       },
-      payMode(){
+      payMode() {
         if (this.obj.payStatus === 0) {
           return '无';
         }
-        let payMode=this.obj.payMode;
-        return (payMode === 1|| payMode==='BALANCE') ? '余额支付' :(payMode===0||payMode==='WXPAY') ?'微信支付':'卡支付';
+        let payMode = this.obj.payMode;
+        return (payMode === 1 || payMode === 'BALANCE') ? '余额支付' : (payMode === 0 || payMode === 'WXPAY') ? '微信支付' : '卡支付';
       },
-      payStatus(){  //老订单全部默认已支付
-        return this.obj.payStatus === 1 ||this.isOldOrder? '已支付' : this.obj.payStatus === 2 ? '已退款' : '未支付';
+      payStatus() {  //老订单全部默认已支付
+        return this.obj.payStatus === 1 || this.isOldOrder ? '已支付' : this.obj.payStatus === 2 ? '已退款' : '未支付';
       },
       ...mapGetters([
         'orderSelectItem'
       ])
     },
     methods: {
-      timeFormat(time){
-          return new Date(parseInt(time)).toLocaleString()
+      timeFormat(time) {
+        return new Date(parseInt(time)).toLocaleString()
       },
-      toClothesDetails(){
-          let result=this.orderSelectItem.items.some((item)=>{
-              if(item.problemImage!=null){
-                this.$router.push('/orders/details/clothesdetails');
-                return true;
-              }
-          })
-        if(!result)this.$msg.setShow('暂无问题衣物');
+      toClothesDetails() {
+        // this.$router.push('/orders/details/clothesdetails');
+        let result = this.orderSelectItem.items.some((item) => {
+          if (item.problemImage || item.image) {
+            this.$router.push('/orders/details/clothesdetails');
+            return true;
+          }
+        })
+
+        if (!result) this.$msg.setShow('暂无问题衣物或无衣物图片');
 
       },
-      judgeType(id){
+      judgeType(id) {
         let type = id.slice(-3);
         switch (type) {
           case idType.laundry:
@@ -180,11 +184,11 @@
             return 'furnitureProduct';
             break;
           case idType.old:
-              return 'oldProduct';
-              break;
+            return 'oldProduct';
+            break;
         }
       },
-      getCountDown(){
+      getCountDown() {
         getCurrentTime().then((ops) => {
           if (ops.code === ERR_OK) {
             let oneHour = 3600 * 1000;
@@ -203,14 +207,14 @@
           }
         })
       },
-      countDown(num){
+      countDown(num) {
         let minute = num / 60 | 0;
         minute = minute < 10 ? '0' + minute : minute;
         let second = num - minute * 60;
         second = second < 10 ? '0' + second : second;
         return `${minute}分${second}秒后订单将被关闭`
       },
-      buttonClick(){
+      buttonClick() {
         if (this.obj.payStatus === 0 && this.obj.status !== 6) {  //订单未被取消且未被付款
           this.$router.push({
             name: 'orders-payChose',
@@ -220,8 +224,8 @@
           return;
         }
         let status = this.obj.status;
-        let type=this.judgeType(this.obj.id);
-        if (status === 4&&type!=='laundryProduct'||status===7) {  //处于可以完结订单的状态
+        let type = this.judgeType(this.obj.id);
+        if (status === 4 && type !== 'laundryProduct' || status === 7) {  //处于可以完结订单的状态
           this.$alert('您确定完结该订单吗', ['确定', '取消']).then(() => {
             this._finishOrder(this.judgeTypeUrl(this.obj.id), this.obj.id).then(() => {
               this.setIsFinish(true);
@@ -232,7 +236,7 @@
         }
         this.$router.back(); //其它情况，一律返回至上一个历史记录
       },
-      imgUrl(url){
+      imgUrl(url) {
         return url != null ? `${baseURL}/${url}` : '';
       },
       ...mapMutations({
@@ -260,17 +264,17 @@
       height: px2rem(457);
       @include bg-image('./laundry-img');
       background-size: px2rem(4500) px2rem(457);
-      .clothes-location{
+      .clothes-location {
         position: absolute;
         top: px2rem(326);
         left: px2rem(195);
         width: px2rem(361);
         height: px2rem(82);
         background-size: px2rem(361) px2rem(82);
-        &.problem{
+        &.problem {
           @include bg-image('./problem-text');
         }
-        &.complete{
+        &.complete {
           @include bg-image('./complete-text');
         }
       }

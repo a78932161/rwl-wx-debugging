@@ -17,9 +17,10 @@
 
       <div class="picker-container" v-show="urlType!=='mall'">
         <popup-picker class="picker" confirm-text="确定" :title="date.title"
-                      v-model="date.value" :data='date.list'></popup-picker>
+                      v-model="date.value" :data='date.list' @on-change="qaq"></popup-picker>
         <i class="icon-right iconfont icon-iconfonticonfonti2copycopy"></i>
       </div>
+
       <div class="picker-container" v-show="urlType!=='mall'">
         <popup-picker class="picker line" confirm-text="确定" :title="time.title"
                       v-model="time.value" :data='time.list'></popup-picker>
@@ -40,8 +41,11 @@
                       :alertText="alert.text"
                       :cancelBtnText="alert.cancelBtnText"></number>
             </li>
+
           </transition-group>
           <span v-show="postageTip" class="postageText" v-text="postageText"></span>
+          <span v-show="postageTip1" class="postageText" v-text="shoPpostageText"></span>
+
         </div>
       </div>
       <!--    <div class="official-info">
@@ -70,13 +74,14 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {PopupPicker} from 'vux';
   import Number from 'base/number/number';
-  import {setListMixin,expressTipMixin} from 'common/js/mixin';
+  import {setListMixin, expressTipMixin, shopExpressTipMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
   import {getCurrentTime} from 'api/user';
   import {orderCreate} from 'api/pay';
   import {ERR_OK} from 'api/config';
-  export  default {
-    data(){
+
+  export default {
+    data() {
       return {
         remark: '',
         alert: {
@@ -92,13 +97,20 @@
         time: {
           title: "选择时间",
           list: [[
-            {name: '9:00 至 11:00',  value: '9:00 至 11:00'},
+            {name: '9:00 至 11:00', value: '9:00 至 11:00'},
             {name: '11:00 至 13:00', value: '11:00 至 13:00'},
             {name: '13:00 至 15:00', value: '13:00 至 15:00'},
             {name: '15:00 至 17:30', value: '15:00 至 17:30'}
           ]],
-          value: ['9:00 至 11:00']
-        }
+          list1: [[
+            {name: '9:00 至 11:00', value: '9:00 至 11:00'},
+            {name: '11:00 至 13:00', value: '11:00 至 13:00'},
+            {name: '13:00 至 15:00', value: '13:00 至 15:00'},
+            {name: '15:00 至 17:30', value: '15:00 至 17:30'}
+          ]],
+          value: []
+        },
+        newTime: '',
       }
     },
     components: {
@@ -106,58 +118,78 @@
       Number
     },
     computed: {
-      totalPrice(){
+      totalPrice() {
         let totalPrice = 0;
         this.shopList.forEach((item) => {
           totalPrice += item.number * item.price;
         });
-        if(this.$route.params.name==='laundry'){
-          let express=this.express;
-          totalPrice=(totalPrice>=express.threshold/100)?totalPrice:totalPrice+express.freight/100;
+        if (this.$route.params.name === 'laundry') {
+          let express = this.express;
+          totalPrice = (totalPrice >= express.threshold / 100) ? totalPrice : totalPrice + express.freight / 100;
         }
+        if (this.$route.params.name === 'mall') {
+          let express = this.shopExpress;
+          totalPrice = (totalPrice >= express.threshold / 100) ? totalPrice : totalPrice + express.freight / 100;
+        }
+        if (this.$route.params.name === 'single' && this.$route.query.category === 'mall') {
+          let express = this.shopExpress;
+          totalPrice = (totalPrice >= express.threshold / 100) ? totalPrice : totalPrice + express.freight / 100;
+        }
+
         return totalPrice;
       },
-      address(){
+      address() {
         return this.currentAddress || {}
       },
       ...mapGetters([
         'shopList',
         'currentAddress',
         'express',
-        'binding'
+        'binding',
+        'shopExpress'
       ])
     },
-    mixins: [setListMixin,expressTipMixin],
-    created(){
-      this.postageTip=(this.$route.params.name==='laundry')?true:false;
-        console.log(this.$route.params.name)
+    mixins: [setListMixin, expressTipMixin, shopExpressTipMixin],
+    created() {
+
+      this.postageTip = (this.$route.params.name === 'laundry') ? true : false;
+
+      if (this.$route.params.name === 'mall' || this.$route.params.name === 'single' && this.$route.query.category === 'mall') {
+        this.postageTip1 = true
+      } else {
+        this.postageTip1 = false
+      }
+      // this.postageTip1 = (this.$route.params.name === 'mall') ? true : false;
+      // this.postageTip1 = (this.$route.params.name === 'single') ? true : false;
+      console.log(this.postageTip1);
       this._getCurrentTime();
     },
     methods: {
-      onCreatePayClick(){
-        if(this.binding){   //判断用户是否绑定手机
+      onCreatePayClick() {
+        console.log(this.currentAddress);
+        if (this.binding) {   //判断用户是否绑定手机
           if (this.currentAddress != null) {     //地址是否为空
             if (this.shopList.length !== 0) {   //购物车是否有商品存在
               this.$loading.show('正在创建订单');
               let data = this.submitData();
               orderCreate(this.urlType, data).then((ops) => {
                 if (ops.code === ERR_OK) {
-                let route = this.$route;
-                let top = route.query.top || '';
+                  let route = this.$route;
+                  let top = route.query.top || '';
+                  this.$loading.hide();
+                  this.$router.push({
+                    name: 'payChose',
+                    query: {totalPrice: this.totalPrice, type: route.params.name, top},
+                    params: {id: ops.data.id}
+                  });
+                  return;
+                }
                 this.$loading.hide();
-                this.$router.push({
-                  name: 'payChose',
-                  query: {totalPrice: this.totalPrice, type: route.params.name, top},
-                  params: {id: ops.data.id}
-                });
-                return;
-              }
-              this.$loading.hide();
-              this.$msg.setShow(ops.msg);
-            }).catch(() => {
+                this.$msg.setShow(ops.msg);
+              }).catch(() => {
                 this.$loading.hide();
-              this.$msg.setShow('网络异常');
-            })
+                this.$msg.setShow('网络异常');
+              })
             }
             else {
               this.$alert('您的购物车目前没有商品')
@@ -167,13 +199,13 @@
             this.$alert('请选择地址')
           }
         }
-        else{
+        else {
           this.$msg.setShow('需要先绑定手机');
-          this.$router.push({path:'/my/phone',query:{pay:true}});
+          this.$router.push({path: '/my/phone', query: {pay: true}});
         }
 
       },
-      submitData(){
+      submitData() {
         let items = [];
         this.shopList.map((item) => {
           items.push({[`${this.urlType}Product`]: {id: item.id}, count: item.number});
@@ -187,26 +219,25 @@
         let deliveryDate = `${date[0]}-${date[1]}-${date[2]} ${time}`;
         let address = this.currentAddress;
 
-        console.log(address)
-
         let data = {
           name: address.consignee,
           phone: address.phone,
           province: address.province,
           city: address.city,
-          area: address.area||address.city,
+          area: address.area || address.city,
           address: address.address,
           deliveryDate,
           remark: this.remark,
-          type: this.type||'',
+          type: this.type || '',
           items
         };
+
         return data;
       },
-      toAddress(){
+      toAddress() {
         this.$router.push({path: '/my/address', query: {pay: true}});
       },
-      numChange(number, id){
+      numChange(number, id) {
         let shopList = changeShopNumber(this.shopList, number, id);
         this.setShopList(shopList);
         this.setList(shopList, this.$route.params.name);
@@ -214,56 +245,89 @@
           this.$router.back();
         }
       },
-      _getCurrentTime(){
-         this.$loading.show() ;
+      _getCurrentTime() {
+        this.$loading.show();
         getCurrentTime().then((ops) => {
           if (ops.code === ERR_OK) {
             this.$loading.hide();
             this.timeFormat(ops.data);
-            this.defaultTime(ops.data);
+            //this.defaultTime(ops.data);
+            this.newTime = ops.data;
           }
         })
       },
-      timeFormat(data){
+      timeFormat(data) {
         let time = new Date(data);
         let year = time.getFullYear();
         let month = time.getMonth() + 1;
         let date = time.getDate();
-        let hour=time.getHours();
+        let hour = time.getHours();
         month = month < 10 ? '0' + month : month;
         date = date < 10 ? '0' + date : date;
         let arr = [];
-        let format = `今天${year}年${month}月${date}日`;
+        let format = `今天${year}年${month}月${parseInt(date)}日`;
         arr.push({name: format, value: format});
         for (let i = 1; i < 3; i++) {
           let text = (i === 1) ? '明天' : '后天';
-          let format = `${text}${year}年${month}月${date + i}日`;
+          let newDate = new Date(time.getTime() + (i * 86400000));
+          let newYear = newDate.getFullYear();
+          let newMonth = newDate.getMonth() + 1;
+          let newRi = newDate.getDate();
+          newMonth = newMonth < 10 ? '0' + newMonth : newMonth;
+          format = `${text}${newYear}年${newMonth}月${newRi}日`;
           arr.push({name: format, value: format});
         }
+
+        // for (let i = 1; i < 3; i++) {
+        //   let text = (i === 1) ? '明天' : '后天';
+        //   let ri = parseInt(date) + i;
+        //   let format = `${text}${year}年${month}月${ri}日`;
+        //   //console.log(format);
+        //   arr.push({name: format, value: format});
+        // }
         this.date.value = [arr[0].value];
         this.date.list = [arr];
       },
-      defaultTime(data){
-        let date=new Date(data),
-          hour=date.getHours(),
-          minute=date.getMinutes(),
-          timeArr=[11,13,15,17.30];
-        if(hour===17&&minute>30||hour>17){  //超过当天五点半，选择日期默认为明天
-          this.date.value =[this.date.list[0][1].value];
+      defaultTime(data) {
+        let date = new Date(data),
+          hour = date.getHours(),
+          minute = date.getMinutes(),
+          timeArr = [11, 13, 15, 17.30];
+
+        if (hour === 17 && minute > 30 || hour > 17) {  //超过当天五点半，选择日期默认为明天
+          this.date.value = [this.date.list[0][1].value];
         }
-        let formAtDate=hour+minute/100;
-        timeArr.some((date,index)=>{
-          if(formAtDate<=date){
-            this.time.value=[this.time.list[0][index].value];
+
+        let formAtDate = hour + minute / 100;
+
+        timeArr.some((date, index) => {
+          if (formAtDate <= date) {
+            this.time.value = [this.time.list1[0][index].value];
             return true;
+          } else {
+            // delete this.time.list[0][index];
+            this.time.list[0].splice(0, 1);
+            this.time.value = [this.time.list1[0][0].value];
           }
         });
+
+      },
+      qaq() {
+        if (this.date.value[0].indexOf('今天') > -1) {
+          this.defaultTime(this.newTime);
+        } else {
+          this.time.list = [[
+            {name: '9:00 至 11:00', value: '9:00 至 11:00'},
+            {name: '11:00 至 13:00', value: '11:00 至 13:00'},
+            {name: '13:00 至 15:00', value: '13:00 至 15:00'},
+            {name: '15:00 至 17:30', value: '15:00 至 17:30'}
+          ]]
+        }
       },
       ...mapMutations({
         setShopList: 'SET_SHOP_LIST'
       })
-    }
-
+    },
   }
 </script>
 
@@ -404,21 +468,24 @@
             }
             .name {
               @include px2rem(width, 360);
-              white-space: nowrap;
+              margin-right: px2rem(30);
+              /*white-space: nowrap;*/
+              word-wrap: break-word;
               @include font(2);
               color: $color-text-ll;
             }
             .price {
-              @include px2rem(width, 170);
+              @include px2rem(width, 150);
               color: #FB4F43;
               white-space: nowrap;
             }
           }
         }
-        .postageText{
+        .postageText {
           display: flex;
           align-items: center;
-          height:px2rem(46);
+          /*height: px2rem(46);*/
+          height: px2rem(46);
           @include font(-3);
           color: $color-theme;
         }

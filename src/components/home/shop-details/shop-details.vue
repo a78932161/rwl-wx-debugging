@@ -14,7 +14,7 @@
         </div>
         <transition-group name="list" tag="ul" class="details-list">
           <li class="item" v-for="item in list" :key="item.id">
-            <span class="text" v-text="item.name"></span>
+            <span class="text">{{item.name}}</span>
             <span class="price" v-text="price(item.price)"></span>
             <number @numberChange="numChange"
                     :id="item.id"
@@ -37,12 +37,13 @@
 
 <script>
   import {mapGetters, mapMutations} from 'vuex';
-  import Number  from 'base/number/number';
+  import Number from 'base/number/number';
   import Alert from 'base/alert/alert';
-  import {setListMixin,expressTipMixin} from 'common/js/mixin';
+  import {setListMixin, expressTipMixin} from 'common/js/mixin';
   import {changeShopNumber} from 'common/js/util';
+
   export default {
-    data(){
+    data() {
       return {
         content: '您确定清空购物车吗？',
         cancelBtnText: '取消',
@@ -58,11 +59,11 @@
       Number,
       Alert
     },
-    mixins:[setListMixin,expressTipMixin],
+    mixins: [setListMixin, expressTipMixin],
     props: {
-      tip:{
-        type:Boolean,
-        default:false
+      tip: {
+        type: Boolean,
+        default: false
       },
       list: {
         type: Array,
@@ -70,28 +71,28 @@
       }
     },
     methods: {
-      confirm(){
+      confirm() {
         this.setShopList([]);
         this.setList([]);
       },
-      clearShop(){
+      clearShop() {
         this.$refs.alert.show();
       },
-      coverHide(){
+      coverHide() {
         this.$emit('coverHide');
       },
-      show(){
+      show() {
         this.showFlag = true;
       },
-      hide(){
+      hide() {
         this.showFlag = false;
       },
-      numChange(number, id){
-        let shopList=changeShopNumber(this.shopList,number,id);
+      numChange(number, id) {
+        let shopList = changeShopNumber(this.shopList, number, id);
         this.setShopList(shopList);
-        this.setList(shopList,this.$route.name);
+        this.setList(shopList, this.$route.name);
       },
-      price(price){
+      price(price) {
         return `¥ ${price}`
       },
       ...mapMutations({
@@ -99,8 +100,8 @@
       })
     },
     computed: {
-      shopNumber(){
-        let number=0;
+      shopNumber() {
+        let number = 0;
         this.list.forEach((item) => {
           number += item.number;
         });
@@ -173,14 +174,14 @@
         width: 10rem;
         @include px2rem(height, 90);
         background: #F7F7F9;
-        .postage-tip{
+        .postage-tip {
           position: absolute;
           top: px2rem(-46);
           display: flex;
           justify-content: center;
           align-items: center;
           width: 10rem;
-          height:px2rem(46);
+          height: px2rem(46);
           @include font(-3);
           background: #FFFCDF;
         }
@@ -227,9 +228,11 @@
             border-bottom: 0;
           }
           .text {
-            @include px2rem(width, 230);
+            width: px2rem(250);
             @include font(3);
             color: $color-text-ll;
+            overflow: hidden;
+            text-overflow: ellipsis;
             white-space: nowrap;
           }
           .price {

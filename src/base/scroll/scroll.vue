@@ -5,17 +5,18 @@
 </template>
 <script>
   import BScroll from 'better-scroll';
+
   export default {
-    mounted(){
+    mounted() {
       setTimeout(() => {
         this._initScroll();
       }, 20)
     },
     props: {
-        pullUp:{
-          type:Boolean,
-          default:false
-        },
+      pullUp: {
+        type: Boolean,
+        default: false
+      },
       probeType: {
         type: Number,
         default: 3
@@ -28,23 +29,27 @@
         type: Boolean,
         default: false
       },
-      pullUpLoad:{
-        default:false
+      pullUpLoad: {
+        default: false
       },
       data: {
         //type: Array,  //不设定type
         default: null
+      },
+      refreshDelay: {
+        type: Number,
+        default: 20
       }
     },
     methods: {
-      _initScroll(){
+      _initScroll() {
         if (!this.$refs.wrapper) {
           return
         }
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click,
-          pullUpLoad:this.pullUpLoad
+          pullUpLoad: this.pullUpLoad
         });
         if (this.listenScroll) {   //派发滚动事件
           this.scroll.on('scroll', (pos) => {
@@ -54,28 +59,27 @@
         if (this.pullUp) {
           this.scroll.on('scrollEnd', () => {
             if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
-            this.$emit('scrollToEnd')
-          }
-        })
+              this.$emit('scrollToEnd')
+            }
+          })
         }
-        if(this.pullUpLoad){
-            this.scroll.on('pullingUp',()=>{
-                this.$emit('pullingUp');
-                this.$nextTick(()=>{
-                  this.refresh();
-                  this.scroll.scrollTo(0,this.scroll.maxScrollY);   /*写成this.scrollTo无法使用，原因不详*/
-                  this.finishPullUp();
-                });
-
-
-            })
+        if (this.pullUpLoad) {
+          this.scroll.on('pullingUp', () => {
+            this.$emit('pullingUp');
+            this.$nextTick(() => {
+              this.refresh();
+              this.scroll.scrollTo(0, this.scroll.maxScrollY);
+              /*写成this.scrollTo无法使用，原因不详*/
+              this.finishPullUp();
+            });
+          })
         }
       },
-      scrollTo(){
+      scrollTo() {
         this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
       },
-      finishPullUp(){
-        this.scroll&&this.scroll.finishPullUp()
+      finishPullUp() {
+        this.scroll && this.scroll.finishPullUp()
       },
       disable() {
         // 代理better-scroll的disable方法
@@ -90,12 +94,12 @@
         this.scroll && this.scroll.refresh()
       }
     },
-    watch:{
-        data(){
-          this.$nextTick(() => {
-            this.refresh();
-          })
-        }
+    watch: {
+      data() {
+        this.$nextTick(() => {
+          this.refresh();
+        })
+       }
     }
   }
 </script>

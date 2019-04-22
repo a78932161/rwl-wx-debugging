@@ -61,7 +61,7 @@
       },
       ...mapMutations({
         setCurrentAddress: 'SET_CURRENT_ADDRESS'
-      })
+    })
 
     }
   }

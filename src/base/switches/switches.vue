@@ -14,7 +14,7 @@
 
 <script>
   export default {
-    data(){
+    data() {
       return {
         currentIndex: 0
       }
@@ -27,12 +27,12 @@
     },
     computed: {},
     methods: {
-      selectClass(index){
+      selectClass(index) {
         return this.currentIndex === index ? 'selected' : '';
       },
-      switchItem(index){
+      switchItem(index) {
         this.currentIndex = index;
-        this.$emit('switchItem',index);
+        this.$emit('switchItem', index);
       }
     }
   }
@@ -50,7 +50,7 @@
 
   .switches {
     width: 10rem;
-    @include px2rem(height,$switches-height);
+    @include px2rem(height, $switches-height);
     background: $color-background-d;
     .switches-list {
       width: 100%;
@@ -103,17 +103,33 @@
               @include icon(49, 49);
               @include bg-image('./shoes');
             }
-            &.jd{
+            &.jd {
               @include icon(29, 44);
               @include bg-image('./jd');
             }
-            &.life{
+            &.life {
               @include icon(18, 44);
               @include bg-image('./life');
             }
-            &.service{
+            &.service {
               @include icon(39, 44);
               @include bg-image('./service');
+            }
+            &.liqueur {
+              @include icon(50, 50);
+              background-image: url('洋酒.png');
+            }
+            &.daily {
+              @include icon(50, 50);
+              background-image: url('日用百货.png');
+            }
+            &.baby {
+              @include icon(50, 50);
+              background-image: url('母婴用品.png');
+            }
+            &.food {
+              @include icon(50, 50);
+              background-image: url('食品.png');
             }
           }
         }

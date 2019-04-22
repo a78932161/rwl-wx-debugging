@@ -1,36 +1,36 @@
 <template>
   <transition name="cover">
-  <div v-if="showFlag" class="commodity-buy" @touchmove.prevent @click="hide">
-    <div class="buy-container" @click.stop>
-      <div class="wrapper">
-        <div class="buy-info">
-          <img src=""/>
-          <div class="text-box">
-            <span class="name" v-text="shop.name"></span>
-            <span class="price" v-text="price(shop.price)"></span>
+    <div v-if="showFlag" class="commodity-buy" @touchmove.prevent @click="hide">
+      <div class="buy-container" @click.stop>
+        <div class="wrapper">
+          <div class="buy-info">
+            <img :src="imgUrl(shop.logo)"/>
+            <div class="text-box">
+              <span class="name" v-text="shop.name"></span>
+              <span class="price" v-text="price(shop.price)"></span>
+            </div>
+            <i class="iconfont icon-guanbi close" @click="hide"></i>
           </div>
-          <i class="iconfont icon-guanbi close" @click="hide"></i>
-        </div>
-        <div class="buy-number">
-          <div class="stock-box">
-            <span>库存数量：</span>
-            <span v-text="stock(shop.stock)"></span>
+          <div class="buy-number">
+            <div class="stock-box">
+              <span>库存数量：</span>
+              <span v-text="stock(shop.stock)"></span>
+            </div>
+            <number @numberChange="numberChange" class="number"
+                    :number="number"
+                    :alertShow="alert.state"
+                    :alertText="alert.text"
+                    :cancelBtnText="alert.cancelBtnText"
+            ></number>
           </div>
-          <number @numberChange="numberChange" class="number"
-                  :number="number"
-                  :alertShow="alert.state"
-                  :alertText="alert.text"
-                  :cancelBtnText="alert.cancelBtnText"
-          ></number>
         </div>
       </div>
+      <B-button content="去支付"
+                bgColor="#FE4543"
+                @buttonClick="onPayClick"
+      ></B-button>
+      <alert ref="alert" content="库存不足，请重新选择购买数量"></alert>
     </div>
-    <B-button content="去支付"
-              bgColor="#FE4543"
-              @buttonClick="onPayClick"
-    ></B-button>
-    <alert ref="alert" content="库存不足，请重新选择购买数量"></alert>
-  </div>
   </transition>
 </template>
 
@@ -40,8 +40,10 @@
   import Number from 'base/number/number';
   import BButton from 'base/b-button/b-button';
   import {copyObj} from 'common/js/array';
+  import {ERR_OK, baseURL, advertisement} from 'api/config';
+
   export default {
-    data(){
+    data() {
       return {
         showFlag: false,
         number: 1,
@@ -64,35 +66,38 @@
       }
     },
     methods: {
-      onPayClick(){
+      onPayClick() {
         if (this.number > this.shop.stock) {
           this.$refs.alert.show();
-          return ;
+          return;
         }
         this.showFlag = false;
-        let shop=copyObj(this.shop);
-        shop.number=this.number;
+        let shop = copyObj(this.shop);
+        shop.number = this.number;
         this.setShopList([shop]);
-        let category=(this.$route.name==='furnishing-commodity')?'furnishing':'mall';
-        this.$router.push({path:'/home/pay/single',query:{category}});
+        let category = (this.$route.name === 'furnishing-commodity') ? 'furnishing' : 'mall';
+        this.$router.push({path: '/home/pay/single', query: {category}});
       },
-      numberChange(number){
+      numberChange(number) {
         this.number = number || 1;  //当number数量为0时，重置为1
         if (number === 0) {
           this.showFlag = false;
         }
       },
-      show(){
+      show() {
         this.showFlag = true;
       },
-      hide(){
+      hide() {
         this.showFlag = false;
       },
-      price(price){
+      price(price) {
         return `¥${price}`
       },
-      stock(stock){
+      stock(stock) {
         return `剩余${stock}件`
+      },
+      imgUrl(url) {
+        return url != null ? `${baseURL}/${url}` : '';
       },
       ...mapMutations({
         setShopList: 'SET_SHOP_LIST'
@@ -114,16 +119,16 @@
     left: 0;
     right: 0;
     background: $color-background-cover;
-    &.cover-enter-active,&.cover-leave-active{
+    &.cover-enter-active, &.cover-leave-active {
       transition: all .3s;
-      .buy-container{
+      .buy-container {
         transition: all .3s;
       }
     }
-    &.cover-enter,&.cover-leave-to{
-      .buy-container{
+    &.cover-enter, &.cover-leave-to {
+      .buy-container {
         opacity: 0;
-        transform: translate(0,100%);
+        transform: translate(0, 100%);
       }
     }
     .buy-container {
@@ -164,7 +169,7 @@
             position: absolute;
             @include font(10);
             color: $color-text-d;
-            @include px2rem(top, 21);
+            @include px2rem(top, 42);
             @include px2rem(right, 31);
           }
         }
@@ -180,8 +185,8 @@
               @include px2rem(margin-bottom, 13);
             }
           }
-          .number{
-            margin:px2rem(-55) 0 0 px2rem(370) ;
+          .number {
+            margin: px2rem(-55) 0 0 px2rem(370);
           }
         }
       }

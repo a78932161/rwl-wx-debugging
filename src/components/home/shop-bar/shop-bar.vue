@@ -2,6 +2,10 @@
   <transition name="shop-bar">
     <div class="shop-bar" ref="shopBar">
       <div class="postage-tip" v-if="postageTip&&detailsShow" v-text="postageText"></div>
+
+      <div class="postage-tip" v-if="postageTip1&&detailsShow" v-text="shoPpostageText"></div>
+
+
       <div class="left-box" @click="detailsToggle">
         <div v-show="detailsShow" class="logo">
           <span class="badge" v-text="shopNumber"></span>
@@ -22,19 +26,21 @@
 <script>
   import {mapGetters, mapMutations} from 'vuex';
   import ShopDetails from 'components/home/shop-details/shop-details';
-  import {expressTipMixin} from 'common/js/mixin';
+  import {expressTipMixin,shopExpressTipMixin} from 'common/js/mixin';
+
   export default {
-    data(){
+    data() {
       return {
         shopNumber: 0,
         postageTip: false,
-        detailsShow: true
+        detailsShow: true,
+        postageTip1: false,
       }
     },
     components: {
       ShopDetails
     },
-    mixins: [expressTipMixin],
+    mixins: [expressTipMixin,shopExpressTipMixin],
     props: {
       list: {
         type: Array,
@@ -43,7 +49,7 @@
     },
     computed: {
 
-      totalPrice(){
+      totalPrice() {
         let totalPrice = 0;
         this.shopNumber = 0;
         this.list.forEach((item) => {
@@ -54,6 +60,10 @@
           let express = this.express;
           totalPrice = (totalPrice >= express.threshold / 100) ? totalPrice : totalPrice + express.freight / 100;
         }
+        if (this.$route.name === 'mall') {
+          let express = this.shopExpress;
+          totalPrice = (totalPrice >= express.threshold / 100) ? totalPrice : totalPrice + express.freight / 100;
+        }
 
         return `¥ ${totalPrice}`;
       },
@@ -61,12 +71,15 @@
         'shopList'
       ])
     },
-    mounted(){
+    mounted() {
       this.postageTip = (this.$route.name === 'laundry') ? true : false;
+
+      this.postageTip1 = (this.$route.name === 'mall') ? true : false;
+
       this.setHeight();
     },
     methods: {
-      onPayClick(){
+      onPayClick() {
         let route = this.$route;
         if (route.query.top) {  //当top为true时则为高端洗护
           this.$router.push({path: `/home/pay/${this.$route.name}`, query: {top: true}});
@@ -75,10 +88,10 @@
         this.$router.push(`/home/pay/${this.$route.name}`);
 
       },
-      setHeight(){
+      setHeight() {
         this.setBarHeight(this.$refs.shopBar.clientHeight);
       },
-      detailsToggle(){
+      detailsToggle() {
         let shopDetails = this.$refs.shopDetails;
         if (shopDetails.showFlag) {
           shopDetails.hide();
@@ -94,7 +107,7 @@
       })
     },
     watch: {
-      shopList(newList){
+      shopList(newList) {
         if (newList.length === 0) {
           this.$refs.shopDetails.hide();
           this.detailsShow = true;
